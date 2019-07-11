@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/primary">
+        <!-- TODO Icon -->
+        <item
+                android:title="Scanner"
+                android:id="@+id/scanner_destination"/>
+        <!-- TODO Icon -->
+        <item
+                android:title="Einkaufsliste"
+                android:id="@+id/grocery_list_destination"/>
+        <!-- TODO Icon -->
+        <item
+                android:title="Inventory"
+                android:id="@+id/inventory_destination"/>
+    </group>
+</menu>

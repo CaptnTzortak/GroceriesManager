@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navigation_graph"
+            app:startDestination="@id/scanner_destination">
+
+    <fragment android:id="@+id/scanner_destination"
+              android:name="de.jl.groceriesmanager.scanner.ScannerFragment"
+              android:label="scanner_destination"
+              tools:layout="@layout/scanner_fragment"/>
+
+    <fragment android:id="@+id/inventory_destination"
+              android:name="de.jl.groceriesmanager.inventory.InventoryFragment"
+              android:label="inventory_destination"
+              tools:layout="@layout/inventory_fragment"/>
+
+    <fragment android:id="@+id/grocery_list_destination"
+              android:name="de.jl.groceriesmanager.grocerylist.GroceryListFragment"
+              android:label="grocery_list_destination"
+              tools:layout="@layout/grocery_list_fragment"/>
+</navigation>

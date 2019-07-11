@@ -1,0 +1,18 @@
+layout_width & layout_height
+
+The layout_width and layout_height properties are both set to match_parent. 
+The ConstraintLayout is the root view, so the "parent" layout size is effectively the size of the screen on the device. 
+The ConstraintLayout will be the same width and height as the screen.
+Tip: All views must have layout_width and layout_height properties.
+
+
+
+
+https://codelabs.developers.google.com/codelabs/android-navigation/#0
+
+
+https://codelabs.developers.google.com/codelabs/kotlin-android-training-diffutil-databinding/index.html?index=..%2F..android-kotlin-fundamentals#1
+
+https://codelabs.developers.google.com/android-kotlin-fundamentals/
+
+https://redbooth.com/a/#!/apps/reporting/timelines

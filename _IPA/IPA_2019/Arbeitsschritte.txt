@@ -1,0 +1,7 @@
+
+Arbeitsschritte:
+
+
+1. Tutorial Android Studio with Kotlin
+https://codelabs.developers.google.com/codelabs/build-your-first-android-app-kotlin/index.html
+https://developer.android.com/jetpack/docs/guide

@@ -1,0 +1,8 @@
+Eine Inventar- & Einkaufsliste für Lebensmittel
+
+Funktionalität:
+Lebensmittel via Barcode / EAN einscannen / eintragen
+Über world.openfoodfacts.org (API) versuchen Daten zum Lebensmittel zu ermitteln um diese dann Anzuzeigen (Falls keine Daten vorhanden können diese vom User erweitert werden)
+Möglichkeit das Verfallsdatum einzulesen (OCR mit Google Mobile Vision) ansonsten auch eintragbar. 
+Die Daten werden dann in einer DB gespeichert. Ob diese nur auf dem Smartphone ist oder nicht weiß ich noch nicht.(mögl. SQLite)
+App meldet, dass Lebensmittel vor dem Verfall sind oder falls Lebensmittel den Optimalen bestellzeitpunkt erreicht haben.

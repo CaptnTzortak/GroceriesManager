@@ -1,0 +1,17 @@
+
+
+
+
+
+
+
+nav_header_main.xml
+Hier befindet sich der Inhalt welcher im Navigation_Drawer als Header angezeigt wird.
+Besteht als Basis aus:
+	LenearLayout (ver4tical)
+		ImageView (Icon)
+		TextView (Header-Title)
+		TextView (Header-Subtitle)
+		
+		
+
