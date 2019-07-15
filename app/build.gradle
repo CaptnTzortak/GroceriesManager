@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     compileSdkVersion 28
@@ -29,29 +29,35 @@ android {
 }
 
 dependencies {
+    //Dependencies added by JL
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    //implementation 'com.android.support:appcompat-v7:28.0.0'
-    //implementation 'com.android.support:support-v4:28.0.0'
+
+    //Support libraries
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
+    implementation "androidx.fragment:fragment:1.0.0"
+    implementation "androidx.appcompat:appcompat:$app_compat_version"
+
+    // Room and Lifecycle dependencies
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
+
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+
+    // Coroutines - Jobs bzw threads für DB Operationen
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+
+    // Testing
     testImplementation 'junit:junit:4.12'
-    //androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    //androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    //implementation 'android.arch.navigation:navigation-ui:1.0.0'
-
-    //Dependencies added by JL
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraint_layout_version"
-
-    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigation_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigation_version"
-
-    implementation "androidx.appcompat:appcompat:$rootProject.app_compat_version"
-
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha04"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+
+    //Material-Design
     implementation 'com.google.android.material:material:1.0.0'
-    //implementation 'android.arch.lifecycle:extensions:1.1.1'
-
 }
-

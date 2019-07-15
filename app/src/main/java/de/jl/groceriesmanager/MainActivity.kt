@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mainActivityBinding = DataBindingUtil.setContentView(this, R.layout.main_activity);
+        mainActivityBinding = DataBindingUtil.setContentView(this, R.layout.main_activity)
         setSupportActionBar(mainActivityBinding.toolbar)
         val host: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 

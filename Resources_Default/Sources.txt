@@ -1,0 +1,8 @@
+Barcodes_SVG:
+https://icons8.com/icon/87391/barcode
+
+Liste_SVG.svg:
+https://www.flaticon.com/free-icon/checklist_1237072#term=liste&page=1&position=28
+
+Inventory.svg:
+https://www.flaticon.com/free-icon/inventory_1253980#term=inventory&page=1&position=25
