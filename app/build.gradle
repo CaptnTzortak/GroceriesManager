@@ -38,9 +38,6 @@ dependencies {
     //androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //implementation 'android.arch.navigation:navigation-ui:1.0.0'
 
-
-
-
     //Dependencies added by JL
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraint_layout_version"
 
@@ -52,6 +49,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.1.0-alpha04"
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
     //implementation 'android.arch.lifecycle:extensions:1.1.1'
 
 }
