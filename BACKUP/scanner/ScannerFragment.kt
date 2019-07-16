@@ -10,19 +10,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.databinding.FragmentScannerBinding
+import de.jl.groceriesmanager.databinding.ScannerFragmentBinding
 
 class ScannerFragment : Fragment() {
 
     private lateinit var scannerViewModel: ScannerViewModel
     private lateinit var scannerViewModelFactory: ScannerViewModelFactory
-    private lateinit var scannerBinding: FragmentScannerBinding
+    private lateinit var scannerBinding: ScannerFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         try{
             //Binding
-            scannerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_scanner, container, false)
+            scannerBinding = DataBindingUtil.inflate(inflater, R.layout.scanner_fragment, container, false)
 
             //ViewModelFactory
             //mit Parameter:
@@ -38,6 +38,6 @@ class ScannerFragment : Fragment() {
             Log.d("ScannerFragment", "Error ${e.localizedMessage}")
         }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scanner, container, false)
+        return inflater.inflate(R.layout.scanner_fragment, container, false)
     }
 }

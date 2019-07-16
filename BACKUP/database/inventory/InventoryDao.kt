@@ -4,16 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
+import de.jl.groceriesmanager.database.item.Item
 
 @Dao
 interface InventoryDao {
 
     @Insert
-    fun insert(item: InventoryItem)
+    fun insert(item: Item)
 
     @Query("SELECT COUNT(*) from inventory")
     fun getSize(): Int
 
-    @Query("SELECT * FROM inventory ORDER BY id DESC")
-    fun getAllInventoryItems(): LiveData<List<InventoryItem>>
+    @Query("SELECT * FROM inventory ORDER BY inventoryId DESC")
+    fun getAllInventoryItems(): LiveData<List<Inventory>>
 }

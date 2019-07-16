@@ -6,7 +6,6 @@ import java.lang.IllegalArgumentException
 
 class ScannerViewModelFactory : ViewModelProvider.Factory {
 
-    @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>) : T {
         if(modelClass.isAssignableFrom(ScannerViewModel::class.java)){
             return ScannerViewModel() as T

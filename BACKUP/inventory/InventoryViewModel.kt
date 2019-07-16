@@ -1,12 +1,19 @@
 package de.jl.groceriesmanager.inventory
 
 import android.app.Application
-import android.content.ClipData
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
+import android.os.Build
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import de.jl.groceriesmanager.database.inventory.Inventory
 import de.jl.groceriesmanager.database.inventory.InventoryDao
+import de.jl.groceriesmanager.database.item.Item
 import kotlinx.coroutines.*
 
 class InventoryViewModel(val database: InventoryDao, application: Application) : AndroidViewModel(application) {
@@ -22,6 +29,7 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
 
 
     //Inventar-Liste
+    private var inventory = MutableLiveData<Inventory?>()
 
     private val _navigateToAddItem = MutableLiveData<Boolean>()
     val navigateToAddItem: LiveData<Boolean>
@@ -37,8 +45,9 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
         viewModelJob.cancel()
     }
 
-    private suspend fun insert() {
+    private suspend fun insert(item: Item) {
         withContext(Dispatchers.IO) {
+            database.insert(item)
         }
     }
 

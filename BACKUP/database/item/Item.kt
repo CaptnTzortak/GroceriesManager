@@ -1,9 +1,14 @@
 package de.jl.groceriesmanager.database.item
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parceler
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "item")
 data class Item(
     //ID ist Barcode falls ermittelt oder eigene ID
@@ -12,7 +17,7 @@ data class Item(
 
     //Name / Text der das Item beschreibt
     @ColumnInfo(name = "description")
-    val description: String = "",
+    var description: String = "",
 
     //Original-Beschreibung die von der API ermittelt wird
     @ColumnInfo(name = "original_description")
@@ -25,6 +30,6 @@ data class Item(
     //Marke welche von der API ermittelt wird
     @ColumnInfo(name = "original_brand")
     var originalBrand: String = ""
-) {
+) : Parcelable {
 
 }

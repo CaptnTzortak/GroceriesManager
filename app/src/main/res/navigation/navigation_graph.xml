@@ -8,33 +8,15 @@
     <fragment android:id="@+id/scanner_destination"
               android:name="de.jl.groceriesmanager.scanner.ScannerFragment"
               android:label="scanner_destination"
-              tools:layout="@layout/scanner_fragment"/>
+              tools:layout="@layout/fragment_scanner"/>
 
     <fragment android:id="@+id/inventory_destination"
               android:name="de.jl.groceriesmanager.inventory.InventoryFragment"
               android:label="inventory_destination"
-              tools:layout="@layout/inventory_fragment">
-        <action android:id="@+id/action_inventory_destination_to_add_item_fragment"
-                app:destination="@id/add_item_fragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:popEnterAnim="@anim/slide_in_right"/>
-
-    </fragment>
-
+              tools:layout="@layout/fragment_inventory"/>
 
     <fragment android:id="@+id/grocery_list_destination"
               android:name="de.jl.groceriesmanager.grocerylist.GroceryListFragment"
               android:label="grocery_list_destination"
-              tools:layout="@layout/grocery_list_fragment"/>
-
-    <fragment android:id="@+id/add_item_fragment"
-              android:name="de.jl.groceriesmanager.add_item.AddItemFragment"
-              android:label="add_item_fragment"
-              tools:layout="@layout/add_item_to_inventory">
-        <action android:id="@+id/action_add_item_fragment_to_inventory_destination"
-                app:destination="@id/inventory_destination"/>
-        <argument android:name="itemId" app:argType="long"/>
-
-    </fragment>
-
+              tools:layout="@layout/fragment_grocery_lists"/>
 </navigation>

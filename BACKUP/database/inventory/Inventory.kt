@@ -13,12 +13,9 @@ data class Inventory(
 
     //ID des referenzierten Items (Barcode oder eigene ID)
     @ColumnInfo(name = "item_id")
-    val itemId: Long = 0L
+    val itemId: Long = 0L,
+
+    //Verfallsdatum
+    @ColumnInfo(name = "expiry_date")
+    val expiryDate: String = ""
 )
-
-//Verfallsdatum
-//@ColumnInfo(name = "expiry_date")
-//var originalDescription: LocalDate = LocalDate.now()
-{
-
-}

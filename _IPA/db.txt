@@ -1,0 +1,32 @@
+Table GroceryLists {
+  gl_id int [pk]
+  description varchar 
+}
+
+Table GL_Item_Mapping {
+  id int [pk]
+  gl_id int [ref: > GroceryLists.gl_id]
+  product_id int [ref: > Products.id]
+  note varchar
+}
+
+// You can define single or multi-column index 
+Table Products {
+  id int [pk]
+  barcode_id int [ref: > Barcodes.id]
+  description varchar
+  expiryDate date
+}
+
+Table Barcodes {
+  id int [primary key]
+  description varchar
+  categories varchar
+  quantity varchar
+  brand varchar
+}
+
+Table Inventory {
+  id int [primary key]
+  product_id int [ref: > Products.id]
+}

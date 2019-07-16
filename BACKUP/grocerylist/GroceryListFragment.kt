@@ -9,19 +9,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.databinding.FragmentGroceryListsBinding
+import de.jl.groceriesmanager.databinding.GroceryListFragmentBinding
 
 class GroceryListFragment : Fragment() {
 
     private lateinit var groceryListViewModel: GroceryListViewModel
     private lateinit var groceryListViewModelFactory: GroceryListViewModelFactory
-    private lateinit var groceryListBinding: FragmentGroceryListsBinding
+    private lateinit var groceryListBinding: GroceryListFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         try{
             //Binding
-            groceryListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_grocery_lists, container, false)
+            groceryListBinding = DataBindingUtil.inflate(inflater, R.layout.grocery_list_fragment, container, false)
 
             //ViewModelFactory
             //mit Parameter:
@@ -37,6 +37,6 @@ class GroceryListFragment : Fragment() {
             Log.d("InventoryFragment", "Error ${e.localizedMessage}")
         }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_grocery_lists, container, false)
+        return inflater.inflate(R.layout.grocery_list_fragment, container, false)
     }
 }
