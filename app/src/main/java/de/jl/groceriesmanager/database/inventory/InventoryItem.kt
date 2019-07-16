@@ -13,5 +13,5 @@ data class InventoryItem(
 
     //ID des Produkts
     @ColumnInfo(name="product_id")
-    val product_id: Long = 0L
+    var product_id: Long = 0L
 )
