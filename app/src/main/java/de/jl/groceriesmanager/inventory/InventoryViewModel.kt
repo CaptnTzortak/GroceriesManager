@@ -1,9 +1,6 @@
 package de.jl.groceriesmanager.inventory
 
 import android.app.Application
-import android.provider.SyncStateContract.Helpers.insert
-import android.provider.SyncStateContract.Helpers.update
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +20,11 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
 
     private var inventoryItem = MutableLiveData<InventoryItem?>()
 
+
+    private val _navigateToAddProduct = MutableLiveData<Boolean>()
+    val navigateToAddProduct: LiveData<Boolean>
+        get() = _navigateToAddProduct
+
     init {
 
     }
@@ -30,14 +32,15 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
 
     fun onAddInventoyItem() {
         uiScope.launch {
-            val newInventoyItem = InventoryItem()
-            insert(newInventoyItem)
-            inventoryItem.value = newInventoyItem
+            _navigateToAddProduct.value = true
         }
     }
 
+    fun doneNavigatingToAddProduct(){
+        _navigateToAddProduct.value = false
+    }
 
-    private suspend fun insert(item: InventoryItem){
+    private suspend fun insert(item: InventoryItem) {
         withContext(Dispatchers.IO) {
             database.insert(item)
         }

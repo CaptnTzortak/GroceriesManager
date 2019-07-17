@@ -14,4 +14,14 @@ data class InventoryItem(
     //ID des Produkts
     @ColumnInfo(name="product_id")
     var product_id: Long = 0L
-)
+){
+
+    fun getId(): Long {
+        return inventory_id
+    }
+
+    fun getProductId(): Long{
+        return product_id
+    }
+
+}

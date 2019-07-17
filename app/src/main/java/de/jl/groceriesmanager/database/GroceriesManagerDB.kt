@@ -6,11 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import de.jl.groceriesmanager.database.inventory.InventoryDao
 import de.jl.groceriesmanager.database.inventory.InventoryItem
+import de.jl.groceriesmanager.database.products.ProductItem
+import de.jl.groceriesmanager.database.products.ProductsDao
 
-@Database(entities = [InventoryItem::class], version = 1, exportSchema = false)
+@Database(entities = [InventoryItem::class, ProductItem::class], version = 2, exportSchema = false)
 abstract class GroceriesManagerDB : RoomDatabase() {
 
     abstract val inventoryDao : InventoryDao
+    abstract val productsDao : ProductsDao
+
 
     companion object {
 

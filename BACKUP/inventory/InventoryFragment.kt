@@ -28,7 +28,7 @@ class InventoryFragment : Fragment() {
             val application = requireNotNull(this.activity).application
             val adapter = ItemAdapter()
             val dataSource = GroceriesManagerDatabase.getInstance(application).inventoryDao
-
+            val prodDataSource = GroceriesManagerDB
             val viewModelFactory = InventoryViewModelFactory(dataSource, application)
 
             val inventoryViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryViewModel::class.java)

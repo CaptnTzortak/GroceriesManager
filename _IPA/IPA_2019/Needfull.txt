@@ -16,3 +16,10 @@ https://codelabs.developers.google.com/codelabs/kotlin-android-training-diffutil
 https://codelabs.developers.google.com/android-kotlin-fundamentals/
 
 https://redbooth.com/a/#!/apps/reporting/timelines
+
+
+
+
+
+!ROOM! with view KOTLIN
+https://codelabs.developers.google.com/codelabs/android-room-with-a-view-kotlin/#1

@@ -10,10 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.inventory.InventoryDao
+import de.jl.groceriesmanager.database.products.ProductsDao
 
 class InventoryFragment : Fragment() {
 
@@ -53,6 +55,15 @@ class InventoryFragment : Fragment() {
             //TODO uncomment after adapter
             //inventoryBinding.inventoryItemList.adapter = adapter
 
+            inventoryViewModel.navigateToAddProduct.observe(this, Observer {navToAddProduct ->
+                navToAddProduct?.let{
+                    if(navToAddProduct){
+                        this.findNavController().navigate(InventoryFragmentDirections.actionInventoryDestinationToAddProductDestination())
+                        inventoryViewModel.doneNavigatingToAddProduct()
+                    }
+                }
+            })
+
             inventoryBinding.lifecycleOwner = this
             inventoryBinding.inventoryViewModel = inventoryViewModel
             inventoryBinding.inventoryItemList.layoutManager = GridLayoutManager(activity,1 )
@@ -64,9 +75,4 @@ class InventoryFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_inventory, container, false)
     }
-
-
-
-
-
 }

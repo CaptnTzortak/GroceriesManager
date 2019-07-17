@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import de.jl.groceriesmanager.database.inventory.InventoryDao
+import de.jl.groceriesmanager.database.products.ProductsDao
 import java.lang.IllegalArgumentException
 
 class InventoryViewModelFactory(private val dataSource: InventoryDao, private val application: Application) : ViewModelProvider.Factory {
