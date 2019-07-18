@@ -19,5 +19,5 @@ interface ProductsDao {
     fun getAllProductItems(): LiveData<List<ProductItem>>
 
     @Query("Select * FROM products ORDER BY id DESC LIMIT 1")
-    fun getLatest(): LiveData<ProductItem>
+    fun getLatest(): ProductItem
 }

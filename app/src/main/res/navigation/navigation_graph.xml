@@ -15,7 +15,8 @@
               android:label="inventory_destination"
               tools:layout="@layout/fragment_inventory">
         <action android:id="@+id/action_inventory_destination_to_add_product_destination"
-                app:destination="@id/add_product_destination"/>
+                app:destination="@id/add_product_destination">
+        </action>
     </fragment>
 
     <fragment android:id="@+id/grocery_list_destination"

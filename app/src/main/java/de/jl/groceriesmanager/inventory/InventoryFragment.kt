@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.inventory.InventoryDao
+import de.jl.groceriesmanager.database.inventory.InventoryItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 
 class InventoryFragment : Fragment() {
@@ -33,16 +34,29 @@ class InventoryFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
+
+
             //TODO: Adapter:
             //val adapter = ItemAdapter()
 
             //DataSource
             dataSource = GroceriesManagerDB.getInstance(application).inventoryDao
 
+
+            val prodId: Long = arguments?.get("productId") as Long
+            if(prodId > 0){
+                val invItem = InventoryItem()
+                invItem.product_id = prodId
+                dataSource.insert(invItem)
+            }
+
+
             //ViewModelFactory
             viewModelFactory = InventoryViewModelFactory(dataSource, application)
 
             inventoryViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryViewModel::class.java)
+
+
 
             //Observing
             //TODO uncomment after adapter
