@@ -6,9 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import de.jl.groceriesmanager.database.inventory.InventoryDao
 import de.jl.groceriesmanager.database.inventory.InventoryItem
+import de.jl.groceriesmanager.database.products.ProductItem
+import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 
-class InventoryViewModel(val database: InventoryDao, application: Application) : AndroidViewModel(application) {
+class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsDao, application: Application) : AndroidViewModel(application) {
 
     //job
     private var viewModelJob = Job()
@@ -18,17 +20,17 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
 
     val inventoryItems = database.getAllInventoryItems()
 
-    private var inventoryItem = MutableLiveData<InventoryItem?>()
-
 
     private val _navigateToAddProduct = MutableLiveData<Boolean>()
     val navigateToAddProduct: LiveData<Boolean>
         get() = _navigateToAddProduct
 
-    init {
-
+    private suspend fun getProductById(prodId: Long): ProductItem{
+        return withContext(Dispatchers.IO){
+            val prod = prodDataBase.getProductById(prodId)
+            prod
+        }
     }
-
 
     fun onAddInventoyItem() {
         uiScope.launch {
@@ -46,4 +48,12 @@ class InventoryViewModel(val database: InventoryDao, application: Application) :
         }
     }
 
+    fun insertNewInventoryItem(productId: Long){
+        uiScope.launch {
+            val product = getProductById(productId)
+            val invItem = InventoryItem()
+            invItem.product = product
+            insert(invItem)
+        }
+    }
 }

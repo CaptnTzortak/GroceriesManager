@@ -7,12 +7,12 @@ import de.jl.groceriesmanager.database.inventory.InventoryDao
 import de.jl.groceriesmanager.database.products.ProductsDao
 import java.lang.IllegalArgumentException
 
-class InventoryViewModelFactory(private val dataSource: InventoryDao, private val application: Application) : ViewModelProvider.Factory {
+class InventoryViewModelFactory(private val dataSource: InventoryDao, private val prodDataSource : ProductsDao, private val application: Application) : ViewModelProvider.Factory {
 
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(InventoryViewModel::class.java)) {
-            return InventoryViewModel(dataSource, application) as T
+            return InventoryViewModel(dataSource, prodDataSource, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

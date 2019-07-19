@@ -14,9 +14,11 @@
               android:name="de.jl.groceriesmanager.inventory.InventoryFragment"
               android:label="inventory_destination"
               tools:layout="@layout/fragment_inventory">
-        <action android:id="@+id/action_inventory_destination_to_add_product_destination"
-                app:destination="@id/add_product_destination">
-        </action>
+        <action android:id="@+id/inventoryDestinationToAddProductDestination"
+                app:destination="@id/add_product_destination" app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <argument android:name="productId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
 
     <fragment android:id="@+id/grocery_list_destination"
@@ -28,9 +30,11 @@
               android:name="de.jl.groceriesmanager.product.add.AddProductFragment"
               android:label="add_product_destination"
               tools:layout="@layout/fragment_add_product">
-        <action android:id="@+id/action_add_product_destination_to_inventory_destination"
-                app:destination="@id/inventory_destination">
-                <argument android:name="productId" app:argType="long"/>
+        <action android:id="@+id/addProductDestinationToInventoryDestination"
+                app:destination="@id/inventory_destination" app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim">
+            <argument android:name="productId" app:argType="long"/>
         </action>
     </fragment>
 </navigation>

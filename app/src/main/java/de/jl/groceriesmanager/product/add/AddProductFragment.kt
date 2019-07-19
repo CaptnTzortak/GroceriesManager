@@ -14,14 +14,16 @@ import androidx.navigation.fragment.findNavController
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.groceriesmanager.databinding.FragmentAddProductBinding
 
 class AddProductFragment : Fragment() {
 
-    lateinit var addProductBinding: de.jl.groceriesmanager.databinding.FragmentAddProductBinding
+    lateinit var addProductBinding: FragmentAddProductBinding
     lateinit var application: Application
     lateinit var dataSource: ProductsDao
     lateinit var viewModelFactory: AddProductViewModelFactory
     lateinit var addProductViewModel: AddProductViewModel
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         try {
@@ -64,7 +66,7 @@ class AddProductFragment : Fragment() {
         addProductViewModel.product.observe(this, Observer { productItem ->
             productItem?.let {
                 this.findNavController()
-                    .navigate(AddProductFragmentDirections.actionAddProductDestinationToInventoryDestination(productItem.product_id))
+                    .navigate(AddProductFragmentDirections.addProductDestinationToInventoryDestination(productItem.product_id))
             }
         })
 

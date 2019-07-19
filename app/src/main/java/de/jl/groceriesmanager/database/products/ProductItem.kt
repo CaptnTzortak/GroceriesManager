@@ -10,7 +10,7 @@ data class ProductItem(
 
     //ID des Produktes
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "product_id")
     val product_id: Long = 0L,
 
     //Barcode
@@ -26,3 +26,6 @@ data class ProductItem(
     var expiry_date: String = ""
 
 )
+{
+
+}

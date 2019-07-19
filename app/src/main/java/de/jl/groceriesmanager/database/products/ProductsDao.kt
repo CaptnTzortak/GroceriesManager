@@ -15,9 +15,12 @@ interface ProductsDao {
     @Query("SELECT COUNT(*) from products")
     fun getSize(): Int
 
-    @Query("SELECT * FROM products ORDER BY id DESC")
+    @Query("SELECT * FROM products ORDER BY product_id DESC")
     fun getAllProductItems(): LiveData<List<ProductItem>>
 
-    @Query("Select * FROM products ORDER BY id DESC LIMIT 1")
+    @Query("Select * FROM products ORDER BY product_id DESC LIMIT 1")
     fun getLatest(): ProductItem
+
+    @Query("SELECT * FROM products WHERE product_id = :prodId")
+    fun getProductById(prodId: Long) : ProductItem
 }
