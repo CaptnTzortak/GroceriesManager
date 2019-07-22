@@ -13,6 +13,10 @@ interface GroceryListsDao {
     fun insert(groceryList: GroceryList): Long
 
 
+    @Query("DELETE FROM grocery_lists WHERE gl_id = :id")
+    fun remove(id: Long)
+
+
     ////TODO: Return LONG für ID
    //@Query("SELECT COUNT(*) from inventory")
    //fun getSize(): Int
@@ -23,8 +27,7 @@ interface GroceryListsDao {
    //@Query("SELECT * FROM inventory WHERE inventory_id = :id")
    //fun getInventoryItemById(id: Long): InventoryItem
 
-   //@Query("DELETE FROM inventory WHERE inventory_id = :id")
-   //fun remove(id: Long)
+
 
    //@Insert(onConflict = OnConflictStrategy.FAIL)
    //fun insert(item: InventoryItem): Long

@@ -11,18 +11,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.database.groceryList.GroceryList
-import de.jl.groceriesmanager.database.inventory.InventoryItem
 import de.jl.groceriesmanager.databinding.ItemGroceryListsBinding
-import de.jl.groceriesmanager.databinding.ItemInventoryBinding
 
-class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) : ListAdapter<GroceryList, GroceryListsItemAdapter.ViewHolder>(GroceryListsItemDiffCallback())
-{
+class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
+    ListAdapter<GroceryList, GroceryListsItemAdapter.ViewHolder>(GroceryListsItemDiffCallback()) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         val view = holder.itemView
         holder.bind(item, clickListener, view)
+
     }
 
 
@@ -30,7 +29,8 @@ class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) : Lis
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemGroceryListsBinding) : RecyclerView.ViewHolder(binding.root), OnCreateContextMenuListener {
+    class ViewHolder private constructor(val binding: ItemGroceryListsBinding) : RecyclerView.ViewHolder(binding.root),
+        OnCreateContextMenuListener {
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun bind(
@@ -53,12 +53,12 @@ class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) : Lis
             }
         }
 
-        override fun onCreateContextMenu(menu: ContextMenu,view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             var id = 0
-            if(binding.groceryList?.groceryList_id!= null){
+            if (binding.groceryList?.groceryList_id != null) {
                 id = binding.groceryList?.groceryList_id!!.toInt()
             }
-            menu.add(id, 121,0,"Delete")
+            menu.add(id, 121, 0, "Delete")
         }
     }
 }
@@ -70,7 +70,7 @@ class GroceryListsItemDiffCallback : DiffUtil.ItemCallback<GroceryList>() {
     }
 
     override fun areItemsTheSame(oldItem: GroceryList, newItem: GroceryList): Boolean {
-        return oldItem.groceryList_id== newItem.groceryList_id
+        return oldItem.groceryList_id == newItem.groceryList_id
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -113,5 +114,14 @@ class GroceryListsFragment : Fragment() {
         } catch (e: Exception) {
             Log.d("GroceryListsFragment", e.localizedMessage)
         }
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            121 -> {
+                groceryListsViewModel.deleteGroceryList(item.groupId.toLong())
+            }
+        }
+        return true
     }
 }

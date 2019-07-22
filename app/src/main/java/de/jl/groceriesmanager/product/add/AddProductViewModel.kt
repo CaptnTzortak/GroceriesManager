@@ -1,12 +1,18 @@
 package de.jl.groceriesmanager.product.add
 
 import android.app.Application
+import android.app.DatePickerDialog
+import android.app.PendingIntent
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import de.jl.groceriesmanager.database.products.ProductItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
+import java.lang.Exception
+import java.util.*
 
 class AddProductViewModel(val database: ProductsDao, application: Application, prodId: Long) : AndroidViewModel(application) {
     /** Coroutine variables */
@@ -102,6 +108,8 @@ class AddProductViewModel(val database: ProductsDao, application: Application, p
             database.update(product)
         }
     }
+
+
 
     /**
      * Called when the ViewModel is dismantled.

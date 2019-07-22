@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.inventory
 
+import android.graphics.Color
 import android.os.Build
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -13,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.database.inventory.InventoryItem
 import de.jl.groceriesmanager.databinding.ItemInventoryBinding
 
-class InventoryItemAdapter(val clickListener: InventoryItemListener) : ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback())
-{
+class InventoryItemAdapter(val clickListener: InventoryItemListener) :
+    ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback()) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -28,7 +29,8 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) : ListAdapt
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemInventoryBinding) : RecyclerView.ViewHolder(binding.root), OnCreateContextMenuListener {
+    class ViewHolder private constructor(val binding: ItemInventoryBinding) : RecyclerView.ViewHolder(binding.root),
+        OnCreateContextMenuListener {
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun bind(
@@ -51,12 +53,12 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) : ListAdapt
             }
         }
 
-        override fun onCreateContextMenu(menu: ContextMenu,view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             var id = 0
-            if(binding.inventoryItem?.inventory_id != null){
+            if (binding.inventoryItem?.inventory_id != null) {
                 id = binding.inventoryItem?.inventory_id!!.toInt()
             }
-            menu.add(id, 121,0,"Delete")
+            menu.add(id, 121, 0, "Delete")
         }
     }
 }

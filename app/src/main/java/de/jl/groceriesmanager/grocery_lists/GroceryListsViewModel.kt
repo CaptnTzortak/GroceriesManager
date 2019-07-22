@@ -52,4 +52,15 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
         _newGroceryListDescription.value = desc
     }
 
+    fun deleteGroceryList(id: Long) {
+        uiScope.launch {
+            removeGroceryList(id)
+        }
+    }
+
+    private suspend fun removeGroceryList(id: Long) {
+        withContext(Dispatchers.IO){
+            database.remove(id)
+        }
+    }
 }

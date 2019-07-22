@@ -37,24 +37,32 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Button
+                    android:text="Date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" android:id="@+id/expiryDateBtn" android:layout_weight="1"
+                    android:layout_marginEnd="16dp" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginRight="16dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/TIL_Expiry_date"
+                    app:layout_constraintTop_toTopOf="@+id/TIL_Expiry_date" app:layout_constraintVertical_bias="0.0"/>
             <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginLeft="16dp" android:layout_marginStart="16dp"
                     android:id="@+id/TIL_Expiry_date"
-                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp" android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/TIL_Description">
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/TIL_Description"
+                    app:layout_constraintEnd_toStartOf="@+id/expiryDateBtn" android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/common_expiry_date" android:inputType="date"
                         android:id="@+id/TIET_Expiry_Date"
-                        android:text="@={addProductViewModel.expiryDate}"/>
+                        android:text="@={addProductViewModel.expiryDate}" android:editable="false"/>
             </com.google.android.material.textfield.TextInputLayout>
-
             <Button
                     android:text="@string/btn_confirm"
                     android:layout_width="wrap_content"

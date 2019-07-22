@@ -1,11 +1,13 @@
 package de.jl.groceriesmanager.product.add
 
 import android.app.Application
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +18,7 @@ import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
 import de.jl.groceriesmanager.databinding.FragmentAddProductBinding
+import java.util.*
 
 class AddProductFragment : Fragment() {
 
@@ -50,7 +53,7 @@ class AddProductFragment : Fragment() {
 
             addProductBinding.lifecycleOwner = this
             addProductBinding.addProductViewModel = addProductViewModel
-
+            addProductBinding.expiryDateBtn.setOnClickListener { openDatePickerClicked() }
             addProductBinding.executePendingBindings()
 
             //Observer
@@ -83,6 +86,23 @@ class AddProductFragment : Fragment() {
                 addProductViewModel.validateProduct()
             }
         })
+    }
+
+    fun openDatePickerClicked(){
+        try{
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+
+            val dpd = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Display Selected date in Toast
+                addProductViewModel.expiryDate.value = """$dayOfMonth - ${monthOfYear + 1} - $year"""
+            }, year, month, day)
+            dpd.show()}
+        catch (e: java.lang.Exception){
+            Log.d("AddProductViewModel", e.localizedMessage)
+        }
     }
 
 }
