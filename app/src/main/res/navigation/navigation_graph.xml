@@ -17,7 +17,9 @@
         <action android:id="@+id/inventoryDestinationToAddProductDestination"
                 app:destination="@id/add_product_destination" app:enterAnim="@anim/nav_default_enter_anim"
                 app:exitAnim="@anim/nav_default_exit_anim" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+                app:popExitAnim="@anim/nav_default_pop_exit_anim">
+            <argument android:name="prodId" app:argType="long"/>
+        </action>
         <argument android:name="productId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
 
@@ -36,5 +38,6 @@
                 app:popExitAnim="@anim/nav_default_pop_exit_anim">
             <argument android:name="productId" app:argType="long"/>
         </action>
+        <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
 </navigation>

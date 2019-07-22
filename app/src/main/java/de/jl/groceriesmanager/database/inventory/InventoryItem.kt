@@ -8,7 +8,7 @@ data class InventoryItem(
     //ID
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="inventory_id")
-    var inventory_id: Long = 0L,
+    val inventory_id: Long = 0L,
 
     ////ID des Produkts
     //@ColumnInfo(name="product_id")

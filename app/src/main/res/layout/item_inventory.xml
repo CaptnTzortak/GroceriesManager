@@ -6,13 +6,14 @@
         <variable
                 name="inventoryItem"
                 type="de.jl.groceriesmanager.database.inventory.InventoryItem"/>
+        <variable name="clickListener" type="de.jl.groceriesmanager.inventory.InventoryItemListener"/>
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> clickListener.onClick(inventoryItem)}">
         <TextView
                 app:itemDescription="@{inventoryItem.product}"
                 android:layout_width="0dp"

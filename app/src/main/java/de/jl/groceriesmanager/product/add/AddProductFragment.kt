@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
@@ -23,7 +24,7 @@ class AddProductFragment : Fragment() {
     lateinit var dataSource: ProductsDao
     lateinit var viewModelFactory: AddProductViewModelFactory
     lateinit var addProductViewModel: AddProductViewModel
-
+    val args: AddProductFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         try {
@@ -33,6 +34,7 @@ class AddProductFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
+            val productId = args?.prodId
 
             //TODO: Adapter:
             //val adapter = ItemAdapter()
@@ -41,7 +43,7 @@ class AddProductFragment : Fragment() {
             dataSource = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = AddProductViewModelFactory(dataSource, application)
+            viewModelFactory = AddProductViewModelFactory(dataSource, application, productId)
 
             addProductViewModel = ViewModelProviders.of(this, viewModelFactory).get(AddProductViewModel::class.java)
 
@@ -63,10 +65,10 @@ class AddProductFragment : Fragment() {
     }
 
     private fun setObserver() {
-        addProductViewModel.product.observe(this, Observer { productItem ->
-            productItem?.let {
+        addProductViewModel.product.observe(this, Observer { prodId ->
+            prodId?.let {
                 this.findNavController()
-                    .navigate(AddProductFragmentDirections.addProductDestinationToInventoryDestination(productItem.product_id))
+                    .navigate(AddProductFragmentDirections.addProductDestinationToInventoryDestination(prodId))
             }
         })
 

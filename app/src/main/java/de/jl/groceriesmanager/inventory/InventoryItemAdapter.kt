@@ -1,18 +1,26 @@
 package de.jl.groceriesmanager.inventory
 
+import android.os.Build
+import android.view.ContextMenu
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnCreateContextMenuListener
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.database.inventory.InventoryItem
 import de.jl.groceriesmanager.databinding.ItemInventoryBinding
 
-class InventoryItemAdapter : ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback()) {
+class InventoryItemAdapter(val clickListener: InventoryItemListener) : ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback())
+{
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        val view = holder.itemView
+        holder.bind(item, clickListener, view)
     }
 
 
@@ -20,9 +28,17 @@ class InventoryItemAdapter : ListAdapter<InventoryItem, InventoryItemAdapter.Vie
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemInventoryBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(item: InventoryItem) {
+    class ViewHolder private constructor(val binding: ItemInventoryBinding) : RecyclerView.ViewHolder(binding.root), OnCreateContextMenuListener {
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun bind(
+            item: InventoryItem,
+            clickListener: InventoryItemListener,
+            view: View
+        ) {
             binding.inventoryItem = item
+            binding.clickListener = clickListener
+            view.setOnCreateContextMenuListener(this)
             binding.executePendingBindings()
         }
 
@@ -33,6 +49,14 @@ class InventoryItemAdapter : ListAdapter<InventoryItem, InventoryItemAdapter.Vie
                 val binding = ItemInventoryBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
+        }
+
+        override fun onCreateContextMenu(menu: ContextMenu,view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+            var id = 0
+            if(binding.inventoryItem?.inventory_id != null){
+                id = binding.inventoryItem?.inventory_id!!.toInt()
+            }
+            menu.add(id, 121,0,"Delete")
         }
     }
 }
@@ -47,4 +71,9 @@ class InventoryItemDiffCallback : DiffUtil.ItemCallback<InventoryItem>() {
         return oldItem.inventory_id == newItem.inventory_id
     }
 
+}
+
+class InventoryItemListener(val clickListener: (inventory_id: Long) -> Unit) {
+
+    fun onClick(item: InventoryItem) = clickListener(item.inventory_id)
 }

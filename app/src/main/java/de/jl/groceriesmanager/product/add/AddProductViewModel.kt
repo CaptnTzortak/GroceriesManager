@@ -8,7 +8,7 @@ import de.jl.groceriesmanager.database.products.ProductItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 
-class AddProductViewModel(val database: ProductsDao, application: Application) : AndroidViewModel(application) {
+class AddProductViewModel(val database: ProductsDao, application: Application, prodId: Long) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
@@ -31,8 +31,8 @@ class AddProductViewModel(val database: ProductsDao, application: Application) :
     /**
      * LiveData für das NEUE ProductItem
      */
-    private val _product = MutableLiveData<ProductItem?>()
-    val product: LiveData<ProductItem?>
+    private val _product = MutableLiveData<Long>()
+    val product: LiveData<Long>
         get() = _product
 
     var description = MutableLiveData<String>()
@@ -42,16 +42,45 @@ class AddProductViewModel(val database: ProductsDao, application: Application) :
     val productItemValid: LiveData<Boolean>
         get() = _productItemValid
 
+    var existingProdId = 0L
+
+    init {
+        if(prodId > 0) {
+            fillProduct(prodId)
+            existingProdId = prodId
+        }
+    }
+
+    private fun fillProduct(id: Long){
+        uiScope.launch {
+            val existingProd = getProductById(id)
+            description.value = existingProd.user_Description
+            expiryDate.value = existingProd.expiry_date
+        }
+    }
+
+    private suspend fun getProductById(id:Long) : ProductItem{
+        return withContext(Dispatchers.IO){
+            val prod = database.getProductById(id)
+            prod
+        }
+    }
+
     /**
      * Executes when the CONFIRM button is clicked.
      */
     fun onConfirmItem() {
         uiScope.launch {
-            val newProd = ProductItem()
+            var prodId = existingProdId
+            val newProd = ProductItem(existingProdId)
             newProd.user_Description = description.value.toString()
             newProd.expiry_date = expiryDate.value.toString()
-            insert(newProd)
-            _product.value = getLatestProduct()
+            if(existingProdId > 0){
+                update(newProd)
+            } else {
+                prodId = insert(newProd)
+            }
+            _product.value = prodId
         }
     }
 
@@ -62,18 +91,18 @@ class AddProductViewModel(val database: ProductsDao, application: Application) :
         }
     }
 
-    private suspend fun getLatestProduct() : ProductItem? {
+
+    private suspend fun insert(newProd: ProductItem): Long {
         return withContext(Dispatchers.IO){
-            var prod = database.getLatest()
-            prod
+            database.insert(newProd)
+        }
+    }
+    private suspend fun update(product: ProductItem) {
+        withContext(Dispatchers.IO){
+            database.update(product)
         }
     }
 
-    private suspend fun insert(product: ProductItem){
-        withContext(Dispatchers.IO){
-            database.insert(product)
-        }
-    }
     /**
      * Called when the ViewModel is dismantled.
      * At this point, we want to cancel all coroutines;
