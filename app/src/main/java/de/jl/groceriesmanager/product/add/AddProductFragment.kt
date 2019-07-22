@@ -81,8 +81,8 @@ class AddProductFragment : Fragment() {
             }
         })
 
-        addProductViewModel.expiryDate.observe(this, Observer { expiryDate ->
-            expiryDate?.let {
+        addProductViewModel.expiryDateString.observe(this, Observer { expiryDateString ->
+            expiryDateString?.let {
                 addProductViewModel.validateProduct()
             }
         })
@@ -97,7 +97,7 @@ class AddProductFragment : Fragment() {
 
             val dpd = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 // Display Selected date in Toast
-                addProductViewModel.expiryDate.value = """$dayOfMonth - ${monthOfYear + 1} - $year"""
+                addProductViewModel.expiryDateString.value = """$dayOfMonth.${monthOfYear + 1}.$year"""
             }, year, month, day)
             dpd.show()}
         catch (e: java.lang.Exception){

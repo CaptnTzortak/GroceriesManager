@@ -1,17 +1,15 @@
 package de.jl.groceriesmanager.product.add
 
 import android.app.Application
-import android.app.DatePickerDialog
-import android.app.PendingIntent
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.jl.groceriesmanager.convertDateToExpiryDateString
+import de.jl.groceriesmanager.convertExpiryDateStringToDate
 import de.jl.groceriesmanager.database.products.ProductItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
-import java.lang.Exception
+import java.sql.Date
 import java.util.*
 
 class AddProductViewModel(val database: ProductsDao, application: Application, prodId: Long) : AndroidViewModel(application) {
@@ -42,7 +40,7 @@ class AddProductViewModel(val database: ProductsDao, application: Application, p
         get() = _product
 
     var description = MutableLiveData<String>()
-    var expiryDate = MutableLiveData<String>()
+    var expiryDateString = MutableLiveData<String>()
 
     private var _productItemValid = MutableLiveData<Boolean>()
     val productItemValid: LiveData<Boolean>
@@ -61,7 +59,7 @@ class AddProductViewModel(val database: ProductsDao, application: Application, p
         uiScope.launch {
             val existingProd = getProductById(id)
             description.value = existingProd.user_Description
-            expiryDate.value = existingProd.expiry_date
+            expiryDateString.value = existingProd.expiry_date_string
         }
     }
 
@@ -80,7 +78,7 @@ class AddProductViewModel(val database: ProductsDao, application: Application, p
             var prodId = existingProdId
             val newProd = ProductItem(existingProdId)
             newProd.user_Description = description.value.toString()
-            newProd.expiry_date = expiryDate.value.toString()
+            newProd.expiry_date_string = expiryDateString.value.toString()
             if(existingProdId > 0){
                 update(newProd)
             } else {

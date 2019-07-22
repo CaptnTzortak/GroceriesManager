@@ -11,7 +11,7 @@ import de.jl.groceriesmanager.database.inventory.InventoryItem
 import de.jl.groceriesmanager.database.products.ProductItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 
-@Database(entities = [InventoryItem::class, ProductItem::class, GroceryList::class], version = 5, exportSchema = false)
+@Database(entities = [InventoryItem::class, ProductItem::class, GroceryList::class], version = 6, exportSchema = false)
 abstract class GroceriesManagerDB : RoomDatabase() {
 
     abstract val inventoryDao : InventoryDao

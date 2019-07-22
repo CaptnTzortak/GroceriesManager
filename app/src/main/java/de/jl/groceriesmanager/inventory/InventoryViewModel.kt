@@ -83,6 +83,9 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
             var invItem = InventoryItem()
             if (prodId > 0) {
                 invItem = database.getInventoryItemByProdId(prodId)
+                if(invItem == null){
+                    invItem = InventoryItem()
+                }
             }
             invItem
         }

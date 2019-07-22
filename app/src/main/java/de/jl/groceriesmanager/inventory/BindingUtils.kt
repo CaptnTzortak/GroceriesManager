@@ -24,7 +24,7 @@ fun TextView.setItemDescription(prod: ProductItem?) {
 @BindingAdapter("productExpiryDate")
 fun TextView.setProductExpiryDate(product: ProductItem?){
     var value = "Verfallsdatum: "
-    val secVal= product?.expiry_date ?: "no expiry date"
+    val secVal= product?.expiry_date_string ?: "no expiry date"
     value += secVal
     text = value
 }

@@ -61,7 +61,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/common_expiry_date" android:inputType="date"
                         android:id="@+id/TIET_Expiry_Date"
-                        android:text="@={addProductViewModel.expiryDate}" android:editable="false"/>
+                        android:text="@={addProductViewModel.expiryDateString}" android:editable="false"/>
             </com.google.android.material.textfield.TextInputLayout>
             <Button
                     android:text="@string/btn_confirm"

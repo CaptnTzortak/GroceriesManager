@@ -1,9 +1,9 @@
 package de.jl.groceriesmanager.database.products
 
-import androidx.databinding.Bindable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "products")
 data class ProductItem(
@@ -22,9 +22,8 @@ data class ProductItem(
     var user_Description: String = "",
 
     //Expiry-Date
-    @ColumnInfo(name = "expiry_date")
-    var expiry_date: String = ""
-
+    @ColumnInfo(name = "expiry_date_string")
+    var expiry_date_string: String = ""
 )
 {
 
