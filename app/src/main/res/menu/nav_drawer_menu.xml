@@ -8,7 +8,7 @@
         <item
                 android:title="@string/common_grocery_list"
                 android:icon="@drawable/ic_list"
-                android:id="@+id/grocery_list_destination"/>
+                android:id="@+id/grocery_lists_destination"/>
         <item
                 android:title="@string/common_inventory"
                 android:icon="@drawable/ic_inventory"

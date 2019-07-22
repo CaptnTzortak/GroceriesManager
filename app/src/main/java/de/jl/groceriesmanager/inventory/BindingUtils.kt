@@ -28,9 +28,3 @@ fun TextView.setProductExpiryDate(product: ProductItem?){
     value += secVal
     text = value
 }
-
-
-@BindingAdapter("productImage")
-fun ImageView.setProductImage(product: ProductItem?) {
-    setImageResource(R.drawable.ic_sleep_5)
-}

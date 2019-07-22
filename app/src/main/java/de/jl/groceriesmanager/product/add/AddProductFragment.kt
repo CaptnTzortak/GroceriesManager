@@ -24,7 +24,7 @@ class AddProductFragment : Fragment() {
     lateinit var dataSource: ProductsDao
     lateinit var viewModelFactory: AddProductViewModelFactory
     lateinit var addProductViewModel: AddProductViewModel
-    val args: AddProductFragmentArgs by navArgs()
+    private val args: AddProductFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         try {
@@ -34,7 +34,7 @@ class AddProductFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
-            val productId = args?.prodId
+            val productId = args.prodId
 
             //TODO: Adapter:
             //val adapter = ItemAdapter()

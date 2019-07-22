@@ -80,12 +80,9 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
 
     private suspend fun getNewOrExistingInventoryItem(prodId: Long): InventoryItem {
         return withContext(Dispatchers.IO) {
-            var invItem: InventoryItem = InventoryItem()
+            var invItem = InventoryItem()
             if (prodId > 0) {
                 invItem = database.getInventoryItemByProdId(prodId)
-                if (invItem == null) {
-                    invItem = InventoryItem()
-                }
             }
             invItem
         }

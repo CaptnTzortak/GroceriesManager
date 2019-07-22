@@ -10,6 +10,9 @@
               android:label="scanner_destination"
               tools:layout="@layout/fragment_scanner"/>
 
+
+
+
     <fragment android:id="@+id/inventory_destination"
               android:name="de.jl.groceriesmanager.inventory.InventoryFragment"
               android:label="inventory_destination"
@@ -23,10 +26,7 @@
         <argument android:name="productId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
 
-    <fragment android:id="@+id/grocery_list_destination"
-              android:name="de.jl.groceriesmanager.grocerylist.GroceryListFragment"
-              android:label="grocery_list_destination"
-              tools:layout="@layout/fragment_grocery_lists"/>
+
 
     <fragment android:id="@+id/add_product_destination"
               android:name="de.jl.groceriesmanager.product.add.AddProductFragment"
@@ -40,4 +40,8 @@
         </action>
         <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
+    <fragment android:id="@+id/grocery_lists_destination"
+              android:name="de.jl.groceriesmanager.grocery_lists.GroceryListsFragment"
+              android:label="GroceryListsFragment"
+              tools:layout="@layout/fragment_grocery_lists"/>
 </navigation>
