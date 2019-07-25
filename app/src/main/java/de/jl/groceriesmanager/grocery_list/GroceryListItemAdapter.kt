@@ -1,4 +1,4 @@
-package de.jl.groceriesmanager.inventory
+package de.jl.groceriesmanager.grocery_list
 
 import android.os.Build
 import android.view.ContextMenu
@@ -10,11 +10,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import de.jl.groceriesmanager.database.inventory.InventoryItem
-import de.jl.groceriesmanager.databinding.ItemInventoryBinding
+import de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping
+import de.jl.groceriesmanager.databinding.ItemGroceryListBinding
 
-class InventoryItemAdapter(val clickListener: InventoryItemListener) :
-    ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback()) {
+class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
+    ListAdapter<GLItemMapping, GroceryListItemAdapter.ViewHolder>(GroceryListItemDiffCallback()) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -29,16 +29,16 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemInventoryBinding) : RecyclerView.ViewHolder(binding.root),
+    class ViewHolder private constructor(val binding: ItemGroceryListBinding) : RecyclerView.ViewHolder(binding.root),
         OnCreateContextMenuListener {
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun bind(
-            item: InventoryItem,
-            clickListener: InventoryItemListener,
+            item: GLItemMapping,
+            clickListener: GroceryListItemListener,
             view: View
         ) {
-            binding.inventoryItem = item
+            binding.glItemMapping = item
             binding.clickListener = clickListener
             view.setOnCreateContextMenuListener(this)
             binding.executePendingBindings()
@@ -48,34 +48,34 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
             fun from(parent: ViewGroup): ViewHolder {
 
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemInventoryBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemGroceryListBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
 
         override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             var id = 0
-            if (binding.inventoryItem?.inventory_id != null) {
-                id = binding.inventoryItem?.inventory_id!!.toInt()
+            if (binding.glItemMapping?.gl_item_mapping_id != null) {
+                id = binding.glItemMapping?.gl_item_mapping_id!!.toInt()
             }
             menu.add(id, 121, 0, "Delete")
         }
     }
 }
 
-class InventoryItemDiffCallback : DiffUtil.ItemCallback<InventoryItem>() {
+class GroceryListItemDiffCallback : DiffUtil.ItemCallback<GLItemMapping>() {
 
-    override fun areContentsTheSame(oldItem: InventoryItem, newItem: InventoryItem): Boolean {
+    override fun areContentsTheSame(oldItem: GLItemMapping, newItem: GLItemMapping): Boolean {
         return oldItem == newItem
     }
 
-    override fun areItemsTheSame(oldItem: InventoryItem, newItem: InventoryItem): Boolean {
-        return oldItem.inventory_id == newItem.inventory_id
+    override fun areItemsTheSame(oldItem: GLItemMapping, newItem: GLItemMapping): Boolean {
+        return oldItem.gl_item_mapping_id == newItem.gl_item_mapping_id
     }
 
 }
 
-class InventoryItemListener(val clickListener: (inventory_id: Long) -> Unit) {
+class GroceryListItemListener(val clickListener: (groceryList_id: Long) -> Unit) {
 
-    fun onClick(item: InventoryItem) = clickListener(item.inventory_id)
+    fun onClick(item: GLItemMapping) = clickListener(item.gl_item_mapping_id)
 }

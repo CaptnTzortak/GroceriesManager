@@ -4,18 +4,17 @@
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-                name="groceryList"
-                type="de.jl.groceriesmanager.database.groceryList.GroceryList"/>
-        <variable name="clickListener" type="de.jl.groceriesmanager.grocery_lists.GroceryListsItemListener"/>
+                name="glItemMapping"
+                type="de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping"/>
+        <variable name="clickListener" type="de.jl.groceriesmanager.grocery_list.GroceryListItemListener"/>
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> clickListener.onClick(groceryList)}">
+            android:onClick="@{() -> clickListener.onClick(glItemMapping)}">
         <TextView
-                android:text="@{groceryList.description}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/groceryListName"

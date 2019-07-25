@@ -19,7 +19,7 @@
                 android:textSize="46sp"
                 android:textStyle="bold|italic"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent" android:background="@color/colorPrimary"/>
         <TextView
                 android:text="Current Barcode: XXXXXXXXXX"
                 android:layout_width="0dp"

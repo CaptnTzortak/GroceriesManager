@@ -27,6 +27,11 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
 
     val groceryLists = database.getAllGroceryLists()
 
+
+    private val _openGroceryList = MutableLiveData<Long>()
+    val openGroceryList: LiveData<Long>
+        get() = _openGroceryList
+
     private val _newGroceryListDescription = MutableLiveData<String>()
     val newGroceryListDescription: LiveData<String>
         get() = _newGroceryListDescription
@@ -62,5 +67,13 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
         withContext(Dispatchers.IO){
             database.remove(id)
         }
+    }
+
+    fun openGroceryList(glId: Long) {
+        _openGroceryList.value = glId
+    }
+
+    fun doneOpenGroceryList() {
+        _openGroceryList.value = null
     }
 }

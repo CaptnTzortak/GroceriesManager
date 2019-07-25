@@ -6,7 +6,7 @@ import androidx.room.*
 data class GroceryList(
     //ID
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name="gl_id")
+    @ColumnInfo(name="id")
     val groceryList_id: Long = 0L,
 
     @ColumnInfo(name="description")

@@ -99,6 +99,8 @@ class AddProductFragment : Fragment() {
                 // Display Selected date in Toast
                 addProductViewModel.expiryDateString.value = """$dayOfMonth.${monthOfYear + 1}.$year"""
             }, year, month, day)
+            dpd.datePicker.minDate = c.timeInMillis
+
             dpd.show()}
         catch (e: java.lang.Exception){
             Log.d("AddProductViewModel", e.localizedMessage)

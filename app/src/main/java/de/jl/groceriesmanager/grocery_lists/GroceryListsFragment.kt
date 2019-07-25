@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
@@ -51,7 +52,7 @@ class GroceryListsFragment : Fragment() {
 
             //Adapter für RecyclerView
             val adapter = GroceryListsItemAdapter(GroceryListsItemListener {
-                //groceryListsViewModel.openGroceryList(glId)
+                groceryListsViewModel.openGroceryList(it)
             })
 
             groceryListsBinding.lifecycleOwner = this
@@ -91,7 +92,15 @@ class GroceryListsFragment : Fragment() {
             }
         })
 
+        groceryListsViewModel.openGroceryList.observe(this, Observer{
+            it?.let{
+                this.findNavController()
+                    .navigate(GroceryListsFragmentDirections.actionGroceryListsDestinationToGroceryListFragment(it))
+                groceryListsViewModel.doneOpenGroceryList()
+            }
+        })
     }
+
 
     fun addNewGroceryList() {
         try {

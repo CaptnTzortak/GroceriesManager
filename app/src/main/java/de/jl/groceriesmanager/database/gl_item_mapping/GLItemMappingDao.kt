@@ -2,9 +2,22 @@ package de.jl.groceriesmanager.database.inventory
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping
+import de.jl.groceriesmanager.database.groceryList.GroceryList
+import de.jl.groceriesmanager.database.products.ProductItem
 
 @Dao
 interface GLItemMappingDao {
+
+    @Query("SELECT * from gl_item_mapping where id = :glId ")
+    fun getAllProductsInGL(glId: Long): LiveData<List<GLItemMapping>>
+
+    @Query("SELECT * FROM grocery_lists where id = :glId")
+    fun getGroceryListById(glId: Long): LiveData<GroceryList>
+
+    @Query("SELECT * FROM PRODUCTS where product_id in (SELECT product_id FROM gl_item_mapping where id = :glId)")
+    fun getProductsListByGroceryListId(glId: Long): LiveData<List<ProductItem>>
+
 
     //TODO: Return LONG für ID
     @Query("SELECT COUNT(*) from inventory")

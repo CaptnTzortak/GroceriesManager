@@ -1,24 +1,21 @@
-package de.jl.groceriesmanager.database.inventory
+package de.jl.groceriesmanager.database.gl_item_mapping
 
 import androidx.room.*
 import de.jl.groceriesmanager.database.groceryList.GroceryList
 import de.jl.groceriesmanager.database.products.ProductItem
 
-@Entity(tableName="gl_item_mapping", primaryKeys = ["gl_id", "product_id"])
-data class GL_Item_Mapping(
+@Entity(tableName="gl_item_mapping")
+data class GLItemMapping (
     //ID
-    @ColumnInfo(name="gl_id")
-    val groceryList_id: Long = 0L,
-
-    @ColumnInfo(name="product_id")
-    val product_id: Long = 0L,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="gl_item_mapping_id")
+    val gl_item_mapping_id: Long = 0L,
 
     @ColumnInfo(name="note")
     val note: String = "",
+    @Embedded
+    var groceryList: GroceryList? = null,
 
     @Embedded
-    var product: ProductItem? = null,
-
-    @Embedded
-    var groceryList: GroceryList? = null
+    var product: ProductItem? = null
 )

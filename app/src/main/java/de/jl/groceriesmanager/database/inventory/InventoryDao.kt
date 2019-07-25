@@ -10,7 +10,7 @@ interface InventoryDao {
     @Query("SELECT COUNT(*) from inventory")
     fun getSize(): Int
 
-    @Query("SELECT * FROM inventory ORDER BY inventory_id DESC")
+    @Query("SELECT * FROM inventory ORDER BY inventory_id")
     fun getAllInventoryItems(): LiveData<List<InventoryItem>>
 
     @Query("SELECT * FROM inventory WHERE inventory_id = :id")

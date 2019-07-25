@@ -15,7 +15,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryDark"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
 
         <fragment
@@ -25,7 +25,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 app:defaultNavHost="true"
-                app:navGraph="@navigation/navigation_graph"/>
+                app:navGraph="@navigation/navigation_graph" android:background="@color/colorPrimaryDark"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav_view"

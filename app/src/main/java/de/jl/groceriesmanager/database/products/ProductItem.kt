@@ -1,6 +1,7 @@
 package de.jl.groceriesmanager.database.products
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -13,7 +14,9 @@ data class ProductItem(
     @ColumnInfo(name = "product_id")
     val product_id: Long = 0L,
 
-    //Barcode
+  // @Embedded
+  // var barcode: Barcode? = null
+  // //Barcode
     @ColumnInfo(name = "barcode_id")
     var barcode_id: Long = 0L,
 
@@ -25,6 +28,3 @@ data class ProductItem(
     @ColumnInfo(name = "expiry_date_string")
     var expiry_date_string: String = ""
 )
-{
-
-}
