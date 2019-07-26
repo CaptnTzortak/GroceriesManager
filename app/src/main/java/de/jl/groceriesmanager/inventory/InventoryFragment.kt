@@ -81,8 +81,6 @@ class InventoryFragment : Fragment() {
         } catch (e: Exception) {
             Log.e("InventoryFragment", "Failed to validate Args: " + e.localizedMessage)
         }
-
-
     }
 
     private fun setObservers(adapter: InventoryItemAdapter) {

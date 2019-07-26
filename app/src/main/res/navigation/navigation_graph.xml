@@ -50,7 +50,27 @@
     <fragment android:id="@+id/grocery_list_destination"
               android:name="de.jl.groceriesmanager.grocery_list.GroceryListFragment"
               android:label="GroceryListFragment"
-              tools:layout="@id/fragment_grocery_list">
+              tools:layout="@layout/fragment_grocery_list">
+        <argument android:name="glId" app:argType="long" android:defaultValue="0L"/>
+        <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
+        <argument android:name="note" app:argType="string"/>
+        <action android:id="@+id/groceryListDestinationToAddProductGroceryListDestination"
+                app:destination="@+id/add_product_grocery_list_destination">
+            <argument android:name="prodId" app:argType="long"/>
+            <argument android:name="glId" app:argType="long"/>
+        </action>
+    </fragment>
+    <fragment android:id="@+id/add_product_grocery_list_destination"
+              android:name="de.jl.groceriesmanager.product.add.groceryList.AddProductGroceryListFragment"
+              android:label="add_product_grocery_list_destination"
+              tools:layout="@layout/fragment_add_product_grocery_list">
+        <action android:id="@+id/addProductGroceryListDestinationToGroceryListDestination"
+                app:destination="@id/grocery_list_destination">
+            <argument android:name="prodId" app:argType="long"/>
+            <argument android:name="note" app:argType="string"/>
+            <argument android:name="glId" app:argType="long"/>
+        </action>
+        <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
         <argument android:name="glId" app:argType="long" android:defaultValue="0L"/>
     </fragment>
 </navigation>

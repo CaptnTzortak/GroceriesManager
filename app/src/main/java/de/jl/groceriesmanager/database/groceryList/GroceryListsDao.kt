@@ -14,4 +14,7 @@ interface GroceryListsDao {
 
     @Query("DELETE FROM grocery_lists WHERE id = :id")
     fun remove(id: Long)
+
+    @Query("SELECT * FROM grocery_lists WHERE id = :id")
+    fun getGroceryListById(id: Long): GroceryList
 }

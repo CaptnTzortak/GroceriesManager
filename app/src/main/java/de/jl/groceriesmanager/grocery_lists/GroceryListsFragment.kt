@@ -95,7 +95,7 @@ class GroceryListsFragment : Fragment() {
         groceryListsViewModel.openGroceryList.observe(this, Observer{
             it?.let{
                 this.findNavController()
-                    .navigate(GroceryListsFragmentDirections.actionGroceryListsDestinationToGroceryListFragment(it))
+                    .navigate(GroceryListsFragmentDirections.actionGroceryListsDestinationToGroceryListFragment(it, ""))
                 groceryListsViewModel.doneOpenGroceryList()
             }
         })

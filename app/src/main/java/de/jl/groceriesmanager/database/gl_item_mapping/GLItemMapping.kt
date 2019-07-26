@@ -12,7 +12,7 @@ data class GLItemMapping (
     val gl_item_mapping_id: Long = 0L,
 
     @ColumnInfo(name="note")
-    val note: String = "",
+    var note: String = "",
     @Embedded
     var groceryList: GroceryList? = null,
 

@@ -16,7 +16,7 @@
                 android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/TIL_Description"
+                    android:id="@+id/TIL_Note"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

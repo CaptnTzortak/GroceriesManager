@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.database.inventory
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
@@ -22,10 +23,21 @@ interface InventoryDao {
     @Insert(onConflict = OnConflictStrategy.FAIL)
     fun insert(item: InventoryItem): Long
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.FAIL)
     fun update(item: InventoryItem)
 
     @Query("SELECT * FROM inventory WHERE product_id = :prodId")
     fun getInventoryItemByProdId(prodId: Long): InventoryItem
 
+    @Transaction
+    fun upsert(item: InventoryItem): Long {
+        var id: Long
+        try {
+            id = insert(item)
+        } catch (e: SQLiteConstraintException) {
+            update(item)
+            id = item.inventory_id
+        }
+        return id
+    }
 }
