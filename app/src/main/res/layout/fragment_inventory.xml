@@ -24,15 +24,18 @@
                 app:layout_constraintEnd_toEndOf="parent" android:background="@color/colorPrimary"/>
 
         <Button
-                android:text="add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button"
+                android:text="@string/common_plus"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:id="@+id/addProductBtn"
                 android:onClick="@{() -> inventoryViewModel.onAddInventoyItem()}"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/shape_drawable"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorPrimaryDark" android:textSize="30sp" android:textStyle="bold"
+                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/inventory_item_list"
@@ -41,6 +44,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/button"/>
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/addProductBtn"
+                android:layout_marginTop="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

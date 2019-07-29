@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,7 +15,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
+import de.jl.groceriesmanager.SwipeToSetDoneCallback
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.groceryList.GroceryListsDao
 import de.jl.groceriesmanager.database.inventory.GLItemMappingDao
@@ -23,7 +28,7 @@ import de.jl.groceriesmanager.database.products.ProductsDao
 class GroceryListFragment : Fragment() {
 
     private lateinit var groceryListViewModel: GroceryListViewModel
-    private lateinit var viewModelFactory: GroceryListViewModelFactory
+    private lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     private lateinit var groceryListBinding: de.jl.groceriesmanager.databinding.FragmentGroceryListBinding
     private lateinit var application: Application
     private lateinit var glItemMappingDB: GLItemMappingDao
@@ -51,13 +56,12 @@ class GroceryListFragment : Fragment() {
             productsDB = GroceriesManagerDB.getInstance(application).productsDao
 
             val args: GroceryListFragmentArgs by navArgs()
-
-            if(args != null){
-                glId = args.glId
-            }
+            glId = args.glId
+            prodId = args.prodId
+            note = args.note
 
             //ViewModelFactory
-            viewModelFactory = GroceryListViewModelFactory(glItemMappingDB,glDB, productsDB, application, glId)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, productsDB, null, glDB, glItemMappingDB, glId, prodId)
 
             //ViewModel
             groceryListViewModel = ViewModelProviders.of(this, viewModelFactory).get(GroceryListViewModel::class.java)
@@ -71,9 +75,18 @@ class GroceryListFragment : Fragment() {
             groceryListBinding.viewModel = groceryListViewModel
             groceryListBinding.groceryListItemList.adapter = adapter
             groceryListBinding.groceryListItemList.layoutManager = GridLayoutManager(activity, 1)
-            groceryListBinding.addBtn.setOnClickListener { addNewProduct() }
-            validateArguments(args)
+
+            val swipeHandler = object : SwipeToSetDoneCallback(application) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val vh = viewHolder as GroceryListItemAdapter.ViewHolder
+                    groceryListViewModel.flipDoneForGLItemMapping(vh.getItem())
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(swipeHandler)
+            itemTouchHelper.attachToRecyclerView(groceryListBinding.groceryListItemList)
+
             setObservers(adapter)
+            validateArguments(args)
 
             return groceryListBinding.root
         } catch (e: Exception) {
@@ -83,38 +96,47 @@ class GroceryListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_grocery_list, container, false)
     }
 
+
     private fun validateArguments(args: GroceryListFragmentArgs) {
         try {
-            prodId = args.prodId
-            note = args.note
-            if (prodId> 0 && !note.isNullOrEmpty()) {
-                groceryListViewModel.newProductInserted(prodId, note)
+            val productId = args.prodId
+            //val noteVal = args.note
+            if (productId > 0) {
+                groceryListViewModel.newProductInserted(productId)
             }
+
         } catch (e: Exception) {
             Log.e("InventoryFragment", "Failed to validate Args: " + e.localizedMessage)
         }
     }
 
-    private fun addNewProduct() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     private fun setObservers(adapter: GroceryListItemAdapter) {
-        groceryListViewModel.glItemMappingList.observe(this, Observer {
+        //Observer für Hinzufügen eines neuen GroceryListItems
+        groceryListViewModel.newProductGroceryListItem.observe(this, Observer { value ->
+            value?.let {
+                groceryListViewModel.addNewProductItem()
+            }
+        })
+
+        groceryListViewModel.glItemMappingList.observe(this, Observer { it ->
             it?.let {
                 adapter.submitList(it)
             }
         })
 
-        groceryListViewModel.addProduct.observe(this, Observer {
-            it?.let{
+        groceryListViewModel.addProduct.observe(this, Observer { it ->
+            it?.let {
                 this.findNavController()
-                    .navigate(GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(it, glId))
+                    .navigate(
+                        GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(
+                            it,
+                            glId
+                        )
+                    )
                 groceryListViewModel.doneNavigatingToAddProductGL()
             }
         })
     }
-
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

@@ -4,15 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.jl.groceriesmanager.convertDateToExpiryDateString
-import de.jl.groceriesmanager.convertExpiryDateStringToDate
 import de.jl.groceriesmanager.database.products.ProductItem
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 import java.sql.Date
 import java.util.*
 
-class AddProductGroceryListViewModel(val database: ProductsDao, application: Application) : AndroidViewModel(application) {
+class AddProductGroceryListViewModel(application: Application, private val prodDao: ProductsDao) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
@@ -49,9 +47,6 @@ class AddProductGroceryListViewModel(val database: ProductsDao, application: App
 
     var existingProdId = 0L
 
-    init {
-    }
-
     private fun fillProduct(id: Long, passedNote: String){
         uiScope.launch {
             val existingProd = getProductById(id)
@@ -62,7 +57,7 @@ class AddProductGroceryListViewModel(val database: ProductsDao, application: App
 
     private suspend fun getProductById(id:Long) : ProductItem{
         return withContext(Dispatchers.IO){
-            val prod = database.getProductById(id)
+            val prod = prodDao.getProductById(id)
             prod
         }
     }
@@ -94,12 +89,12 @@ class AddProductGroceryListViewModel(val database: ProductsDao, application: App
 
     private suspend fun insert(newProd: ProductItem): Long {
         return withContext(Dispatchers.IO){
-            database.insert(newProd)
+            prodDao.insert(newProd)
         }
     }
     private suspend fun update(product: ProductItem) {
         withContext(Dispatchers.IO){
-            database.update(product)
+            prodDao.update(product)
         }
     }
 

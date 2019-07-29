@@ -12,7 +12,11 @@ fun TextView.setGlItemDescription(item: GLItemMapping?) {
 @BindingAdapter("glItemNote")
 fun TextView.setGlItemNote(item: GLItemMapping?) {
     var value = "Notiz: "
-    val secVal= item?.note?: "no note"
+    val secVal = if(item?.note.isNullOrEmpty()){
+        "no note"
+    } else {
+        item?.note
+    }
     value += secVal
     text = value
 }

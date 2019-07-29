@@ -12,16 +12,17 @@ import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 import java.lang.Exception
 
-class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsDao, application: Application) :
-    AndroidViewModel(application) {
+class InventoryViewModel(application: Application, private val invDao : InventoryDao, private val prodDao: ProductsDao) : AndroidViewModel(application) {
 
     //job
     private var viewModelJob = Job()
-
     //UI-Scope
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    val inventoryItems = database.getAllInventoryItems()
+    /**
+     * LiveData für die Inventory-Einträge
+     */
+    val inventoryItems = invDao.getAllInventoryItems()
 
     /**
      * Live Data für das neue Produkt welches einem Inventar hinzugefügt wird.
@@ -55,6 +56,20 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
      */
     fun doneNavigatingToAddProduct() {
         _navigateToAddProduct.value = null
+    }
+
+    /**
+     * Diese Funktion wird aufgerufen, wenn der Nutzer auf
+     * einen RecylcerView-Eintrag klickt. Hier bekommen wir die InventoryId.
+     * Es muss die Product_ID ermittelt werden
+     * */
+    fun modifyProduct(inventoryId: Long) {
+        uiScope.launch {
+            val invItem = getInventoryItemById(inventoryId)
+            if (invItem?.product != null) {
+                _navigateToAddProduct.value = invItem.product!!.product_id
+            }
+        }
     }
 
     /**
@@ -111,19 +126,7 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
         }
     }
 
-    /**
-     * Diese Funktion wird aufgerufen, wenn der Nutzer auf
-     * einen RecylcerView-Eintrag klickt. Hier bekommen wir die InventoryId.
-     * Es muss die Product_ID ermittelt werden
-     * */
-    fun modifyProduct(inventoryId: Long) {
-        uiScope.launch {
-            val invItem = getInventoryItemById(inventoryId)
-            if (invItem?.product != null) {
-                _navigateToAddProduct.value = invItem.product!!.product_id
-            }
-        }
-    }
+
 
     /**
      * DB-Thread/Abschnitt welcher ein InventoryItem anhand
@@ -133,7 +136,7 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
         return withContext(Dispatchers.IO) {
             var invItem = InventoryItem()
             try{
-                invItem = database.getInventoryItemById(id)
+                invItem = invDao.getInventoryItemById(id)
             } catch (e: Exception){
                 Log.d("InventoryViewModel", e.localizedMessage)
             }
@@ -150,11 +153,10 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
     private suspend fun upsert(item: InventoryItem) {
         withContext(Dispatchers.IO) {
             try{
-                database.upsert(item)
+                invDao.upsert(item)
             } catch (e: Exception){
                 Log.d("InventoryViewModel", e.localizedMessage)
             }
-
         }
     }
 
@@ -168,7 +170,7 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
         return withContext(Dispatchers.IO) {
             var prod = ProductItem()
             try {
-                prod = prodDataBase.getProductById(prodId)
+                prod = prodDao.getProductById(prodId)
             }catch (e: Exception){
                 Log.d("InventoryViewModel", e.localizedMessage)
             }
@@ -184,10 +186,10 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
     private suspend fun remove(inventoryId: Long) {
         withContext(Dispatchers.IO) {
             try {
-                val item = database.getInventoryItemById(inventoryId)
-                database.remove(inventoryId)
+                val item = invDao.getInventoryItemById(inventoryId)
+                invDao.remove(inventoryId)
                 val prodId = item.product?.product_id ?: return@withContext
-                prodDataBase.remove(prodId)
+                prodDao.remove(prodId)
             }catch (e: Exception){
                 Log.d("InventoryViewModel", e.localizedMessage)
             }
@@ -201,16 +203,12 @@ class InventoryViewModel(val database: InventoryDao, val prodDataBase: ProductsD
      */
     private suspend fun getNewOrExistingInventoryItem(prodId: Long): InventoryItem {
         return withContext(Dispatchers.IO) {
-            var invItem = InventoryItem()
-            try {
-                if (prodId > 0) {
-                    invItem = database.getInventoryItemByProdId(prodId)
-                    if (invItem == null) {
-                        invItem = InventoryItem()
-                    }
-                }
-            }catch(e: Exception){
-                Log.d("InventoryViewModel",e.localizedMessage)
+            var invItem: InventoryItem = InventoryItem()
+            if(prodId > 0){
+                invItem = invDao.getInventoryItemByProdId(prodId)
+            }
+            if(invItem == null){
+                invItem = InventoryItem()
             }
             invItem
         }

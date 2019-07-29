@@ -15,7 +15,7 @@ import de.jl.groceriesmanager.database.inventory.InventoryDao
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 
-class GroceryListsViewModel(val database: GroceryListsDao, application: Application) :
+class GroceryListsViewModel(application: Application, private val glDao: GroceryListsDao) :
     AndroidViewModel(application) {
 
     //job
@@ -25,7 +25,7 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
-    val groceryLists = database.getAllGroceryLists()
+    val groceryLists = glDao.getAllGroceryLists()
 
 
     private val _openGroceryList = MutableLiveData<Long>()
@@ -43,18 +43,21 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
 
     fun insertNewGroceryList() {
         uiScope.launch {
-            _newGroceryListDescription.value?.let { insertNewGroceryList(it) }
+            val desc = _newGroceryListDescription.value.toString()
+            insertNewGroceryList(desc)
         }
     }
 
     private suspend fun insertNewGroceryList(desc: String){
         withContext(Dispatchers.IO){
-            database.insert(GroceryList(0L, desc))
+            glDao.insert(GroceryList(0L, desc))
         }
     }
 
     fun newGroceryList(desc: String){
-        _newGroceryListDescription.value = desc
+        uiScope.launch {
+            _newGroceryListDescription.value = desc
+        }
     }
 
     fun deleteGroceryList(id: Long) {
@@ -65,7 +68,7 @@ class GroceryListsViewModel(val database: GroceryListsDao, application: Applicat
 
     private suspend fun removeGroceryList(id: Long) {
         withContext(Dispatchers.IO){
-            database.remove(id)
+            glDao.remove(id)
         }
     }
 

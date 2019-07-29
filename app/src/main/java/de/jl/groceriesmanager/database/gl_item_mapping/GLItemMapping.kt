@@ -13,6 +13,10 @@ data class GLItemMapping (
 
     @ColumnInfo(name="note")
     var note: String = "",
+
+    @ColumnInfo(name="done")
+    var done: Boolean = false,
+
     @Embedded
     var groceryList: GroceryList? = null,
 

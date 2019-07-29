@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.inventory.InventoryDao
@@ -27,9 +28,9 @@ class InventoryFragment : Fragment() {
 
     lateinit var inventoryBinding: de.jl.groceriesmanager.databinding.FragmentInventoryBinding
     lateinit var application: Application
-    lateinit var dataSource: InventoryDao
-    lateinit var prodDataSource: ProductsDao
-    lateinit var viewModelFactory: InventoryViewModelFactory
+    lateinit var invDB: InventoryDao
+    lateinit var prodDB: ProductsDao
+    lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     lateinit var inventoryViewModel: InventoryViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,12 +41,12 @@ class InventoryFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
-            //DataSource
-            dataSource = GroceriesManagerDB.getInstance(application).inventoryDao
-            prodDataSource = GroceriesManagerDB.getInstance(application).productsDao
+            //DataSources
+            invDB = GroceriesManagerDB.getInstance(application).inventoryDao
+            prodDB = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = InventoryViewModelFactory(dataSource, prodDataSource, application)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, invDB)
 
             //ViewModel
             inventoryViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryViewModel::class.java)
@@ -78,6 +79,7 @@ class InventoryFragment : Fragment() {
             if (productId > 0) {
                 inventoryViewModel.newProductInserted(productId)
             }
+            
         } catch (e: Exception) {
             Log.e("InventoryFragment", "Failed to validate Args: " + e.localizedMessage)
         }
@@ -111,7 +113,6 @@ class InventoryFragment : Fragment() {
                 adapter.submitList(it)
             }
         })
-
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

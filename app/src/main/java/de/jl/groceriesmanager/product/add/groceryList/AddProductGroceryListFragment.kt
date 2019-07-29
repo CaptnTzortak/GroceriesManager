@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
@@ -21,12 +22,12 @@ class AddProductGroceryListFragment : Fragment() {
 
     lateinit var addProductGroceryListBinding: FragmentAddProductGroceryListBinding
     lateinit var application: Application
-    lateinit var dataSource: ProductsDao
-    lateinit var viewModelFactory: AddProductGroceryListViewModelFactory
+    lateinit var prodDB: ProductsDao
+    lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     lateinit var viewModel : AddProductGroceryListViewModel
+
     var glId = 0L
     var prodId = 0L
-    //private val args: FragmentAddProductGroceryList by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         try {
@@ -41,14 +42,11 @@ class AddProductGroceryListFragment : Fragment() {
             glId = args.glId
             prodId = args.prodId
 
-            //TODO: Adapter:
-            //val adapter = ItemAdapter()
-
             //DataSource
-            dataSource = GroceriesManagerDB.getInstance(application).productsDao
+            prodDB = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = AddProductGroceryListViewModelFactory(dataSource, application)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, null, null, null, glId, prodId)
 
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddProductGroceryListViewModel::class.java)
 
@@ -72,11 +70,10 @@ class AddProductGroceryListFragment : Fragment() {
             it?.let {
                 this.findNavController()
                     .navigate(AddProductGroceryListFragmentDirections.addProductGroceryListDestinationToGroceryListDestination(it,
-                        viewModel.note.value.toString(), glId
-                    ))
+                        glId
+                    ).setNote(viewModel.note.value.toString()))
                 viewModel.doneNavigatingToGroceryList()
             }
         })
     }
-
 }

@@ -8,13 +8,16 @@ import android.view.View.OnCreateContextMenuListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.database.groceryList.GroceryList
 import de.jl.groceriesmanager.databinding.ItemGroceryListsBinding
 
 class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
-    ListAdapter<GroceryList, GroceryListsItemAdapter.ViewHolder>(GroceryListsItemDiffCallback()) {
+    ListAdapter<GroceryList, GroceryListsItemAdapter.ViewHolder>(
+        GroceryListsItemDiffCallback()
+    ) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -46,7 +49,6 @@ class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
-
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemGroceryListsBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)

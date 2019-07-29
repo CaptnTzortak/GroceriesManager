@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
@@ -24,8 +25,8 @@ class AddProductFragment : Fragment() {
 
     lateinit var addProductBinding: FragmentAddProductBinding
     lateinit var application: Application
-    lateinit var dataSource: ProductsDao
-    lateinit var viewModelFactory: AddProductViewModelFactory
+    lateinit var prodDB: ProductsDao
+    lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     lateinit var addProductViewModel: AddProductViewModel
     private val args: AddProductFragmentArgs by navArgs()
 
@@ -37,19 +38,18 @@ class AddProductFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
-            val productId = args.prodId
+            val prodId = args.prodId
 
             //TODO: Adapter:
             //val adapter = ItemAdapter()
 
             //DataSource
-            dataSource = GroceriesManagerDB.getInstance(application).productsDao
+            prodDB = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = AddProductViewModelFactory(dataSource, application, productId)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, null, null, null, 0L, prodId)
 
             addProductViewModel = ViewModelProviders.of(this, viewModelFactory).get(AddProductViewModel::class.java)
-
 
             addProductBinding.lifecycleOwner = this
             addProductBinding.addProductViewModel = addProductViewModel
@@ -95,7 +95,7 @@ class AddProductFragment : Fragment() {
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
 
-            val dpd = DatePickerDialog(this.context, DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            val dpd = DatePickerDialog(context, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 // Display Selected date in Toast
                 addProductViewModel.expiryDateString.value = """$dayOfMonth.${monthOfYear + 1}.$year"""
             }, year, month, day)

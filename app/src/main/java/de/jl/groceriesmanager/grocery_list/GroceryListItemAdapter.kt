@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping
+import de.jl.groceriesmanager.database.groceryList.GroceryList
 import de.jl.groceriesmanager.databinding.ItemGroceryListBinding
 
 class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
@@ -23,7 +24,6 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
         holder.bind(item, clickListener, view)
 
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -59,6 +59,10 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
                 id = binding.glItemMapping?.gl_item_mapping_id!!.toInt()
             }
             menu.add(id, 121, 0, "Delete")
+        }
+
+        fun getItem(): GLItemMapping? {
+            return binding.glItemMapping
         }
     }
 }

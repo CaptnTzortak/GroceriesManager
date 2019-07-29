@@ -67,7 +67,7 @@
         <action android:id="@+id/addProductGroceryListDestinationToGroceryListDestination"
                 app:destination="@id/grocery_list_destination">
             <argument android:name="prodId" app:argType="long"/>
-            <argument android:name="note" app:argType="string"/>
+            <argument android:name="note" app:argType="string" android:defaultValue='""'/>
             <argument android:name="glId" app:argType="long"/>
         </action>
         <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>

@@ -13,4 +13,5 @@
     <string name="common_quantity">Quantity</string>
     <string name="common_brand">Brand</string>
     <string name="btn_confirm">Confirm</string>
+    <string name="common_plus" translatable="false">+</string>
 </resources>

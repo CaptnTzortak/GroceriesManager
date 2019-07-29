@@ -12,6 +12,9 @@ import java.lang.Exception
 @Dao
 interface GLItemMappingDao {
 
+    @Query("UPDATE gl_item_mapping SET done = :done where gl_item_mapping_id = :id")
+    fun flipDoneForItem(id: Long, done: Boolean)
+
     @Query("DELETE FROM gl_item_mapping WHERE gl_item_mapping_id = :id")
     fun remove(id: Long)
 
