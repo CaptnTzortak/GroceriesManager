@@ -72,6 +72,7 @@ class AddProductFragment : Fragment() {
             prodId?.let {
                 this.findNavController()
                     .navigate(AddProductFragmentDirections.addProductDestinationToInventoryDestination(prodId))
+                addProductViewModel.doneConfirmItem()
             }
         })
 

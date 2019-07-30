@@ -115,4 +115,10 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
         super.onCleared()
         viewModelJob.cancel()
     }
+
+    fun doneConfirmItem() {
+        uiScope.launch {
+            _product.value = null
+        }
+    }
 }
