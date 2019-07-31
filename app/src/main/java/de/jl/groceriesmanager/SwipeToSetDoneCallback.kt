@@ -3,13 +3,16 @@ package de.jl.groceriesmanager
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import de.jl.groceriesmanager.grocery_list.GroceryListItemAdapter
 
 abstract class SwipeToSetDoneCallback(context: Context) : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
     private val checkIcon = ContextCompat.getDrawable(context, R.drawable.ic_check)
+    private val unCheckIcon = ContextCompat.getDrawable(context, R.drawable.ic_uncheck)
     private val intrinsicWidth = checkIcon?.intrinsicWidth
     private val intrinsicHeight = checkIcon?.intrinsicHeight
     private val background = ColorDrawable()
@@ -59,9 +62,23 @@ abstract class SwipeToSetDoneCallback(context: Context) : ItemTouchHelper.Simple
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             return
         }
+        var bought = false
+
+        try {
+            val vh = viewHolder as GroceryListItemAdapter.ViewHolder
+            val item = vh.getItem()
+            bought = item?.bought!!
+
+        } catch (e: Exception) {
+            Log.d("SwipeToSetDoneCallback", e.localizedMessage)
+        }
 
         // Draw the red delete background
-        background.color = Color.GREEN
+        background.color = if(bought){
+            Color.RED
+        } else{
+            Color.GREEN
+        }
         background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
         background.draw(c)
 
@@ -73,8 +90,13 @@ abstract class SwipeToSetDoneCallback(context: Context) : ItemTouchHelper.Simple
         val deleteIconBottom = deleteIconTop + this.intrinsicHeight
 
         // Draw the delete icon
-        checkIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
-        checkIcon?.draw(c)
+        if (bought) {
+            unCheckIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            unCheckIcon?.draw(c)
+        } else {
+            checkIcon?.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+            checkIcon?.draw(c)
+        }
 
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }

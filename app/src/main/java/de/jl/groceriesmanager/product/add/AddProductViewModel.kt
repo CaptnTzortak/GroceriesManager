@@ -4,17 +4,20 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.jl.groceriesmanager.database.products.ProductItem
+import de.jl.groceriesmanager.database.GroceriesManagerDB
+import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 
-class AddProductViewModel(application: Application, prodId : Long, private val prodDao : ProductsDao) : AndroidViewModel(application) {
+class AddProductViewModel(application: Application, prodId : Long, expiryDate: String) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val prodDao = GroceriesManagerDB.getInstance(application).productsDao
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -31,9 +34,9 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
     /**
      * LiveData für das NEUE ProductItem
      */
-    private val _product = MutableLiveData<Long>()
-    val product: LiveData<Long>
-        get() = _product
+    private val _productIdWithExpiryDate = MutableLiveData<Pair<Long,String>>()
+    val productIdWithExpiryDate: LiveData<Pair<Long,String>>
+        get() = _productIdWithExpiryDate
 
     var description = MutableLiveData<String>()
     var expiryDateString = MutableLiveData<String>()
@@ -46,23 +49,22 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
 
     init {
         if(prodId > 0) {
-            fillProduct(prodId)
+            fillProduct(prodId, expiryDate)
             existingProdId = prodId
         }
     }
 
-    private fun fillProduct(id: Long){
+    private fun fillProduct(id: Long, expiryDate: String){
         uiScope.launch {
             val existingProd = getProductById(id)
-            description.value = existingProd.user_Description
-            expiryDateString.value = existingProd.expiry_date_string
+           description.value = existingProd?.description
+           expiryDateString.value = expiryDate
         }
     }
 
-    private suspend fun getProductById(id:Long) : ProductItem{
+    private suspend fun getProductById(id:Long) : Product?{
         return withContext(Dispatchers.IO){
-            val prod = prodDao.getProductById(id)
-            prod
+            prodDao.getProductById(id)
         }
     }
 
@@ -72,15 +74,15 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
     fun onConfirmItem() {
         uiScope.launch {
             var prodId = existingProdId
-            val newProd = ProductItem(existingProdId)
-            newProd.user_Description = description.value.toString()
-            newProd.expiry_date_string = expiryDateString.value.toString()
-            if(existingProdId > 0){
+            val newProd = Product(existingProdId)
+            newProd.description = description.value.toString()
+            val expiryDate = expiryDateString.value.toString()
+            if(prodId != null && prodId > 0L){
                 update(newProd)
             } else {
                 prodId = insert(newProd)
             }
-            _product.value = prodId
+            _productIdWithExpiryDate.value = Pair(prodId, expiryDate)
         }
     }
 
@@ -92,18 +94,18 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
     }
 
 
-    private suspend fun insert(newProd: ProductItem): Long {
+    private suspend fun insert(newProd: Product): Long{
         return withContext(Dispatchers.IO){
-            prodDao.insert(newProd)
+            val id = prodDao.insert(newProd)
+            id
         }
     }
-    private suspend fun update(product: ProductItem) {
+
+    private suspend fun update(prod: Product) {
         withContext(Dispatchers.IO){
-            prodDao.update(product)
+            prodDao.update(prod)
         }
     }
-
-
 
     /**
      * Called when the ViewModel is dismantled.
@@ -118,7 +120,7 @@ class AddProductViewModel(application: Application, prodId : Long, private val p
 
     fun doneConfirmItem() {
         uiScope.launch {
-            _product.value = null
+            _productIdWithExpiryDate.value = null
         }
     }
 }

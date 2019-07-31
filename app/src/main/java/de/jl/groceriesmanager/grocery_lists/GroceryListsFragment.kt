@@ -2,7 +2,6 @@ package de.jl.groceriesmanager.grocery_lists
 
 import android.app.AlertDialog
 import android.app.Application
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,8 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.GroceriesManagerDB
-import de.jl.groceriesmanager.database.groceryList.GroceryListsDao
 import de.jl.groceriesmanager.databinding.FragmentGroceryListsBinding
 
 class GroceryListsFragment : Fragment() {
@@ -29,7 +25,6 @@ class GroceryListsFragment : Fragment() {
     private lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     private lateinit var groceryListsBinding: FragmentGroceryListsBinding
     private lateinit var application: Application
-    private lateinit var glDB: GroceryListsDao
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +37,8 @@ class GroceryListsFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
-            //DataSource
-            glDB = GroceriesManagerDB.getInstance(application).groceryListsDao
-
             //ViewModelFactory
-            viewModelFactory = GroceriesManagerViewModelFactory(application, null, null, glDB)
+            viewModelFactory = GroceriesManagerViewModelFactory(application)
 
             //ViewModel
             groceryListsViewModel = ViewModelProviders.of(this, viewModelFactory).get(GroceryListsViewModel::class.java)

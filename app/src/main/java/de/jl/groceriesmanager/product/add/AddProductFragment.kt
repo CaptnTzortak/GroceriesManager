@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -19,7 +18,7 @@ import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.ProductsDao
 import de.jl.groceriesmanager.databinding.FragmentAddProductBinding
-import java.util.*
+import de.jl.tools.openDatePicker
 
 class AddProductFragment : Fragment() {
 
@@ -39,15 +38,13 @@ class AddProductFragment : Fragment() {
             application = requireNotNull(this.activity).application
 
             val prodId = args.prodId
-
-            //TODO: Adapter:
-            //val adapter = ItemAdapter()
+            val expiryDateString = args.expiryDateString
 
             //DataSource
             prodDB = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, null, null, null, 0L, prodId)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, prodId, expiryDateString)
 
             addProductViewModel = ViewModelProviders.of(this, viewModelFactory).get(AddProductViewModel::class.java)
 
@@ -68,10 +65,18 @@ class AddProductFragment : Fragment() {
     }
 
     private fun setObserver() {
-        addProductViewModel.product.observe(this, Observer { prodId ->
-            prodId?.let {
+        addProductViewModel.productIdWithExpiryDate.observe(this, Observer { it ->
+            it?.let {
+                val prodId = it.first
+                val expiryDate = it.second
+
                 this.findNavController()
-                    .navigate(AddProductFragmentDirections.addProductDestinationToInventoryDestination(prodId))
+                    .navigate(
+                        AddProductFragmentDirections.addProductDestinationToInventoryDestination(
+                            prodId,
+                            expiryDate
+                        )
+                    )
                 addProductViewModel.doneConfirmItem()
             }
         })
@@ -89,23 +94,11 @@ class AddProductFragment : Fragment() {
         })
     }
 
-    fun openDatePickerClicked(){
-        try{
-            val c = Calendar.getInstance()
-            val year = c.get(Calendar.YEAR)
-            val month = c.get(Calendar.MONTH)
-            val day = c.get(Calendar.DAY_OF_MONTH)
-
-            val dpd = DatePickerDialog(context, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                // Display Selected date in Toast
-                addProductViewModel.expiryDateString.value = """$dayOfMonth.${monthOfYear + 1}.$year"""
-            }, year, month, day)
-            dpd.datePicker.minDate = c.timeInMillis
-
-            dpd.show()}
-        catch (e: java.lang.Exception){
-            Log.d("AddProductViewModel", e.localizedMessage)
+    private fun openDatePickerClicked() {
+        context?.let {
+            openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                addProductViewModel.expiryDateString.value = """$dayOfMonth.${month + 1}.$year"""
+            })
         }
     }
-
 }

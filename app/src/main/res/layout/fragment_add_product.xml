@@ -38,15 +38,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                    android:text="Date"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp" android:id="@+id/expiryDateBtn" android:layout_weight="1"
+                    android:background="@drawable/circular_button"
+                    android:drawableTop="@drawable/ic_calendar"
+                    android:paddingTop="20dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp" android:id="@+id/expiryDateBtn" android:layout_weight="1"
                     app:layout_constraintTop_toTopOf="@+id/TIET_Expiry_Date" app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="16dp" android:layout_marginRight="16dp"
                     app:layout_constraintBottom_toBottomOf="@+id/TIET_Expiry_Date"
-                    app:layout_constraintStart_toEndOf="@+id/TIET_Expiry_Date" android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"/>
+            />
             <Button
+                    android:background="@drawable/circular_button"
                     android:text="@string/btn_confirm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,19 +59,21 @@
                     android:layout_marginEnd="16dp"
                     android:enabled="@{addProductViewModel.productItemValid}"
                     android:onClick="@{() -> addProductViewModel.onConfirmItem()}"
-                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/TIET_Expiry_Date"/>
+                    android:layout_marginTop="16dp" app:layout_constraintTop_toBottomOf="@+id/TIET_Expiry_Date"/>
             <EditText
                     android:hint="@string/common_expiry_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     android:enabled="false"
                     android:ems="10"
                     android:text="@={addProductViewModel.expiryDateString}"
                     android:id="@+id/TIET_Expiry_Date"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/TIL_Note" android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="16dp"/>
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/TIL_Note"
+                    app:layout_constraintStart_toStartOf="@+id/TIL_Note"
+                    android:layout_marginEnd="16dp" app:layout_constraintEnd_toStartOf="@+id/expiryDateBtn"
+                    android:layout_marginRight="16dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

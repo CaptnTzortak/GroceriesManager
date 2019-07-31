@@ -1,21 +1,14 @@
 package de.jl.groceriesmanager.grocery_lists
 
-import android.app.AlertDialog
 import android.app.Application
-import android.util.Log
-import android.widget.EditText
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.groceryList.GroceryList
-import de.jl.groceriesmanager.database.groceryList.GroceryListsDao
-import de.jl.groceriesmanager.database.inventory.InventoryDao
-import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.groceriesmanager.database.GroceriesManagerDB
+import de.jl.groceriesmanager.database.groceryLists.GroceryList
 import kotlinx.coroutines.*
 
-class GroceryListsViewModel(application: Application, private val glDao: GroceryListsDao) :
+class GroceryListsViewModel(application: Application) :
     AndroidViewModel(application) {
 
     //job
@@ -24,9 +17,11 @@ class GroceryListsViewModel(application: Application, private val glDao: Grocery
     //UI-Scope
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    private val glDao = GroceriesManagerDB.getInstance(application).groceryListsDao
+    private val glpDao = GroceriesManagerDB.getInstance(application).groceryListsProductsDao
+    private val prodDao = GroceriesManagerDB.getInstance(application).productsDao
 
     val groceryLists = glDao.getAllGroceryLists()
-
 
     private val _openGroceryList = MutableLiveData<Long>()
     val openGroceryList: LiveData<Long>
@@ -45,16 +40,17 @@ class GroceryListsViewModel(application: Application, private val glDao: Grocery
         uiScope.launch {
             val desc = _newGroceryListDescription.value.toString()
             insertNewGroceryList(desc)
+            _newGroceryListDescription.value = null
         }
     }
 
-    private suspend fun insertNewGroceryList(desc: String){
-        withContext(Dispatchers.IO){
+    private suspend fun insertNewGroceryList(desc: String) {
+        withContext(Dispatchers.IO) {
             glDao.insert(GroceryList(0L, desc))
         }
     }
 
-    fun newGroceryList(desc: String){
+    fun newGroceryList(desc: String) {
         uiScope.launch {
             _newGroceryListDescription.value = desc
         }
@@ -62,13 +58,36 @@ class GroceryListsViewModel(application: Application, private val glDao: Grocery
 
     fun deleteGroceryList(id: Long) {
         uiScope.launch {
+            val productIds = getAllProductIdsInGLProductsByGLId(id)
+            removeGroceryListsProducts(id)
             removeGroceryList(id)
+            removeProducts(productIds)
+        }
+    }
+
+    private suspend fun getAllProductIdsInGLProductsByGLId(id: Long) : List<Long> {
+        return withContext(Dispatchers.IO){
+            glpDao.getAllProductIdsByGlId(id)
         }
     }
 
     private suspend fun removeGroceryList(id: Long) {
+        withContext(Dispatchers.IO) {
+            glDao.deleteById(id)
+        }
+    }
+
+    private suspend fun removeGroceryListsProducts(id: Long) {
         withContext(Dispatchers.IO){
-            glDao.remove(id)
+            glpDao.deleteAllGroceryListsProductsByGlId(id)
+        }
+    }
+
+    private suspend fun removeProducts(ids: List<Long>){
+        withContext(Dispatchers.IO){
+            ids.iterator().forEach {
+                prodDao.deleteById(it)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.grocery_list
 
+import android.graphics.Color
 import android.os.Build
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -10,17 +11,22 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping
-import de.jl.groceriesmanager.database.groceryList.GroceryList
+import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.databinding.ItemGroceryListBinding
 
 class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
-    ListAdapter<GLItemMapping, GroceryListItemAdapter.ViewHolder>(GroceryListItemDiffCallback()) {
+    ListAdapter<GroceryListsProducts, GroceryListItemAdapter.ViewHolder>(GroceryListItemDiffCallback()) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         val view = holder.itemView
+        if(item.bought){
+            view.setBackgroundColor(Color.RED)
+        } else{
+            view.setBackgroundColor(Color.GREEN)
+        }
+
         holder.bind(item, clickListener, view)
 
     }
@@ -34,11 +40,11 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun bind(
-            item: GLItemMapping,
+            item: GroceryListsProducts,
             clickListener: GroceryListItemListener,
             view: View
         ) {
-            binding.glItemMapping = item
+            binding.groceryListsProducts = item
             binding.clickListener = clickListener
             view.setOnCreateContextMenuListener(this)
             binding.executePendingBindings()
@@ -54,32 +60,36 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
         }
 
         override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-            var id = 0
-            if (binding.glItemMapping?.gl_item_mapping_id != null) {
-                id = binding.glItemMapping?.gl_item_mapping_id!!.toInt()
+            val glProducts = binding.groceryListsProducts
+            if(glProducts != null){
+                val id = glProducts.id.toInt()
+                if(glProducts.bought){
+                    menu.add(id, 122, 0 ,"Add to Inventory")
+                }
+                menu.add(id, 121, 0, "Delete")
             }
-            menu.add(id, 121, 0, "Delete")
+
         }
 
-        fun getItem(): GLItemMapping? {
-            return binding.glItemMapping
+        fun getItem(): GroceryListsProducts? {
+            return binding.groceryListsProducts
         }
     }
 }
 
-class GroceryListItemDiffCallback : DiffUtil.ItemCallback<GLItemMapping>() {
+class GroceryListItemDiffCallback : DiffUtil.ItemCallback<GroceryListsProducts>() {
 
-    override fun areContentsTheSame(oldItem: GLItemMapping, newItem: GLItemMapping): Boolean {
+    override fun areContentsTheSame(oldItem: GroceryListsProducts, newItem: GroceryListsProducts): Boolean {
         return oldItem == newItem
     }
 
-    override fun areItemsTheSame(oldItem: GLItemMapping, newItem: GLItemMapping): Boolean {
-        return oldItem.gl_item_mapping_id == newItem.gl_item_mapping_id
+    override fun areItemsTheSame(oldItem: GroceryListsProducts, newItem: GroceryListsProducts): Boolean {
+        return oldItem.id == newItem.id
     }
 
 }
 
-class GroceryListItemListener(val clickListener: (groceryList_id: Long) -> Unit) {
+class GroceryListItemListener(val clickListener: (groceryListsProduct: GroceryListsProducts) -> Unit) {
 
-    fun onClick(item: GLItemMapping) = clickListener(item.gl_item_mapping_id)
+    fun onClick(item: GroceryListsProducts) = clickListener(item)
 }

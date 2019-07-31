@@ -10,9 +10,6 @@
               android:label="scanner_destination"
               tools:layout="@layout/fragment_scanner"/>
 
-
-
-
     <fragment android:id="@+id/inventory_destination"
               android:name="de.jl.groceriesmanager.inventory.InventoryFragment"
               android:label="inventory_destination"
@@ -22,8 +19,10 @@
                 app:exitAnim="@anim/nav_default_exit_anim" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim">
             <argument android:name="prodId" app:argType="long"/>
+            <argument android:name="expiryDateString" app:argType="string"/>
         </action>
         <argument android:name="productId" app:argType="long" android:defaultValue="0L"/>
+        <argument android:name="expiryDateString" app:argType="string" android:defaultValue='""'/>
     </fragment>
 
     <fragment android:id="@+id/add_product_destination"
@@ -35,8 +34,10 @@
                 app:exitAnim="@anim/nav_default_exit_anim" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim">
             <argument android:name="productId" app:argType="long"/>
+            <argument android:name="expiryDateString" app:argType="string"/>
         </action>
         <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
+        <argument android:name="expiryDateString" app:argType="string" android:defaultValue='""'/>
     </fragment>
     <fragment android:id="@+id/grocery_lists_destination"
               android:name="de.jl.groceriesmanager.grocery_lists.GroceryListsFragment"
@@ -58,6 +59,7 @@
                 app:destination="@+id/add_product_grocery_list_destination">
             <argument android:name="prodId" app:argType="long"/>
             <argument android:name="glId" app:argType="long"/>
+            <argument android:name="note" app:argType="string"/>
         </action>
     </fragment>
     <fragment android:id="@+id/add_product_grocery_list_destination"
@@ -72,5 +74,6 @@
         </action>
         <argument android:name="prodId" app:argType="long" android:defaultValue="0L"/>
         <argument android:name="glId" app:argType="long" android:defaultValue="0L"/>
+        <argument android:name="note" app:argType="string" android:defaultValue='""'/>
     </fragment>
 </navigation>

@@ -8,10 +8,9 @@ import android.view.View.OnCreateContextMenuListener
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import de.jl.groceriesmanager.database.groceryList.GroceryList
+import de.jl.groceriesmanager.database.groceryLists.GroceryList
 import de.jl.groceriesmanager.databinding.ItemGroceryListsBinding
 
 class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
@@ -57,8 +56,8 @@ class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
 
         override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             var id = 0
-            if (binding.groceryList?.groceryList_id != null) {
-                id = binding.groceryList?.groceryList_id!!.toInt()
+            if (binding.groceryList?.id != null) {
+                id = binding.groceryList?.id!!.toInt()
             }
             menu.add(id, 121, 0, "Delete")
         }
@@ -72,12 +71,12 @@ class GroceryListsItemDiffCallback : DiffUtil.ItemCallback<GroceryList>() {
     }
 
     override fun areItemsTheSame(oldItem: GroceryList, newItem: GroceryList): Boolean {
-        return oldItem.groceryList_id == newItem.groceryList_id
+        return oldItem.id == newItem.id
     }
 
 }
 
 class GroceryListsItemListener(val clickListener: (groceryList_id: Long) -> Unit) {
 
-    fun onClick(item: GroceryList) = clickListener(item.groceryList_id)
+    fun onClick(item: GroceryList) = clickListener(item.id)
 }

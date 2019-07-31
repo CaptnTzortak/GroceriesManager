@@ -4,8 +4,8 @@
         xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-                name="glItemMapping"
-                type="de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping"/>
+                name="groceryListsProducts"
+                type="de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts"/>
         <variable name="clickListener" type="de.jl.groceriesmanager.grocery_list.GroceryListItemListener"/>
     </data>
 
@@ -13,14 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> clickListener.onClick(glItemMapping)}">
+            android:onClick="@{() -> clickListener.onClick(groceryListsProducts)}">
 
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/groceryListName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:glItemDescription="@{glItemMapping}"
+                app:glItemDescription="@{groceryListsProducts}"
                 android:layout_marginEnd="8dp" android:layout_marginRight="8dp" tools:text="Grocery List Name"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
@@ -33,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" android:id="@+id/textView"
                 android:layout_marginTop="8dp"
-                app:glItemNote="@{glItemMapping}"
+                app:glItemNote="@{groceryListsProducts}"
                 app:layout_constraintTop_toBottomOf="@+id/groceryListName" app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"

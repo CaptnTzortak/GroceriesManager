@@ -1,50 +1,58 @@
 package de.jl.groceriesmanager.grocery_list
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.jl.groceriesmanager.database.gl_item_mapping.GLItemMapping
-import de.jl.groceriesmanager.database.groceryList.GroceryList
-import de.jl.groceriesmanager.database.groceryList.GroceryListsDao
-import de.jl.groceriesmanager.database.inventory.GLItemMappingDao
-import de.jl.groceriesmanager.database.products.ProductItem
-import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.groceriesmanager.database.GroceriesManagerDB
+import de.jl.groceriesmanager.database.groceryLists.GroceryList
+import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
+import de.jl.groceriesmanager.database.inventory.Inventory
 import kotlinx.coroutines.*
 
 class GroceryListViewModel(
-    application: Application, private val glId: Long, private val glItemMappingDao: GLItemMappingDao, private val glDao: GroceryListsDao, private val prodDao: ProductsDao) : AndroidViewModel(application) {
+    application: Application, private val glId: Long
+) : AndroidViewModel(application) {
 
     //job
     private var viewModelJob = Job()
     //UI-Scope
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    private val glpDao = GroceriesManagerDB.getInstance(application).groceryListsProductsDao
+    private val invDao = GroceriesManagerDB.getInstance(application).inventoryDao
+    private val glDao = GroceriesManagerDB.getInstance(application).groceryListsDao
+    private val prodDao = GroceriesManagerDB.getInstance(application).productsDao
+
+
     //region LiveData
     /**
      * Live Data für das neue Produkt welches der Einkaufsliste hinzugefügt wird.
      * z.B aus dem addProductFragment/View (Navigation Args)
      */
-    private val _newProductGroceryListItem = MutableLiveData<Long>()
-    val newProductGroceryListItem: LiveData<Long>
+    private val _newProductGroceryListItem = MutableLiveData<Pair<Long, String>>()
+    val newProductGroceryListItem: LiveData<Pair<Long, String>>
         get() = _newProductGroceryListItem
 
+    val groceryListProducts = glpDao.getAllGroceryListsProducts(glId)
+
+    private val _filledGroceryListProducts = MutableLiveData<List<GroceryListsProducts>>()
+    val filledGroceryListProducts: LiveData<List<GroceryListsProducts>>
+        get() = _filledGroceryListProducts
+
+
+    private val _reset = MutableLiveData<Long>()
+    val reset: LiveData<Long>
+        get() = _reset
 
     /**
      * LiveData für den Button "Add" im GroceryList-Screen. Dieser navigiert dann zum
      * AddGroceryListItem-Screen
      */
-    private val _addProduct = MutableLiveData<Long>()
-    val addProduct: LiveData<Long>
+    private val _addProduct = MutableLiveData<Pair<Long, String>>()
+    val addProduct: LiveData<Pair<Long, String>>
         get() = _addProduct
 
-
-    /**
-     * LiveData welche die Datenbank-Elemente für die selektierte GroceryList ermittelt.
-     * Der Adapter übernimmt die Darstellung
-     */
-    val glItemMappingList = glItemMappingDao.getItemMappingByGroceryListId(glId)
 
     /**
      * LiveData mit two-way-binding zum setzen und ermitteln des GroceryList-Namens
@@ -59,11 +67,19 @@ class GroceryListViewModel(
     }
 
     //region helpers
+    fun doneReset() {
+        _reset.value = null
+    }
+
+    fun resetClicked() {
+        _reset.value = glId
+    }
+
     /**
      * Wird aus dem Layout aufgerufen (Btn add)
      */
     fun addProductClicked() {
-        _addProduct.value = 0L
+        _addProduct.value = Pair(0L, "")
     }
 
     /**
@@ -73,19 +89,57 @@ class GroceryListViewModel(
         _addProduct.value = null
     }
 
+
+    fun addProductToInventory(glProductsId: Long, expiryDateString: String) {
+        uiScope.launch {
+            val prodId = getProductIdByGLProductsId(glProductsId)
+            val invEntry = Inventory(0L, prodId, expiryDateString)
+            insertInventoryItem(invEntry)
+        }
+    }
+
+    private suspend fun insertInventoryItem(item: Inventory){
+        withContext(Dispatchers.IO){
+            invDao.insert(item)
+        }
+    }
+
+    private suspend fun getProductIdByGLProductsId(glProductsId: Long): Long {
+        return withContext(Dispatchers.IO) {
+            val ids = glpDao.getAllProductIdsByGLProductsId(glProductsId)
+            ids.first()
+        }
+    }
+
     /**
      * Context-Menü "Delete" ruft diese Funktion auf.
      */
-    fun deleteGroceryListEntry(id: Long) {
+    fun deleteGroceryListsProducts(glProductsId: Long) {
         uiScope.launch {
-            removeGLItemMapping(id)
+            val productIds = getAllProdIdsByGLProductsId(glProductsId)
+            removeGroceryListsProductsEntryById(glProductsId)
+            removeProducts(productIds)
+        }
+    }
+
+    private suspend fun getAllProdIdsByGLProductsId(id: Long): List<Long> {
+        return withContext(Dispatchers.IO) {
+            glpDao.getAllProductIdsByGLProductsId(id)
+        }
+    }
+
+    private suspend fun removeProducts(ids: List<Long>) {
+        withContext(Dispatchers.IO) {
+            ids.iterator().forEach {
+                prodDao.deleteById(it)
+            }
         }
     }
 
     private fun setGLName(id: Long) {
         uiScope.launch {
             val existingGL = getGroceryListById(id)
-            glName.value = existingGL.description
+            glName.value = existingGL.name
         }
     }
 
@@ -103,31 +157,21 @@ class GroceryListViewModel(
     }
 
     /**
-     * returniert abh. der Product-ID ein ProductItem-Objekt aus der Products-Tabelle
-     */
-    private suspend fun getProductById(prodId: Long): ProductItem? {
-        return withContext(Dispatchers.IO) {
-            val product = prodDao.getProductById(prodId)
-            product
-        }
-    }
-
-    /**
      * entfernt abh. der GLItemMapping-ID ein GLItemMapping-Objekt aus der GLItemMapping-Tabelle
      */
-    private suspend fun removeGLItemMapping(id: Long) {
+    private suspend fun removeGroceryListsProductsEntryById(id: Long) {
         withContext(Dispatchers.IO) {
-            glItemMappingDao.remove(id)
+            glpDao.deleteById(id)
         }
     }
 
-    private suspend fun flipDoneForItem(item: GLItemMapping) {
+    private suspend fun flipDoneForItem(item: GroceryListsProducts) {
         withContext(Dispatchers.IO) {
-            glItemMappingDao.flipDoneForItem(item.gl_item_mapping_id, item.done)
+            glpDao.setBoughtForGLPById(item.id, !item.bought)
         }
     }
 
-    fun flipDoneForGLItemMapping(item: GLItemMapping?) {
+    fun flipDoneForGLItemMapping(item: GroceryListsProducts?) {
         uiScope.launch {
             if (item != null) {
                 flipDoneForItem(item)
@@ -137,41 +181,87 @@ class GroceryListViewModel(
 
     fun addNewProductItem() {
         uiScope.launch {
-            val prodId = _newProductGroceryListItem.value
-            if (prodId != null) {
-                var itemMapping = GLItemMapping()
-                itemMapping.groceryList = getGroceryListById(glId)
-                itemMapping.product = getProductById(prodId)
-                upsert(itemMapping)
+            val prodId = _newProductGroceryListItem.value?.first
+            val note = _newProductGroceryListItem.value?.second
+            if (prodId != null && note != null) {
+                var entry = getExistingGroceryListsProductsEntry(prodId)
+                entry.glId = glId
+                entry.prodId = prodId
+                entry.note = note
+                if (entry.id > 0L) {
+                    updateEntry(entry)
+                } else {
+                    insertEntry(entry)
+                }
             }
+        }
+    }
+
+    private suspend fun updateEntry(groceryListsProducts: GroceryListsProducts) {
+        withContext(Dispatchers.IO) {
+            glpDao.update(groceryListsProducts)
+        }
+    }
+
+    private suspend fun insertEntry(groceryListsProducts: GroceryListsProducts): Long {
+        return withContext(Dispatchers.IO) {
+            glpDao.insert(groceryListsProducts)
+        }
+    }
+
+    private suspend fun getExistingGroceryListsProductsEntry(prodId: Long): GroceryListsProducts {
+        return withContext(Dispatchers.IO) {
+            var glp = glpDao.getGroceryListsProductsEntryById(prodId)
+            if (glp == null) {
+                glp = GroceryListsProducts()
+            }
+            glp
         }
     }
     //endregion
-
-    /**
-     * DB-Thread/Abschnitt zum inserieren oder updaten
-     * eines InventoryItems.
-     * NOTWENDIGKEIT: InventoryItem mit gesetztem Produkt.
-     * ID nicht notwendig da ID-Eintrag von ROOM erstellt wird.
-     */
-    private suspend fun upsert(item: GLItemMapping) {
-        withContext(Dispatchers.IO) {
-            try {
-                glItemMappingDao.upsert(item)
-            } catch (e: Exception) {
-                Log.d("InventoryViewModel", e.localizedMessage)
-            }
-        }
-    }
 
     /**
      * Diese Funktion wird aufgerufen, wenn über den AddProduct-Screen
      * ein neues Produkt hinzugefügt wird und dieses über die Navigation-Arguments
      * dem InventoryFragment übergeben werden.
      */
-    fun newProductInserted(productId: Long) {
+    fun newProductInserted(productId: Long, note: String) {
         uiScope.launch {
-            _newProductGroceryListItem.value = productId
+            _newProductGroceryListItem.value = Pair(productId, note)
+        }
+    }
+
+    fun fillGroceryListProducts() {
+        uiScope.launch {
+            fillGroceryListsProductsDetails()
+        }
+    }
+
+    private suspend fun fillGroceryListsProductsDetails() {
+        _filledGroceryListProducts.value = withContext(Dispatchers.IO) {
+            groceryListProducts.value?.iterator()?.forEach {
+                it.product = prodDao.getProductById(it.prodId)
+                it.groceryList = glDao.getGroceryListById(it.glId)
+            }
+            groceryListProducts.value
+        }
+    }
+
+    fun modifyProduct(item: GroceryListsProducts) {
+        uiScope.launch {
+            _addProduct.value = Pair(item.prodId, item.note)
+        }
+    }
+
+    fun resetGLProducts(glId: Long) {
+        uiScope.launch {
+            resetBought(glId)
+        }
+    }
+
+    private suspend fun resetBought(glId: Long) {
+        withContext(Dispatchers.IO) {
+            glpDao.setBoughtForGroceryList(glId, false)
         }
     }
 }

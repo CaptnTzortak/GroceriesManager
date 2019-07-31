@@ -22,13 +22,10 @@ class AddProductGroceryListFragment : Fragment() {
 
     lateinit var addProductGroceryListBinding: FragmentAddProductGroceryListBinding
     lateinit var application: Application
-    lateinit var prodDB: ProductsDao
     lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     lateinit var viewModel : AddProductGroceryListViewModel
 
     var glId = 0L
-    var prodId = 0L
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         try {
             //Binding
@@ -39,14 +36,12 @@ class AddProductGroceryListFragment : Fragment() {
 
             //val productId = args.prodId
             val args: AddProductGroceryListFragmentArgs by navArgs()
+            val prodId = args.prodId
             glId = args.glId
-            prodId = args.prodId
-
-            //DataSource
-            prodDB = GroceriesManagerDB.getInstance(application).productsDao
+            val note = args.note
 
             //ViewModelFactory
-            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, null, null, null, glId, prodId)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, prodId,"",glId, note)
 
             viewModel = ViewModelProviders.of(this, viewModelFactory).get(AddProductGroceryListViewModel::class.java)
 
@@ -66,8 +61,8 @@ class AddProductGroceryListFragment : Fragment() {
     }
 
     private fun setObserver() {
-        viewModel.product.observe(this, Observer {
-            it?.let {
+        viewModel.product.observe(this, Observer { prodId ->
+            prodId?.let {
                 this.findNavController()
                     .navigate(AddProductGroceryListFragmentDirections.addProductGroceryListDestinationToGroceryListDestination(it,
                         glId

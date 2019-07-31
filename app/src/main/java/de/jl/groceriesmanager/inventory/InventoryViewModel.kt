@@ -5,39 +5,44 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.jl.groceriesmanager.database.inventory.InventoryDao
-import de.jl.groceriesmanager.database.inventory.InventoryItem
-import de.jl.groceriesmanager.database.products.ProductItem
-import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.groceriesmanager.database.GroceriesManagerDB
+import de.jl.groceriesmanager.database.inventory.Inventory
 import kotlinx.coroutines.*
-import java.lang.Exception
 
-class InventoryViewModel(application: Application, private val invDao : InventoryDao, private val prodDao: ProductsDao) : AndroidViewModel(application) {
+class InventoryViewModel(application: Application) : AndroidViewModel(application) {
 
     //job
     private var viewModelJob = Job()
     //UI-Scope
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    private val invDao = GroceriesManagerDB.getInstance(application).inventoryDao
+    private val prodDao = GroceriesManagerDB.getInstance(application).productsDao
+
     /**
      * LiveData für die Inventory-Einträge
      */
-    val inventoryItems = invDao.getAllInventoryItems()
+    val inventories = invDao.getAllInventorys()
+
+    private val _inventoriesWithProduct = MutableLiveData<List<Inventory>>()
+    val inventoriesWithProduct: LiveData<List<Inventory>>
+        get() = _inventoriesWithProduct
+
 
     /**
      * Live Data für das neue Produkt welches einem Inventar hinzugefügt wird.
      * z.B aus dem addProductFragment/View (Navigation Args)
      */
-    private val _newProductInventoryItem = MutableLiveData<Long>()
-    val newProductInventoryItem: LiveData<Long>
+    private val _newProductInventoryItem = MutableLiveData<Pair<Long, String>>()
+    val newProductInventoryItem: LiveData<Pair<Long, String>>
         get() = _newProductInventoryItem
 
     private val _removeInventoryItem = MutableLiveData<Long>()
     val removeInventoryItem: LiveData<Long>
         get() = _removeInventoryItem
 
-    private val _navigateToAddProduct = MutableLiveData<Long>()
-    val navigateToAddProduct: LiveData<Long>
+    private val _navigateToAddProduct = MutableLiveData<Pair<Long, String>>()
+    val navigateToAddProduct: LiveData<Pair<Long, String>>
         get() = _navigateToAddProduct
 
 
@@ -47,7 +52,7 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
      */
     fun onAddInventoyItem() {
         uiScope.launch {
-            _navigateToAddProduct.value = 0L
+            _navigateToAddProduct.value = Pair(0L, "")
         }
     }
 
@@ -66,8 +71,8 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
     fun modifyProduct(inventoryId: Long) {
         uiScope.launch {
             val invItem = getInventoryItemById(inventoryId)
-            if (invItem?.product != null) {
-                _navigateToAddProduct.value = invItem.product!!.product_id
+            if (invItem?.prodId!! > 0L) {
+                _navigateToAddProduct.value = Pair(invItem.prodId, invItem.expiryDateString)
             }
         }
     }
@@ -93,12 +98,17 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
      */
     fun addNewProductItem() {
         uiScope.launch {
-            val prodId = _newProductInventoryItem.value
+            val prodId = _newProductInventoryItem.value?.first
+            val expiryDateString = _newProductInventoryItem.value?.second
             if (prodId != null) {
-                val product = getProductById(prodId)
                 val invItem = getNewOrExistingInventoryItem(prodId)
-                invItem.product = product
-                upsert(invItem)
+                invItem.prodId = prodId
+                invItem.expiryDateString = expiryDateString.toString()
+                if (invItem.id > 0L) {
+                    update(invItem)
+                } else {
+                    insert(invItem)
+                }
             }
         }
     }
@@ -109,9 +119,9 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
      * ein neues Produkt hinzugefügt wird und dieses über die Navigation-Arguments
      * dem InventoryFragment übergeben werden.
      */
-    fun newProductInserted(productId: Long) {
+    fun newProductInserted(prodIdWithExpiryDate: Pair<Long, String>) {
         uiScope.launch {
-            _newProductInventoryItem.value = productId
+            _newProductInventoryItem.value = prodIdWithExpiryDate
         }
     }
 
@@ -127,20 +137,13 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
     }
 
 
-
     /**
      * DB-Thread/Abschnitt welcher ein InventoryItem anhand
      * der InventoryID ermittelt
      */
-    private suspend fun getInventoryItemById(id: Long): InventoryItem? {
+    private suspend fun getInventoryItemById(id: Long): Inventory? {
         return withContext(Dispatchers.IO) {
-            var invItem = InventoryItem()
-            try{
-                invItem = invDao.getInventoryItemById(id)
-            } catch (e: Exception){
-                Log.d("InventoryViewModel", e.localizedMessage)
-            }
-            invItem
+            invDao.getInventoryById(id)
         }
     }
 
@@ -150,31 +153,22 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
      * NOTWENDIGKEIT: InventoryItem mit gesetztem Produkt.
      * ID nicht notwendig da ID-Eintrag von ROOM erstellt wird.
      */
-    private suspend fun upsert(item: InventoryItem) {
-        withContext(Dispatchers.IO) {
-            try{
-                invDao.upsert(item)
-            } catch (e: Exception){
-                Log.d("InventoryViewModel", e.localizedMessage)
-            }
+    private suspend fun insert(item: Inventory): Long {
+        return withContext(Dispatchers.IO) {
+            invDao.insert(item)
         }
     }
 
 
-
     /**
-     * DB-Thread/Abschnitt zum ermitteln des Produkt-Objektes
-     * anhand der Produkt-ID
+     * DB-Thread/Abschnitt zum inserieren oder updaten
+     * eines InventoryItems.
+     * NOTWENDIGKEIT: InventoryItem mit gesetztem Produkt.
+     * ID nicht notwendig da ID-Eintrag von ROOM erstellt wird.
      */
-    private suspend fun getProductById(prodId: Long): ProductItem {
-        return withContext(Dispatchers.IO) {
-            var prod = ProductItem()
-            try {
-                prod = prodDao.getProductById(prodId)
-            }catch (e: Exception){
-                Log.d("InventoryViewModel", e.localizedMessage)
-            }
-            prod
+    private suspend fun update(item: Inventory) {
+        withContext(Dispatchers.IO) {
+            invDao.update(item)
         }
     }
 
@@ -186,11 +180,10 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
     private suspend fun remove(inventoryId: Long) {
         withContext(Dispatchers.IO) {
             try {
-                val item = invDao.getInventoryItemById(inventoryId)
-                invDao.remove(inventoryId)
-                val prodId = item.product?.product_id ?: return@withContext
-                prodDao.remove(prodId)
-            }catch (e: Exception){
+                val prodId = invDao.getProdIdByInvId(inventoryId)
+                invDao.deleteById(inventoryId)
+                prodDao.deleteById(prodId)
+            } catch (e: Exception) {
                 Log.d("InventoryViewModel", e.localizedMessage)
             }
         }
@@ -201,16 +194,32 @@ class InventoryViewModel(application: Application, private val invDao : Inventor
      * neuen oder schon bestehenden InventoryItem abh.
      * der ProduktId
      */
-    private suspend fun getNewOrExistingInventoryItem(prodId: Long): InventoryItem {
+    private suspend fun getNewOrExistingInventoryItem(prodId: Long): Inventory {
         return withContext(Dispatchers.IO) {
-            var invItem: InventoryItem = InventoryItem()
-            if(prodId > 0){
-                invItem = invDao.getInventoryItemByProdId(prodId)
+            var invItem = Inventory()
+            if (prodId > 0) {
+                invItem = invDao.getInventoryByProdId(prodId)
             }
-            if(invItem == null){
-                invItem = InventoryItem()
+            if (invItem == null) {
+                invItem = Inventory()
             }
             invItem
         }
     }
+
+    fun fillInventoryProducts() {
+        uiScope.launch {
+            fillInventoryWithProducts()
+        }
+    }
+
+    private suspend fun fillInventoryWithProducts() {
+        _inventoriesWithProduct.value = withContext(Dispatchers.IO) {
+            inventories.value?.iterator()?.forEach {
+                it.product = prodDao.getProductById(it.prodId)
+            }
+            inventories.value
+        }
+    }
 }
+

@@ -1,30 +1,34 @@
 package de.jl.groceriesmanager.inventory
 
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.products.ProductItem
+import de.jl.groceriesmanager.database.inventory.Inventory
 
 @BindingAdapter("itemBarcode")
-fun TextView.setItemBarcode(prod: ProductItem?) {
-    val barcode = if (prod?.barcode_id == 0L) {
-        prod.product_id
+fun TextView.setItemBarcode(item: Inventory) {
+    var barcode = 0L
+    barcode = if (item.product.barcodeId == 0L) {
+        item.product.id
     } else {
-        prod?.barcode_id
+        item.product.barcodeId
     }
-    text = "Barcode: " + barcode.toString()
+    text = "Barcode: $barcode"
 }
 
 @BindingAdapter("itemDescription")
-fun TextView.setItemDescription(prod: ProductItem?) {
-    text = prod?.user_Description ?: "No Description"
+fun TextView.setItemDescription(item: Inventory) {
+    val product = item.product
+    text = if (product.description.isNullOrEmpty()) {
+        "No Description"
+    } else {
+        product.description
+    }
 }
 
 @BindingAdapter("productExpiryDate")
-fun TextView.setProductExpiryDate(product: ProductItem?){
+fun TextView.setProductExpiryDate(item: Inventory) {
     var value = "Verfallsdatum: "
-    val secVal= product?.expiry_date_string ?: "no expiry date"
+    val secVal = item.expiryDateString
     value += secVal
     text = value
 }

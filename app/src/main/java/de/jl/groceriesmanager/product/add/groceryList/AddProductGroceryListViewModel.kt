@@ -4,19 +4,19 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import de.jl.groceriesmanager.database.products.ProductItem
-import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.groceriesmanager.database.GroceriesManagerDB
+import de.jl.groceriesmanager.database.products.Product
 import kotlinx.coroutines.*
-import java.sql.Date
-import java.util.*
 
-class AddProductGroceryListViewModel(application: Application, private val prodDao: ProductsDao) : AndroidViewModel(application) {
+class AddProductGroceryListViewModel(application: Application, private val prodId: Long, private val passedNote: String, private val passedGlId: Long) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel.
      */
     private var viewModelJob = Job()
+
+    private val prodDao = GroceriesManagerDB.getInstance(application).productsDao
 
     /**
      * A [CoroutineScope] keeps track of all coroutines started by this ViewModel.
@@ -41,24 +41,28 @@ class AddProductGroceryListViewModel(application: Application, private val prodD
 
     var description = MutableLiveData<String>()
 
-    private var _productItemValid = MutableLiveData<Boolean>()
-    val productItemValid: LiveData<Boolean>
-        get() = _productItemValid
-
     var existingProdId = 0L
+    var glId = 0L
 
-    private fun fillProduct(id: Long, passedNote: String){
+    init {
+        if(prodId > 0) {
+            fillProduct(prodId, passedNote)
+            existingProdId = prodId
+            glId = passedGlId
+        }
+    }
+
+    private fun fillProduct(id: Long, passedNote: String) {
         uiScope.launch {
             val existingProd = getProductById(id)
-            description.value = existingProd.user_Description
+            description.value = existingProd.description
             note.value = passedNote
         }
     }
 
-    private suspend fun getProductById(id:Long) : ProductItem{
-        return withContext(Dispatchers.IO){
-            val prod = prodDao.getProductById(id)
-            prod
+    private suspend fun getProductById(id: Long): Product {
+        return withContext(Dispatchers.IO) {
+            prodDao.getProductById(id)
         }
     }
 
@@ -68,9 +72,9 @@ class AddProductGroceryListViewModel(application: Application, private val prodD
     fun addProductClicked() {
         uiScope.launch {
             var prodId = existingProdId
-            val newProd = ProductItem(existingProdId)
-            newProd.user_Description = description.value.toString()
-            if(existingProdId > 0){
+            val newProd = Product(existingProdId)
+            newProd.description = description.value.toString()
+            if (existingProdId > 0) {
                 update(newProd)
             } else {
                 prodId = insert(newProd)
@@ -79,25 +83,17 @@ class AddProductGroceryListViewModel(application: Application, private val prodD
         }
     }
 
-    fun validateProduct() {
-        uiScope.launch {
-            var valid = !description.value.isNullOrEmpty()
-            _productItemValid.value = valid
-        }
-    }
-
-
-    private suspend fun insert(newProd: ProductItem): Long {
-        return withContext(Dispatchers.IO){
+    private suspend fun insert(newProd: Product): Long {
+        return withContext(Dispatchers.IO) {
             prodDao.insert(newProd)
         }
     }
-    private suspend fun update(product: ProductItem) {
-        withContext(Dispatchers.IO){
+
+    private suspend fun update(product: Product) {
+        withContext(Dispatchers.IO) {
             prodDao.update(product)
         }
     }
-
 
 
     /**

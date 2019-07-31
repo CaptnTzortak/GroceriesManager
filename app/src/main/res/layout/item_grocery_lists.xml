@@ -5,7 +5,7 @@
     <data>
         <variable
                 name="groceryList"
-                type="de.jl.groceriesmanager.database.groceryList.GroceryList"/>
+                type="de.jl.groceriesmanager.database.groceryLists.GroceryList"/>
         <variable name="clickListener" type="de.jl.groceriesmanager.grocery_lists.GroceryListsItemListener"/>
     </data>
 
@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> clickListener.onClick(groceryList)}">
         <TextView
-                android:text="@{groceryList.description}"
+                android:text="@{groceryList.name}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/groceryListName"

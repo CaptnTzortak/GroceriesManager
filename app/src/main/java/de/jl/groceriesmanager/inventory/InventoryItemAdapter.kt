@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.inventory
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.view.ContextMenu
 import android.view.LayoutInflater
@@ -10,11 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import de.jl.groceriesmanager.database.inventory.InventoryItem
+import de.jl.groceriesmanager.database.inventory.Inventory
 import de.jl.groceriesmanager.databinding.ItemInventoryBinding
 
 class InventoryItemAdapter(val clickListener: InventoryItemListener) :
-    ListAdapter<InventoryItem, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback()) {
+    ListAdapter<Inventory, InventoryItemAdapter.ViewHolder>(InventoryItemDiffCallback()) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -34,11 +35,11 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
 
         @RequiresApi(Build.VERSION_CODES.M)
         fun bind(
-            item: InventoryItem,
+            item: Inventory,
             clickListener: InventoryItemListener,
             view: View
         ) {
-            binding.inventoryItem = item
+            binding.inventoryProduct = item
             binding.clickListener = clickListener
             view.setOnCreateContextMenuListener(this)
             binding.executePendingBindings()
@@ -55,27 +56,28 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
 
         override fun onCreateContextMenu(menu: ContextMenu, view: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
             var id = 0
-            if (binding.inventoryItem?.inventory_id != null) {
-                id = binding.inventoryItem?.inventory_id!!.toInt()
+            if (binding.inventoryProduct?.id != null) {
+                id = binding.inventoryProduct?.id!!.toInt()
             }
             menu.add(id, 121, 0, "Delete")
         }
     }
 }
 
-class InventoryItemDiffCallback : DiffUtil.ItemCallback<InventoryItem>() {
+class InventoryItemDiffCallback : DiffUtil.ItemCallback<Inventory>() {
 
-    override fun areContentsTheSame(oldItem: InventoryItem, newItem: InventoryItem): Boolean {
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Inventory, newItem: Inventory): Boolean {
         return oldItem == newItem
     }
 
-    override fun areItemsTheSame(oldItem: InventoryItem, newItem: InventoryItem): Boolean {
-        return oldItem.inventory_id == newItem.inventory_id
+    override fun areItemsTheSame(oldItem: Inventory, newItem: Inventory): Boolean {
+        return oldItem.id == newItem.id
     }
 
 }
 
 class InventoryItemListener(val clickListener: (inventory_id: Long) -> Unit) {
 
-    fun onClick(item: InventoryItem) = clickListener(item.inventory_id)
+    fun onClick(item: Inventory) = clickListener(item.id)
 }

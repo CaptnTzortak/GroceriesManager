@@ -1,33 +1,23 @@
 package de.jl.groceriesmanager.database.products
 
-import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import de.jl.groceriesmanager.database.inventory.InventoryItem
-
 
 @Dao
 interface ProductsDao {
 
-    @Insert
-    fun insert(product: ProductItem): Long
+    @Query("SELECT * FROM Products WHERE id = :id")
+    fun getProductById(id: Long): Product
 
-    @Query("SELECT COUNT(*) from products")
-    fun getSize(): Int
+    @Query("DELETE FROM Products WHERE id = :id")
+    fun deleteById(id: Long)
 
-    @Query("SELECT * FROM products ORDER BY product_id DESC")
-    fun getAllProductItems(): LiveData<List<ProductItem>>
+    @Delete
+    fun delete(product: Product)
 
-    @Query("Select * FROM products ORDER BY product_id DESC LIMIT 1")
-    fun getLatest(): ProductItem
+    @Insert(onConflict = OnConflictStrategy.FAIL)
+    fun insert(product: Product): Long
 
-    @Query("SELECT * FROM products WHERE product_id = :prodId")
-    fun getProductById(prodId: Long): ProductItem
+    @Update(onConflict = OnConflictStrategy.FAIL)
+    fun update(product: Product)
 
-    @Update
-    fun update(product: ProductItem)
-
-    @Query("DELETE FROM products WHERE product_id = :id")
-    fun remove(id: Long)
 }

@@ -59,6 +59,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                    android:background="@drawable/circular_button"
                     android:text="@string/btn_confirm"
                     android:onClick="@{()-> viewModel.addProductClicked()}"
                     android:layout_width="wrap_content"

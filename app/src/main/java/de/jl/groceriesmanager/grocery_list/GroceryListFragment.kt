@@ -1,13 +1,13 @@
 package de.jl.groceriesmanager.grocery_list
 
 import android.app.Application
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SimpleAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,10 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.SwipeToSetDoneCallback
-import de.jl.groceriesmanager.database.GroceriesManagerDB
-import de.jl.groceriesmanager.database.groceryList.GroceryListsDao
-import de.jl.groceriesmanager.database.inventory.GLItemMappingDao
-import de.jl.groceriesmanager.database.products.ProductsDao
+import de.jl.tools.openDatePicker
 
 class GroceryListFragment : Fragment() {
 
@@ -31,13 +28,7 @@ class GroceryListFragment : Fragment() {
     private lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     private lateinit var groceryListBinding: de.jl.groceriesmanager.databinding.FragmentGroceryListBinding
     private lateinit var application: Application
-    private lateinit var glItemMappingDB: GLItemMappingDao
-    private lateinit var glDB: GroceryListsDao
-    private lateinit var productsDB: ProductsDao
-
-    var glId = 0L
-    var prodId = 0L
-    var note = ""
+    private var glId = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,25 +41,18 @@ class GroceryListFragment : Fragment() {
             //Application
             application = requireNotNull(this.activity).application
 
-            //DataSource
-            glItemMappingDB = GroceriesManagerDB.getInstance(application).glItemMappingDao
-            glDB = GroceriesManagerDB.getInstance(application).groceryListsDao
-            productsDB = GroceriesManagerDB.getInstance(application).productsDao
-
             val args: GroceryListFragmentArgs by navArgs()
             glId = args.glId
-            prodId = args.prodId
-            note = args.note
 
             //ViewModelFactory
-            viewModelFactory = GroceriesManagerViewModelFactory(application, productsDB, null, glDB, glItemMappingDB, glId, prodId)
+            viewModelFactory = GroceriesManagerViewModelFactory(application, 0L, "", glId)
 
             //ViewModel
             groceryListViewModel = ViewModelProviders.of(this, viewModelFactory).get(GroceryListViewModel::class.java)
 
             //Adapter für RecyclerView
             val adapter = GroceryListItemAdapter(GroceryListItemListener {
-
+                groceryListViewModel.modifyProduct(it)
             })
 
             groceryListBinding.lifecycleOwner = this
@@ -100,9 +84,9 @@ class GroceryListFragment : Fragment() {
     private fun validateArguments(args: GroceryListFragmentArgs) {
         try {
             val productId = args.prodId
-            //val noteVal = args.note
+            var note = args.note
             if (productId > 0) {
-                groceryListViewModel.newProductInserted(productId)
+                groceryListViewModel.newProductInserted(productId, note)
             }
 
         } catch (e: Exception) {
@@ -118,7 +102,12 @@ class GroceryListFragment : Fragment() {
             }
         })
 
-        groceryListViewModel.glItemMappingList.observe(this, Observer { it ->
+        groceryListViewModel.groceryListProducts.observe(this, Observer {
+            groceryListViewModel.fillGroceryListProducts()
+
+        })
+
+        groceryListViewModel.filledGroceryListProducts.observe(this, Observer { it ->
             it?.let {
                 adapter.submitList(it)
             }
@@ -129,11 +118,16 @@ class GroceryListFragment : Fragment() {
                 this.findNavController()
                     .navigate(
                         GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(
-                            it,
-                            glId
+                            it.first, glId, it.second
                         )
                     )
                 groceryListViewModel.doneNavigatingToAddProductGL()
+            }
+        })
+
+        groceryListViewModel.reset.observe(this, Observer {
+            it?.let {
+                groceryListViewModel.resetGLProducts(it)
             }
         })
     }
@@ -141,7 +135,16 @@ class GroceryListFragment : Fragment() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             121 -> {
-                groceryListViewModel.deleteGroceryListEntry(item.groupId.toLong())
+                groceryListViewModel.deleteGroceryListsProducts(item.groupId.toLong())
+            }
+            122 -> {
+                context?.let {
+                    openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                        val expiryDateString = """$dayOfMonth.${month + 1}.$year"""
+                        groceryListViewModel.addProductToInventory(item.groupId.toLong(), expiryDateString)
+
+                    })
+                }
             }
         }
         return true

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,19 +16,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.GroceriesManagerDB
-import de.jl.groceriesmanager.database.inventory.InventoryDao
-import de.jl.groceriesmanager.database.inventory.InventoryItem
-import de.jl.groceriesmanager.database.products.ProductsDao
-import de.jl.groceriesmanager.product.add.AddProductFragmentDirections
-import kotlin.math.absoluteValue
 
 class InventoryFragment : Fragment() {
 
     lateinit var inventoryBinding: de.jl.groceriesmanager.databinding.FragmentInventoryBinding
     lateinit var application: Application
-    lateinit var invDB: InventoryDao
-    lateinit var prodDB: ProductsDao
     lateinit var viewModelFactory: GroceriesManagerViewModelFactory
     lateinit var inventoryViewModel: InventoryViewModel
 
@@ -42,11 +33,9 @@ class InventoryFragment : Fragment() {
             application = requireNotNull(this.activity).application
 
             //DataSources
-            invDB = GroceriesManagerDB.getInstance(application).inventoryDao
-            prodDB = GroceriesManagerDB.getInstance(application).productsDao
 
             //ViewModelFactory
-            viewModelFactory = GroceriesManagerViewModelFactory(application, prodDB, invDB)
+            viewModelFactory = GroceriesManagerViewModelFactory(application)
 
             //ViewModel
             inventoryViewModel = ViewModelProviders.of(this, viewModelFactory).get(InventoryViewModel::class.java)
@@ -76,10 +65,11 @@ class InventoryFragment : Fragment() {
         try {
             val args: InventoryFragmentArgs by navArgs()
             val productId = args.productId
-            if (productId > 0) {
-                inventoryViewModel.newProductInserted(productId)
+            val expiryDateString = args.expiryDateString
+            if (productId > 0 && !expiryDateString.isNullOrEmpty()) {
+                inventoryViewModel.newProductInserted(Pair(productId, expiryDateString))
             }
-            
+
         } catch (e: Exception) {
             Log.e("InventoryFragment", "Failed to validate Args: " + e.localizedMessage)
         }
@@ -87,10 +77,10 @@ class InventoryFragment : Fragment() {
 
     private fun setObservers(adapter: InventoryItemAdapter) {
         //Observer für das Navigieren zum AddProduct-Screen
-        inventoryViewModel.navigateToAddProduct.observe(this, Observer { prodId ->
-            prodId?.let {
+        inventoryViewModel.navigateToAddProduct.observe(this, Observer { pair ->
+            pair?.let {
                 this.findNavController()
-                    .navigate(InventoryFragmentDirections.inventoryDestinationToAddProductDestination(prodId))
+                    .navigate(InventoryFragmentDirections.inventoryDestinationToAddProductDestination(pair.first, pair.second))
                 inventoryViewModel.doneNavigatingToAddProduct()
             }
         })
@@ -108,7 +98,13 @@ class InventoryFragment : Fragment() {
         })
 
         //Observer für Recycler-View Items
-        inventoryViewModel.inventoryItems.observe(this, Observer {
+        inventoryViewModel.inventories.observe(this, Observer {
+            it?.let {
+                inventoryViewModel.fillInventoryProducts()
+            }
+        })
+
+        inventoryViewModel.inventoriesWithProduct.observe(this, Observer {
             it?.let {
                 adapter.submitList(it)
             }

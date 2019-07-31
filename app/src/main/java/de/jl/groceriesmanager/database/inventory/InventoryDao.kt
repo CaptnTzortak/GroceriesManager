@@ -1,43 +1,32 @@
 package de.jl.groceriesmanager.database.inventory
 
-import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface InventoryDao {
 
-    //TODO: Return LONG für ID
-    @Query("SELECT COUNT(*) from inventory")
-    fun getSize(): Int
+    @Query("SELECT prodId FROM Inventory WHERE id = :id")
+    fun getProdIdByInvId(id: Long): Long
 
-    @Query("SELECT * FROM inventory ORDER BY inventory_id")
-    fun getAllInventoryItems(): LiveData<List<InventoryItem>>
+    @Query("SELECT * FROM Inventory")
+    fun getAllInventorys(): LiveData<List<Inventory>>
 
-    @Query("SELECT * FROM inventory WHERE inventory_id = :id")
-    fun getInventoryItemById(id: Long): InventoryItem
+    @Query("SELECT * FROM Inventory WHERE id = :id")
+    fun getInventoryById(id: Long):Inventory
 
-    @Query("DELETE FROM inventory WHERE inventory_id = :id")
-    fun remove(id: Long)
+    @Query("SELECT * FROM Inventory WHERE prodId = :id")
+    fun getInventoryByProdId(id: Long): Inventory
+
+    @Query("DELETE FROM Inventory WHERE id = :id")
+    fun deleteById(id: Long)
+
+    @Delete
+    fun delete(inventory: Inventory)
 
     @Insert(onConflict = OnConflictStrategy.FAIL)
-    fun insert(item: InventoryItem): Long
+    fun insert(inventory: Inventory): Long
 
     @Update(onConflict = OnConflictStrategy.FAIL)
-    fun update(item: InventoryItem)
-
-    @Query("SELECT * FROM inventory WHERE product_id = :prodId")
-    fun getInventoryItemByProdId(prodId: Long): InventoryItem
-
-    @Transaction
-    fun upsert(item: InventoryItem): Long {
-        var id: Long
-        try {
-            id = insert(item)
-        } catch (e: SQLiteConstraintException) {
-            update(item)
-            id = item.inventory_id
-        }
-        return id
-    }
+    fun update(inventory: Inventory)
 }
