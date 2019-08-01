@@ -1,10 +1,10 @@
 package de.jl.groceriesmanager.database.products
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity(tableName = "Products")
+@Entity(tableName = "Products",
+    foreignKeys = [ForeignKey(entity = Barcode::class, parentColumns = ["id"], childColumns = ["barcodeId"])]
+)
 data class Product(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -14,5 +14,8 @@ data class Product(
     var barcodeId: Long = 0L,
 
     @ColumnInfo(name = "description")
-    var description: String = ""
+    var description: String = "",
+
+    @Ignore
+    var barcode: Barcode = Barcode()
 )
