@@ -8,54 +8,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".GroceryListsFragment">
-        <TextView
-                android:id="@+id/grocery_list_name"
-                android:layout_width="0dp"
-                android:layout_height="64dp"
-                android:text="@{viewModel.glName}"
-                android:textAlignment="center"
-                android:textSize="46sp"
-                android:textStyle="bold|italic"
-                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:background="@color/colorPrimary"/>
-
-
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/groceryListItemList"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toBottomOf="@+id/grocery_list_name"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/addBtn"/>
-
-        <Button
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:id="@+id/addBtn"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:src="@drawable/ic_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:onClick="@{() -> viewModel.addProductClicked()}"
-                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"
-                android:background="@drawable/circular_button"
-                android:drawableTop="@drawable/ic_add"
-                android:paddingTop="20dp"/>
-
-        <Button
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:id="@+id/resetBtn"
-                android:onClick="@{() -> viewModel.resetClicked()}"
-                android:background="@drawable/circular_button"
-                android:drawableTop="@drawable/ic_refresh"
-                android:paddingTop="20dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/addBtn" android:layout_marginRight="8dp"
-                app:layout_constraintTop_toTopOf="@+id/addBtn" app:layout_constraintBottom_toBottomOf="@+id/addBtn"
-        />
-
+                android:clickable="true" android:id="@+id/floatingActionButton"
+                android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginRight="8dp" app:backgroundTint="@color/primaryColor" android:focusable="true"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,32 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Animation for dialog box -->
+    <style name="AppTheme.DialogSlideAnim" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/AppTheme.DialogAnimation</item>
+    </style>
+    <style name="AppTheme.DialogAnimation" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/primaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/primaryTextColor</item>
+        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+    </style>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
 
-<!-- Base application theme. -->
-<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-    <!-- Customize your theme here. -->
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
-</style>
-<style name="AppTheme.NoActionBar">
-    <item name="windowActionBar">false</item>
-    <item name="windowNoTitle">true</item>
-</style>
-<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
+    </style>
+    <style name="DefaultFloatingActionButton">
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryColor</item>
+    </style>
+    <style name="DefaultTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textColor">@color/primaryDarkColor</item>
+        <item name="hintTextColor">@color/primaryDarkColor</item>
+        <item name="errorTextAppearance">@color/errorColor</item>
+    </style>
+    <style name="DefaultButton">
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryColor</item>
+        <item name="android:textColor">@color/primaryDarkColor</item>
+    </style>
 </resources>

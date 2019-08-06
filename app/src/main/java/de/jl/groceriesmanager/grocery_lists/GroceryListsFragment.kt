@@ -1,6 +1,5 @@
 package de.jl.groceriesmanager.grocery_lists
 
-import android.app.AlertDialog
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.FragmentGroceryListsBinding
+import de.jl.tools.openDialogNewGroceryList
 
 class GroceryListsFragment : Fragment() {
 
@@ -31,6 +31,8 @@ class GroceryListsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         try {
+            (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.common_grocery_lists)
+
             //Binding
             groceryListsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_grocery_lists, container, false)
 
@@ -52,7 +54,7 @@ class GroceryListsFragment : Fragment() {
             groceryListsBinding.viewModel = groceryListsViewModel
             groceryListsBinding.groceryListsList.adapter = adapter
             groceryListsBinding.groceryListsList.layoutManager = GridLayoutManager(activity, 1)
-            groceryListsBinding.addBtn.setOnClickListener { addNewGroceryList() }
+            groceryListsBinding.addBtn.setOnClickListener { openAddGroceryListDialog() }
 
             setObservers(adapter)
             //validateArguments
@@ -93,27 +95,20 @@ class GroceryListsFragment : Fragment() {
         })
     }
 
-
-    private fun addNewGroceryList() {
-        try {
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Insert Grocery List Description")
-            val inflater = layoutInflater
-            val dialogLayout = inflater.inflate(R.layout.grocery_list_description_dialog, null)
-            val editText = dialogLayout.findViewById<EditText>(R.id.editText)
-
-            builder.setView(dialogLayout)
-            builder.setPositiveButton("Confirm") { _, _ ->
-                groceryListsViewModel.newGroceryList(editText.text.toString())
-            }
-            builder.setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }
-
-            builder.show()
-        } catch (e: Exception) {
-            Log.d("GroceryListsFragment", e.localizedMessage)
-        }
+    private fun openAddGroceryListDialog() {
+        context?.let {
+            openDialogNewGroceryList(context!!, View.OnClickListener{
+                //TODO: Ermitteln des Textes
+                //groceryListsViewModel.newGroceryList(editText.text.toString())
+            })
+            //val db = AlertDialog.Builder(context!!)
+            //val layoutView = layoutInflater.inflate(R.layout.dialog_new_product, null)
+            //db.setView(layoutView)
+            //val dialog = db.create()
+            //dialog.window.attributes.windowAnimations = R.style.AppTheme_DialogAnimation
+            //dialog.show()
+            //dialog.window.setBackgroundDrawable(ColorDrawable(0))
+        }//
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

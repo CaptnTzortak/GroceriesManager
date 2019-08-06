@@ -12,4 +12,11 @@
     <string name="common_quantity">Menge</string>
     <string name="common_brand">Marke</string>
     <string name="btn_confirm">Bestätigen</string>
+    <string name="create_product">Produkt erstellen</string>
+    <string name="product_description">Produktbeschreibung</string>
+    <string name="expiry_date">Verfallsdatum</string>
+    <string name="add">Hinzufügen</string>
+    <string name="create_grocery_list">Einkaufsliste erstellen</string>
+    <string name="description">Beschreibung</string>
+    <string name="title">Titel</string>
 </resources>

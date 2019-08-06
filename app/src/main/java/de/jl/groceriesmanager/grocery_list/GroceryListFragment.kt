@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.SwipeToSetDoneCallback
 import de.jl.tools.openDatePicker
+import kotlinx.android.synthetic.main.activity_main.*
 
 class GroceryListFragment : Fragment() {
 
@@ -35,6 +37,7 @@ class GroceryListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         try {
+
             //Binding
             groceryListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_grocery_list, container, false)
 
@@ -128,6 +131,13 @@ class GroceryListFragment : Fragment() {
         groceryListViewModel.reset.observe(this, Observer {
             it?.let {
                 groceryListViewModel.resetGLProducts(it)
+            }
+        })
+
+        groceryListViewModel.glName.observe(this, Observer{ glName ->
+            glName?.let {
+                (activity as AppCompatActivity).supportActionBar?.title = it
+
             }
         })
     }

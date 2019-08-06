@@ -14,4 +14,11 @@
     <string name="common_brand">Brand</string>
     <string name="btn_confirm">Confirm</string>
     <string name="common_plus" translatable="false">+</string>
+    <string name="create_product">Create product</string>
+    <string name="product_description">Product description</string>
+    <string name="expiry_date">Expiry date</string>
+    <string name="add">Add</string>
+    <string name="create_grocery_list">Create grocery list</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
 </resources>
