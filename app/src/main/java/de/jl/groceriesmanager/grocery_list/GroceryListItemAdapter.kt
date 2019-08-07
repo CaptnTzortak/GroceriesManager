@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.databinding.ItemGroceryListBinding
 
@@ -20,13 +21,14 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        val view = holder.itemView
-        if(item.bought){
-            view.setBackgroundColor(Color.RED)
+        val view = holder.itemView as MaterialCardView
+        if(!item.bought){
+            view.strokeColor = Color.RED
+            view.strokeWidth = 5
         } else{
-            view.setBackgroundColor(Color.GREEN)
+            view.strokeColor = Color.TRANSPARENT
+            view.strokeWidth = 0
         }
-
         holder.bind(item, clickListener, view)
 
     }

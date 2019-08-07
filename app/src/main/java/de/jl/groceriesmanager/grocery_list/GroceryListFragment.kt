@@ -2,6 +2,7 @@ package de.jl.groceriesmanager.grocery_list
 
 import android.app.Application
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,20 +10,27 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.SwipeToSetDoneCallback
+import de.jl.groceriesmanager.database.groceryLists.GroceryList
+import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
+import de.jl.groceriesmanager.database.products.Product
+import de.jl.groceriesmanager.dialog.ProductDialogFragment
 import de.jl.tools.openDatePicker
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_grocery_list.*
 
 class GroceryListFragment : Fragment() {
 
@@ -61,6 +69,11 @@ class GroceryListFragment : Fragment() {
             groceryListBinding.lifecycleOwner = this
             groceryListBinding.viewModel = groceryListViewModel
             groceryListBinding.groceryListItemList.adapter = adapter
+            val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+            itemDecorator.setDrawable(ContextCompat.getDrawable(this.context!!, R.drawable.rv_devider)!!)
+
+            groceryListBinding.groceryListItemList.addItemDecoration(itemDecorator)
+
             groceryListBinding.groceryListItemList.layoutManager = GridLayoutManager(activity, 1)
 
             val swipeHandler = object : SwipeToSetDoneCallback(application) {
@@ -71,6 +84,8 @@ class GroceryListFragment : Fragment() {
             }
             val itemTouchHelper = ItemTouchHelper(swipeHandler)
             itemTouchHelper.attachToRecyclerView(groceryListBinding.groceryListItemList)
+
+            groceryListBinding.insertNewProductBtn.setOnClickListener { onInsertNewProductClicked() }
 
             setObservers(adapter)
             validateArguments(args)
@@ -83,13 +98,38 @@ class GroceryListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_grocery_list, container, false)
     }
 
+    private fun onInsertNewProductClicked() {
+        navigateToProductDialog(Pair(0L,""))
+    }
+
+    private fun navigateToProductDialog(pair: Pair<Long, String>, quantity: Int = 1) {
+        val dialog = ProductDialogFragment(pair.first,null, pair.second, quantity)
+        fragmentManager?.let {
+            dialog.setTargetFragment(this, 0)
+            dialog.show(it, "Product Dialog")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0) {
+            if (data != null) {
+                if (data.extras.containsKey("ProdId") && data.extras.containsKey("Note")) {
+                    val prodId = data.extras.getLong("ProdId")
+                    val note = data.extras.getString("Note")
+                    val quantity = data.extras.getInt("Quantity")
+                    groceryListViewModel.newProductInserted(GroceryListsProducts(0L,prodId, 0L, note, quantity))
+                }
+            }
+        }
+    }
 
     private fun validateArguments(args: GroceryListFragmentArgs) {
         try {
             val productId = args.prodId
             var note = args.note
             if (productId > 0) {
-                groceryListViewModel.newProductInserted(productId, note)
+                groceryListViewModel.newProductInserted(GroceryListsProducts(0L,productId, 0L, note, 1))
             }
 
         } catch (e: Exception) {
@@ -118,12 +158,7 @@ class GroceryListFragment : Fragment() {
 
         groceryListViewModel.addProduct.observe(this, Observer { it ->
             it?.let {
-               //this.findNavController()
-               //   .navigate(
-               //       GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(
-               //           it.first, glId, it.second
-               //       )
-               //   )
+                navigateToProductDialog(Pair(it.prodId, it.note), it.quantity)
                 groceryListViewModel.doneNavigatingToAddProductGL()
             }
         })

@@ -1,24 +1,28 @@
 package de.jl.groceriesmanager.inventory
 
 import android.app.Application
+import android.app.Notification
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
-import de.jl.groceriesmanager.dialog.ProductDialogFragment
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import de.jl.groceriesmanager.R
+import de.jl.groceriesmanager.dialog.ProductDialogFragment
 
 
 class InventoryFragment : Fragment() {
@@ -98,6 +102,7 @@ class InventoryFragment : Fragment() {
         inventoryViewModel.newProductInventoryItem.observe(this, Observer { value ->
             value?.let {
                 inventoryViewModel.addNewProductItem()
+                newProductInserted()
             }
         })
 
@@ -120,10 +125,81 @@ class InventoryFragment : Fragment() {
         })
     }
 
+    private fun newProductInserted() {
+        //val channelID = "de.jl.groceriesmanager.notifications.expirydates"
+//
+        ////if (context != null) {
+////
+        ////    val notManager = application.getSystemService(NOTIFICATION_SERVICE)
+        ////    val notificationBuilder = NotificationCompat.Builder(context!!, channelID)
+////
+        ////    notificationBuilder.setAutoCancel(true)
+        ////        .setColor(ContextCompat.getColor(context!!, R.color.primaryColor))
+        ////        .setContentTitle(getString(R.string.app_name))
+        ////        .setContentText("")
+        ////        .setDefaults(Notification.DEFAULT_ALL)
+        ////        .setWhen(System.currentTimeMillis())
+        ////        .setSmallIcon(R.drawable.ic_launcher_background)
+        ////        .setAutoCancel(true)
+////
+        ////    val x = notificationBuilder.build()
+        ////}
+//
+//
+        //var builder = context?.let {
+        //    NotificationCompat.Builder(it, channelID)
+        //        .setSmallIcon(R.mipmap.ic_launcher)
+        //        .setContentTitle("My notification")
+        //        .setContentText("Much longer text that cannot fit one line...")
+        //        .setStyle(
+        //            NotificationCompat.BigTextStyle()
+        //                .bigText("Much longer text that cannot fit one line...")
+        //        )
+        //        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        //}
+//
+        //if (builder != null) {
+        //    //Notification.Builder.recoverBuilder(context, builder.build()).createContentView()
+        //    this.context?.let { NotificationManagerCompat.from(it) }?.notify(0, builder.build())
+//
+        //}
+
+// notificationId is a unique int for each notification that you must define
+
+
+
+        //  if (builder != null) {
+        //      with(context?.let { NotificationManagerCompat.from(it) }) {
+        //          // notificationId is a unique int for each notification that you must define
+        //          this?.notify(0, builder.build())
+        //      }
+        //  }
+
+
+        // val not = activity!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        // val notIntent = Intent()
+        // val conIntent = PendingIntent.getActivities(activity,0, notIntent, 0)
+        // val notification = Notification(    )
+        // notification.setLatestEventInfo(context, contextTitle, contentText, contentIntent);
+        // not.notify(1, notification);
+
+        // val notificationID = 101
+
+
+        // val notification = Notification.Builder(context, channelID)
+        //     .setContentTitle("Example Notification")
+        //     .setContentText("This is an  example notification.")
+        //     .setSmallIcon(android.R.drawable.ic_dialog_info)
+        //     .setChannelId(channelID)
+        //     .build()
+
+        // val mng = activity?.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        // mng?.notify(notificationID, notification)
+
+    }
+
     private fun navigateToProductDialog(pair: Pair<Long, String>) {
         val dialog = ProductDialogFragment(pair.first, pair.second)
-        dialog.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
             dialog.show(it, "Product Dialog")

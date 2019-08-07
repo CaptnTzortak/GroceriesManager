@@ -30,8 +30,8 @@ class GroceryListViewModel(
      * Live Data für das neue Produkt welches der Einkaufsliste hinzugefügt wird.
      * z.B aus dem addProductFragment/View (Navigation Args)
      */
-    private val _newProductGroceryListItem = MutableLiveData<Pair<Long, String>>()
-    val newProductGroceryListItem: LiveData<Pair<Long, String>>
+    private val _newProductGroceryListItem = MutableLiveData<GroceryListsProducts>()
+    val newProductGroceryListItem: LiveData<GroceryListsProducts>
         get() = _newProductGroceryListItem
 
     val groceryListProducts = glpDao.getAllGroceryListsProducts(glId)
@@ -49,8 +49,8 @@ class GroceryListViewModel(
      * LiveData für den Button "Add" im GroceryList-Screen. Dieser navigiert dann zum
      * AddGroceryListItem-Screen
      */
-    private val _addProduct = MutableLiveData<Pair<Long, String>>()
-    val addProduct: LiveData<Pair<Long, String>>
+    private val _addProduct = MutableLiveData<GroceryListsProducts>()
+    val addProduct: LiveData<GroceryListsProducts>
         get() = _addProduct
 
 
@@ -73,13 +73,6 @@ class GroceryListViewModel(
 
     fun resetClicked() {
         _reset.value = glId
-    }
-
-    /**
-     * Wird aus dem Layout aufgerufen (Btn add)
-     */
-    fun addProductClicked() {
-        _addProduct.value = Pair(0L, "")
     }
 
     /**
@@ -181,13 +174,15 @@ class GroceryListViewModel(
 
     fun addNewProductItem() {
         uiScope.launch {
-            val prodId = _newProductGroceryListItem.value?.first
-            val note = _newProductGroceryListItem.value?.second
-            if (prodId != null && note != null) {
+            val prodId = _newProductGroceryListItem.value?.prodId
+            val note = _newProductGroceryListItem.value?.note
+            val quantity = _newProductGroceryListItem.value?.quantity
+            if (prodId != null && note != null && quantity != null) {
                 var entry = getExistingGroceryListsProductsEntry(prodId)
                 entry.glId = glId
                 entry.prodId = prodId
                 entry.note = note
+                entry.quantity = quantity
                 if (entry.id > 0L) {
                     updateEntry(entry)
                 } else {
@@ -225,9 +220,9 @@ class GroceryListViewModel(
      * ein neues Produkt hinzugefügt wird und dieses über die Navigation-Arguments
      * dem InventoryFragment übergeben werden.
      */
-    fun newProductInserted(productId: Long, note: String) {
+    fun newProductInserted(glsItemsEntry: GroceryListsProducts) {
         uiScope.launch {
-            _newProductGroceryListItem.value = Pair(productId, note)
+            _newProductGroceryListItem.value = glsItemsEntry
         }
     }
 
@@ -249,7 +244,7 @@ class GroceryListViewModel(
 
     fun modifyProduct(item: GroceryListsProducts) {
         uiScope.launch {
-            _addProduct.value = Pair(item.prodId, item.note)
+            _addProduct.value = item
         }
     }
 

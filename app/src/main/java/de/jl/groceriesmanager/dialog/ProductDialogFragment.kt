@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.annotation.IntegerRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -18,15 +19,13 @@ import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.DialogProductBinding
 import de.jl.tools.openDatePicker
 import kotlinx.android.synthetic.main.activity_main.*
-import android.app.Activity
-
-
-
 
 
 class ProductDialogFragment(
     private val prodId: Long = 0L,
-    private val expiryDateString: String = ""
+    private val expiryDateString: String? = null,
+    private val note: String? = null,
+    private val quantity: Int? = null
 ) : DialogFragment() {
 
     lateinit var productDialogBinding: DialogProductBinding
@@ -52,7 +51,7 @@ class ProductDialogFragment(
         application = requireNotNull(this.activity).application
 
         //ViewModelFactory
-        val viewModelFactory = GroceriesManagerViewModelFactory(application, prodId, expiryDateString)
+        val viewModelFactory = GroceriesManagerViewModelFactory(application, prodId, expiryDateString, 0L, note, quantity)
 
         //ViewModel
         productDialogViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProductDialogViewModel::class.java)
@@ -68,7 +67,7 @@ class ProductDialogFragment(
                 })
             }
         }
-        if(prodId>0L){
+        if (prodId > 0L) {
             productDialogBinding.title.text = getString(R.string.modify_product)
             productDialogBinding.confirmProductBtn.text = getString(R.string.save)
         }
@@ -87,14 +86,34 @@ class ProductDialogFragment(
 
     private fun setObservers() {
         productDialogViewModel.productDescription.observe(this, Observer {
-            it?.let{
+            it?.let {
                 productDialogViewModel.checkProductValid()
             }
         })
 
         productDialogViewModel.expiryDateString.observe(this, Observer {
-            it?.let{
+            if (it != null) {
+                productDialogBinding.tilExpiryDateString.visibility = View.VISIBLE
+                productDialogBinding.tilNote.visibility = View.GONE
+                productDialogBinding.tilQuantity.visibility = View.GONE
                 productDialogViewModel.checkProductValid()
+            } else {
+                productDialogBinding.tilExpiryDateString.visibility = View.GONE
+                productDialogBinding.tilNote.visibility = View.VISIBLE
+                productDialogBinding.tilQuantity.visibility = View.VISIBLE
+            }
+        })
+
+        productDialogViewModel.note.observe(this, Observer {
+            if (it != null) {
+                productDialogBinding.tilNote.visibility = View.VISIBLE
+                productDialogBinding.tilQuantity.visibility = View.VISIBLE
+                productDialogBinding.tilExpiryDateString.visibility = View.GONE
+                productDialogViewModel.checkProductValid()
+            } else {
+                productDialogBinding.tilExpiryDateString.visibility = View.VISIBLE
+                productDialogBinding.tilQuantity.visibility = View.GONE
+                productDialogBinding.tilNote.visibility = View.GONE
             }
         })
 
@@ -108,16 +127,19 @@ class ProductDialogFragment(
 
         productDialogViewModel.addedProduct.observe(this, Observer {
             it?.let {
-                sendResult(it, productDialogViewModel.expiryDateString.value.toString())
+                sendResult(it, productDialogViewModel.expiryDateString.value.toString(), productDialogViewModel.note.value.toString(), productDialogViewModel.quantityString.value)
             }
         })
     }
 
 
-    private fun sendResult(id: Long, expDate: String) {
+    private fun sendResult(id: Long, expDate: String, finNote: String, quantityString: String?) {
         val bundle = Bundle()
-        bundle.putLong("ProdId",id)
+        bundle.putLong("ProdId", id)
         bundle.putString("ExpDate", expDate)
+        bundle.putString("Note",finNote)
+        val q = quantityString ?: "1"
+        bundle.putInt("Quantity",Integer.parseInt(q))
         val intent = Intent().putExtras(bundle)
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
         dismiss()

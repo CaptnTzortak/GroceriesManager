@@ -8,7 +8,7 @@ import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.Product
 import kotlinx.coroutines.*
 
-class AddProductGroceryListViewModel(application: Application, private val prodId: Long, private val passedNote: String, private val passedGlId: Long) : AndroidViewModel(application) {
+class AddProductGroceryListViewModel(application: Application, private val prodId: Long, private val passedNote: String?, private val passedGlId: Long) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
@@ -46,7 +46,11 @@ class AddProductGroceryListViewModel(application: Application, private val prodI
 
     init {
         if(prodId > 0) {
-            fillProduct(prodId, passedNote)
+            var rPassedNote = ""
+            if(!passedNote.isNullOrEmpty()){
+                rPassedNote = passedNote
+            }
+            fillProduct(prodId, rPassedNote)
             existingProdId = prodId
             glId = passedGlId
         }

@@ -16,9 +16,10 @@ import de.jl.groceriesmanager.scanner.ScannerViewModel
 class GroceriesManagerViewModelFactory(
     private val application: Application,
     private val prodId: Long = 0L,
-    private val expiryDateString: String = "",
+    private val expiryDateString: String? = null,
     private val glId: Long = 0L,
-    private val passedNote: String = ""
+    private val passedNote: String? = null,
+    private val passedQuantity: Int? = null
 
 ) : ViewModelProvider.Factory {
 
@@ -31,7 +32,7 @@ class GroceriesManagerViewModelFactory(
             modelClass.isAssignableFrom(InventoryViewModel::class.java) -> return InventoryViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListsViewModel::class.java) -> return GroceryListsViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListViewModel::class.java) -> return GroceryListViewModel(application, glId) as T
-            modelClass.isAssignableFrom(ProductDialogViewModel::class.java) -> return ProductDialogViewModel(application, prodId, expiryDateString) as T
+            modelClass.isAssignableFrom(ProductDialogViewModel::class.java) -> return ProductDialogViewModel(application, prodId, expiryDateString, passedNote, passedQuantity) as T
             modelClass.isAssignableFrom(NewGroceryListDialogViewModel::class.java) -> return NewGroceryListDialogViewModel(application, glId) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }

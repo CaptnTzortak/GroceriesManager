@@ -22,4 +22,6 @@
     <string name="save">Speichern</string>
     <string name="modify_product">Produkt bearbeiten</string>
     <string name="modify_groceryList">Einkaufsliste bearbeiten</string>
+    <string name="quantity">Anzahl</string>
+    <string name="note">Notiz</string>
 </resources>

@@ -24,4 +24,7 @@
     <string name="save">Save</string>
     <string name="modify_product">Modify product</string>
     <string name="modify_groceryList">Modify grocery list</string>
+    <string name="quantity">Quantity</string>
+    <string name="note">Note</string>
+    <string name="channel_name" translatable="false">GroceriesManagerNotificationChannel</string>
 </resources>

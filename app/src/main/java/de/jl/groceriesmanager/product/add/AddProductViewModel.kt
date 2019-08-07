@@ -9,7 +9,7 @@ import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.database.products.ProductsDao
 import kotlinx.coroutines.*
 
-class AddProductViewModel(application: Application, prodId : Long, expiryDate: String) : AndroidViewModel(application) {
+class AddProductViewModel(application: Application, prodId : Long, expiryDate: String?) : AndroidViewModel(application) {
     /** Coroutine variables */
 
     /**
@@ -49,7 +49,11 @@ class AddProductViewModel(application: Application, prodId : Long, expiryDate: S
 
     init {
         if(prodId > 0) {
-            fillProduct(prodId, expiryDate)
+            var rExpDate = ""
+            if(!expiryDate.isNullOrEmpty()){
+                rExpDate = expiryDate
+            }
+            fillProduct(prodId, rExpDate)
             existingProdId = prodId
         }
     }
