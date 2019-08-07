@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
 >
     <data>
         <variable
                 name="inventoryProduct"
                 type="de.jl.groceriesmanager.database.inventory.Inventory"/>
+        <variable name="clickListener" type="de.jl.groceriesmanager.inventory.InventoryItemListener"/>
     </data>
 
 
@@ -14,9 +15,10 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="25dp"
             app:cardElevation="2dp"
-            android:background="@drawable/bg_dialog" app:cardBackgroundColor="@color/primaryLightColor">
+            android:background="@drawable/bg_dialog" app:cardBackgroundColor="@color/primaryLightColor"
+            android:onClick="@{() -> clickListener.onClick(inventoryProduct)}">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <TextView

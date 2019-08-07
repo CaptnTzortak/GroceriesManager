@@ -40,7 +40,7 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
             view: View
         ) {
             binding.inventoryProduct = item
-            itemView.setOnClickListener { clickListener.onClick(item) }
+            binding.clickListener = clickListener
             view.setOnCreateContextMenuListener(this)
             binding.executePendingBindings()
         }
