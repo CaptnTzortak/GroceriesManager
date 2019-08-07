@@ -85,6 +85,7 @@
                         android:clickable="true"
                         android:id="@+id/confirmProductBtn"
                         android:focusable="true"
+                        android:enabled="@{viewModel.confirmProductValid}"
                         app:layout_constraintTop_toBottomOf="@+id/til_expiryDateString"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"

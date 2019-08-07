@@ -86,6 +86,18 @@ class ProductDialogFragment(
     }
 
     private fun setObservers() {
+        productDialogViewModel.productDescription.observe(this, Observer {
+            it?.let{
+                productDialogViewModel.checkProductValid()
+            }
+        })
+
+        productDialogViewModel.expiryDateString.observe(this, Observer {
+            it?.let{
+                productDialogViewModel.checkProductValid()
+            }
+        })
+
         productDialogViewModel.confirmProduct.observe(this, Observer {
             it?.let {
                 if (it) {

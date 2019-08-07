@@ -8,9 +8,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/AppTheme.BaseBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/primaryColor"
             tools:context=".inventory.InventoryFragment">
 
         <androidx.recyclerview.widget.RecyclerView

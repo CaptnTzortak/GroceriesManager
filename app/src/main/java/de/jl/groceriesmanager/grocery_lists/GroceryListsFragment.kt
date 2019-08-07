@@ -54,7 +54,7 @@ class GroceryListsFragment : Fragment() {
             groceryListsBinding.viewModel = groceryListsViewModel
             groceryListsBinding.groceryListsList.adapter = adapter
             groceryListsBinding.groceryListsList.layoutManager = GridLayoutManager(activity, 1)
-            groceryListsBinding.addBtn.setOnClickListener { openAddGroceryListDialog() }
+            groceryListsBinding.insertNewGroceryList.setOnClickListener { openAddGroceryListDialog() }
 
             setObservers(adapter)
             //validateArguments

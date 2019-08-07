@@ -15,6 +15,9 @@
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/primaryDarkColor</item>
     </style>
+    <style name="AppTheme.BaseBackground">
+        <item name="android:background">@color/primaryColor</item>
+    </style>
     <style name="AppTheme.FloatingActionButton">
         <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryDarkColor</item>
     </style>

@@ -6,6 +6,7 @@
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/AppTheme.BaseBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".scanner.ScannerFragment">

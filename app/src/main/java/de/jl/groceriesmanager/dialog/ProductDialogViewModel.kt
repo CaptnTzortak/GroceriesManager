@@ -28,15 +28,20 @@ class ProductDialogViewModel(application: Application, passedProdId: Long = 0L, 
     var productDescription = MutableLiveData<String>()
     var expiryDateString = MutableLiveData<String>()
 
+    var confirmProductValid = MutableLiveData<Boolean>()
+
     var existingProdId: Long = 0L
     var existingExpiryDateString: String = ""
 
     init {
+        productDescription.value = ""
+        expiryDateString.value =""
         if(passedProdId > 0L){
             existingProdId = passedProdId
             existingExpiryDateString = passedExpiryDateString
             setupEditProduct()
         }
+        checkProductValid()
     }
 
     private fun setupEditProduct() {
@@ -85,6 +90,12 @@ class ProductDialogViewModel(application: Application, passedProdId: Long = 0L, 
     private suspend fun insert(prod: Product): Long{
         return withContext(Dispatchers.IO){
             prodsDao.insert(prod)
+        }
+    }
+
+    fun checkProductValid() {
+        uiScope.launch {
+            confirmProductValid.value = productDescription.value?.length!! >= 3 && !expiryDateString.value.isNullOrEmpty()
         }
     }
 }

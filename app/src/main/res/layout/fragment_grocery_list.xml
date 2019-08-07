@@ -5,6 +5,7 @@
         <variable name="viewModel" type="de.jl.groceriesmanager.grocery_list.GroceryListViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/AppTheme.BaseBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".GroceryListsFragment">
@@ -19,16 +20,18 @@
                 android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:src="@drawable/ic_add"
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                style="@style/AppTheme.FloatingActionButton"
+                android:contentDescription="@string/add"
+                android:text="@string/add"
+                app:icon="@drawable/ic_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.addProductClicked()}"
-                android:clickable="true" android:id="@+id/floatingActionButton"
+                android:clickable="true" android:id="@+id/insertNewProductBtn"
                 android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginRight="8dp" app:backgroundTint="@color/primaryColor" android:focusable="true"/>
-
+                android:layout_marginRight="8dp"
+                android:focusable="true"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
