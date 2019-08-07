@@ -1,6 +1,7 @@
 package de.jl.groceriesmanager.grocery_lists
 
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,16 +9,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.FragmentGroceryListsBinding
-import de.jl.tools.openDialogNewGroceryList
+import de.jl.groceriesmanager.dialog.NewGroceryListDialogFragment
 
 class GroceryListsFragment : Fragment() {
 
@@ -53,8 +56,14 @@ class GroceryListsFragment : Fragment() {
             groceryListsBinding.lifecycleOwner = this
             groceryListsBinding.viewModel = groceryListsViewModel
             groceryListsBinding.groceryListsList.adapter = adapter
+
+            val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+            itemDecorator.setDrawable(ContextCompat.getDrawable(this!!.context!!, R.drawable.rv_devider)!!)
+            groceryListsBinding.groceryListsList.addItemDecoration(itemDecorator)
             groceryListsBinding.groceryListsList.layoutManager = GridLayoutManager(activity, 1)
             groceryListsBinding.insertNewGroceryList.setOnClickListener { openAddGroceryListDialog() }
+
+
 
             setObservers(adapter)
             //validateArguments
@@ -67,11 +76,6 @@ class GroceryListsFragment : Fragment() {
     }
 
     private fun setObservers(adapter: GroceryListsItemAdapter) {
-        groceryListsViewModel.newGroceryList.observe(this, Observer {
-            it?.let {
-               // addNewGroceryList()
-            }
-        })
 
         //Observer für Recycler-View Items
         groceryListsViewModel.groceryLists.observe(this, Observer {
@@ -86,8 +90,8 @@ class GroceryListsFragment : Fragment() {
             }
         })
 
-        groceryListsViewModel.openGroceryList.observe(this, Observer{
-            it?.let{
+        groceryListsViewModel.openGroceryList.observe(this, Observer {
+            it?.let {
                 this.findNavController()
                     .navigate(GroceryListsFragmentDirections.actionGroceryListsDestinationToGroceryListFragment(it, ""))
                 groceryListsViewModel.doneOpenGroceryList()
@@ -95,26 +99,21 @@ class GroceryListsFragment : Fragment() {
         })
     }
 
-    private fun openAddGroceryListDialog() {
-        context?.let {
-            openDialogNewGroceryList(context!!, View.OnClickListener{
-                //TODO: Ermitteln des Textes
-                //groceryListsViewModel.newGroceryList(editText.text.toString())
-            })
-            //val db = AlertDialog.Builder(context!!)
-            //val layoutView = layoutInflater.inflate(R.layout.dialog_new_product, null)
-            //db.setView(layoutView)
-            //val dialog = db.create()
-            //dialog.window.attributes.windowAnimations = R.style.AppTheme_DialogAnimation
-            //dialog.show()
-            //dialog.window.setBackgroundDrawable(ColorDrawable(0))
-        }//
+    private fun openAddGroceryListDialog(id: Long = 0L) {
+        val dialog = NewGroceryListDialogFragment(id)
+        fragmentManager?.let {
+            dialog.setTargetFragment(this, 0)
+            dialog.show(it, "Grocery List Dialog")
+        }
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             121 -> {
                 groceryListsViewModel.deleteGroceryList(item.groupId.toLong())
+            }
+            122 -> {
+                openAddGroceryListDialog(item.groupId.toLong())
             }
         }
         return true

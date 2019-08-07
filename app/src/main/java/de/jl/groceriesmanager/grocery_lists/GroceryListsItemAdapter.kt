@@ -60,6 +60,7 @@ class GroceryListsItemAdapter(val clickListener: GroceryListsItemListener) :
                 id = binding.groceryList?.id!!.toInt()
             }
             menu.add(id, 121, 0, "Delete")
+            menu.add(id, 122, 0, "Modify")
         }
     }
 }

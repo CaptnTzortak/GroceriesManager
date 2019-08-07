@@ -27,32 +27,24 @@ class GroceryListsViewModel(application: Application) :
     val openGroceryList: LiveData<Long>
         get() = _openGroceryList
 
-    private val _newGroceryListDescription = MutableLiveData<String>()
-    val newGroceryListDescription: LiveData<String>
+    private val _newGroceryListDescription = MutableLiveData<Pair<Long,String>>()
+    val newGroceryListDescription: LiveData<Pair<Long,String>>
         get() = _newGroceryListDescription
-
-    private val _newGroceryList = MutableLiveData<Long>()
-    val newGroceryList: LiveData<Long>
-        get() = _newGroceryList
 
 
     fun insertNewGroceryList() {
         uiScope.launch {
-            val desc = _newGroceryListDescription.value.toString()
-            insertNewGroceryList(desc)
-            _newGroceryListDescription.value = null
         }
     }
 
-    private suspend fun insertNewGroceryList(desc: String) {
+    private suspend fun insertNewGL() {
         withContext(Dispatchers.IO) {
-            glDao.insert(GroceryList(0L, desc))
         }
     }
 
-    fun newGroceryList(desc: String) {
+    fun newGroceryList(pair: Pair<Long,String>) {
         uiScope.launch {
-            _newGroceryListDescription.value = desc
+            _newGroceryListDescription.value = pair
         }
     }
 

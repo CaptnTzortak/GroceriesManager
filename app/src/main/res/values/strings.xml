@@ -23,4 +23,5 @@
     <string name="title">Title</string>
     <string name="save">Save</string>
     <string name="modify_product">Modify product</string>
+    <string name="modify_groceryList">Modify grocery list</string>
 </resources>

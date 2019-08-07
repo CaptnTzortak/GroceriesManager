@@ -1,72 +1,89 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_dialog">
-
-    <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewModel" type="de.jl.groceriesmanager.dialog.NewGroceryListDialogViewModel"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_grocery_list"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"/>
-    <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" android:id="@+id/scrollView"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/title" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="8dp" android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginRight="8dp" android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_dialog"
     >
-        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-                                                           android:layout_height="wrap_content"
-                                                           android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputLayout
-                    style="@style/DefaultTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:id="@+id/til_groceryListDescription" app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_grocery_list"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"/>
+        <View
+                android:id="@+id/titleDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/primaryDarkColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
+        <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/scrollView2"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/titleDivider" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"
+        >
+            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+                                                               android:layout_height="wrap_content"
+                                                               android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="@string/description"
-                        android:id="@+id/tiet_groceryListDescription"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:id="@+id/til_description" app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
 
-            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:contentDescription="@string/add"
-                    android:text="@string/add"
-                    app:icon="@drawable/ic_add"
-                    app:layout_anchorGravity="bottom|right|end"
-                    android:clickable="true"
-                    android:id="@+id/addGroceryListBtn"
-                    android:focusable="true"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginLeft="8dp"
-                    android:backgroundTint="@color/primaryColor"
-                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/til_groceryListDescription"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="8dp"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.groceryListName}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/description"
+                            android:id="@+id/tiet_description"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                        style="@style/AppTheme.FloatingActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:contentDescription="@string/add"
+                        android:text="@string/add"
+                        app:icon="@drawable/ic_add"
+                        app:layout_anchorGravity="bottom|right|end"
+                        android:clickable="true"
+                        android:id="@+id/confirmGroceryListBtn"
+                        android:focusable="true"
+                        android:enabled="@{viewModel.confirmGroceryListValid}"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginLeft="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="8dp" app:layout_constraintTop_toBottomOf="@+id/til_description"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
