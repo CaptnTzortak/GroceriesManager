@@ -6,7 +6,7 @@ import de.jl.groceriesmanager.database.inventory.Inventory
 
 @BindingAdapter("itemBarcode")
 fun TextView.setItemBarcode(item: Inventory) {
-    val barcode = if (item.product.barcodeId == 0L) {
+    val barcode = if (item.product.barcodeId == null) {
         item.product.id
     } else {
         item.product.barcodeId

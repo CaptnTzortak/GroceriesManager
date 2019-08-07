@@ -11,7 +11,7 @@ data class Product(
     var id: Long = 0L,
 
     @ColumnInfo(name = "barcodeId")
-    var barcodeId: Long = 0L,
+    var barcodeId: Long? = null,
 
     @ColumnInfo(name = "description")
     var description: String = "",

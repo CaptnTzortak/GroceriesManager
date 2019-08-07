@@ -21,6 +21,7 @@ class InventoryItemAdapter(val clickListener: InventoryItemListener) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         val view = holder.itemView
+
         holder.bind(item, clickListener, view)
 
     }

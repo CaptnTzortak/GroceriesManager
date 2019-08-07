@@ -3,6 +3,7 @@ package de.jl.groceriesmanager
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import de.jl.groceriesmanager.dialog.ProductDialogViewModel
 import de.jl.groceriesmanager.grocery_list.GroceryListViewModel
 import de.jl.groceriesmanager.grocery_lists.GroceryListsViewModel
 import de.jl.groceriesmanager.inventory.InventoryViewModel
@@ -28,6 +29,8 @@ class GroceriesManagerViewModelFactory(
             modelClass.isAssignableFrom(InventoryViewModel::class.java) -> return InventoryViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListsViewModel::class.java) -> return GroceryListsViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListViewModel::class.java) -> return GroceryListViewModel(application, glId) as T
+            modelClass.isAssignableFrom(ProductDialogViewModel::class.java) -> return ProductDialogViewModel(application, prodId, expiryDateString) as T
+
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

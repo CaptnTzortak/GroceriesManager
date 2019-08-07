@@ -1,10 +1,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-
+        <variable name="viewModel" type="de.jl.groceriesmanager.dialog.ProductDialogViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_dialog"
     >
 
@@ -43,6 +43,7 @@
                         android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.productDescription}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/product_description"
@@ -62,6 +63,7 @@
                         android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.expiryDateString}"
                             android:id="@+id/tiet_expiryDateString"
                             android:inputType="none"
                             android:focusable="false"
@@ -81,7 +83,7 @@
                         android:drawablePadding="5dp"
                         app:layout_anchorGravity="bottom|right|end"
                         android:clickable="true"
-                        android:id="@+id/addProductBtn"
+                        android:id="@+id/confirmProductBtn"
                         android:focusable="true"
                         app:layout_constraintTop_toBottomOf="@+id/til_expiryDateString"
                         android:layout_marginTop="16dp"

@@ -118,12 +118,12 @@ class GroceryListFragment : Fragment() {
 
         groceryListViewModel.addProduct.observe(this, Observer { it ->
             it?.let {
-                this.findNavController()
-                    .navigate(
-                        GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(
-                            it.first, glId, it.second
-                        )
-                    )
+               //this.findNavController()
+               //   .navigate(
+               //       GroceryListFragmentDirections.groceryListDestinationToAddProductGroceryListDestination(
+               //           it.first, glId, it.second
+               //       )
+               //   )
                 groceryListViewModel.doneNavigatingToAddProductGL()
             }
         })

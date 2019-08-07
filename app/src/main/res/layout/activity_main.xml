@@ -22,7 +22,7 @@
                 android:layout_weight="1"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/navigation_graph"
-        />
+                android:background="@color/primaryLightColor"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_nav_view"
