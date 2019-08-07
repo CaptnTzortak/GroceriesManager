@@ -73,14 +73,14 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/expiry_date"/>
                 </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                        style="@style/AppTheme.FloatingActionButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:contentDescription="@string/add"
                         android:text="@string/add"
-                        android:drawableLeft="@drawable/ic_add"
-                        android:drawablePadding="5dp"
+                        app:icon="@drawable/ic_add"
                         app:layout_anchorGravity="bottom|right|end"
                         android:clickable="true"
                         android:id="@+id/confirmProductBtn"
@@ -94,10 +94,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         android:layout_marginLeft="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginBottom="8dp"
-                        android:backgroundTint="@color/primaryColor"
-                        android:textColor="@color/primaryDarkColor"
-                />
+                        android:layout_marginBottom="8dp"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

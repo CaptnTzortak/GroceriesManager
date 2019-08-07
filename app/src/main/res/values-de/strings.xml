@@ -19,4 +19,6 @@
     <string name="create_grocery_list">Einkaufsliste erstellen</string>
     <string name="description">Beschreibung</string>
     <string name="title">Titel</string>
+    <string name="save">Speichern</string>
+    <string name="modify_product">Produkt bearbeiten</string>
 </resources>

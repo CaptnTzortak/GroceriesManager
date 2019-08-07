@@ -2,13 +2,7 @@
 <resources>
     <color name="primaryColor">#81D4FA</color>
     <color name="primaryLightColor">#B3E5FC</color>
-    <color name="primaryDarkColor">#01579B</color>
-    <color name="secondaryColor">#80DEEA</color>
-    <color name="secondaryLightColor">#B2EBF2</color>
-    <color name="secondaryDarkColor">#006064</color>
-    <color name="backgroundColor">#FFFFFF</color>
-    <color name="surfaceColor">#FFFFFF</color>
+    <color name="primaryDarkColor">#03A9F4</color>
+
     <color name="errorColor">#B00020</color>
-    <color name="primaryTextColor">#000000</color>
-    <color name="secondaryTextColor">#FFFFFF</color>
 </resources>

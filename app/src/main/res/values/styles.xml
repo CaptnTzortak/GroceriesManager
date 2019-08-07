@@ -8,25 +8,23 @@
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
     </style>
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:textColor">@color/primaryDarkColor</item>
-        <item name="android:textColorPrimary">@color/primaryTextColor</item>
-        <item name="android:textColorSecondary">@color/secondaryTextColor</item>
     </style>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
 
     </style>
-    <style name="DefaultFloatingActionButton">
-        <item name="android:textColor">@color/primaryColor</item>
-        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryColor</item>
+    <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/primaryDarkColor</item>
+    </style>
+    <style name="AppTheme.FloatingActionButton">
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryDarkColor</item>
     </style>
     <style name="DefaultTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textColor">@color/primaryDarkColor</item>
-        <item name="hintTextColor">@color/primaryDarkColor</item>
         <item name="errorTextAppearance">@color/errorColor</item>
     </style>
     <style name="DefaultButton">
         <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryColor</item>
-        <item name="android:textColor">@color/primaryDarkColor</item>
+    </style>
+    <style name="AppTheme.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="android:background">@color/primaryDarkColor</item>
     </style>
 </resources>

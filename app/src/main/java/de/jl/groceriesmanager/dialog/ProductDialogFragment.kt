@@ -13,7 +13,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.DialogProductBinding
@@ -69,6 +68,11 @@ class ProductDialogFragment(
                 })
             }
         }
+        if(prodId>0L){
+            productDialogBinding.title.text = getString(R.string.modify_product)
+            productDialogBinding.confirmProductBtn.text = getString(R.string.save)
+        }
+
         productDialogBinding.confirmProductBtn.setOnClickListener {
             onConfirmProductBtn()
         }

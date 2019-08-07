@@ -6,7 +6,6 @@
         <variable
                 name="inventoryProduct"
                 type="de.jl.groceriesmanager.database.inventory.Inventory"/>
-        <variable name="clickListener" type="de.jl.groceriesmanager.inventory.InventoryItemListener"/>
     </data>
 
 

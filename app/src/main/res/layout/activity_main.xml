@@ -10,9 +10,9 @@
             android:layout_height="match_parent"
             tools:context=".MainActivity">
         <androidx.appcompat.widget.Toolbar
+                style="@style/AppTheme.Toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primaryColor"
                 android:id="@+id/toolbar"/>
         <fragment
                 android:id="@+id/nav_host_fragment"
@@ -25,10 +25,10 @@
                 android:background="@color/primaryLightColor"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
+                style="@style/AppTheme.BottomNavigationView"
                 android:id="@+id/bottom_nav_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primaryColor"
                 app:menu="@menu/bottom_nav_menu"/>
     </LinearLayout>
 </layout>

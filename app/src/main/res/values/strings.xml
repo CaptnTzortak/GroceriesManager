@@ -21,4 +21,6 @@
     <string name="create_grocery_list">Create grocery list</string>
     <string name="description">Description</string>
     <string name="title">Title</string>
+    <string name="save">Save</string>
+    <string name="modify_product">Modify product</string>
 </resources>
