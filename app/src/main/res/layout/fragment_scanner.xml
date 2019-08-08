@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
     <data>
-
+        <variable name="viewModel" type="de.jl.groceriesmanager.scanner.ScannerViewModel"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
             style="@style/AppTheme.BaseBackground"
@@ -11,42 +11,58 @@
             android:layout_height="match_parent"
             tools:context=".scanner.ScannerFragment">
 
+        <com.google.android.material.textfield.TextInputLayout
+                style="@style/DefaultTextInputLayout"
+                android:id="@+id/til_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:hint="@string/barcode"
+                    android:text="@={viewModel.barcode}"
+                    android:inputType="numberSigned"
+                    android:id="@+id/tiet_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textSize="24sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TextView
-                android:text="Current Barcode: XXXXXXXXXX"
+                app:barcodeText="@{viewModel.barcode}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView12"
-                app:layout_constraintTop_toBottomOf="@+id/title" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/scanBarcodeBtn"
+                android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                android:textSize="24sp"
+                app:layout_constraintTop_toTopOf="@+id/scanBarcodeBtn"
+                app:layout_constraintBottom_toBottomOf="@+id/scanBarcodeBtn"/>
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                style="@style/AppTheme.FloatingActionButton"
+                android:contentDescription="@string/scan"
+                android:text="@string/scan"
+                app:icon="@drawable/ic_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true" android:id="@+id/scanBarcodeBtn"
+                android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                android:focusable="true" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/til_barcode"/>
+        <TextView
+                android:text="@{viewModel.response}"
+                android:layout_width="0dp"
+                android:layout_height="0dp" android:id="@+id/jsonResponse"
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp" android:layout_marginTop="48dp"
-                app:layout_constraintHorizontal_bias="0.0"/>
-        <ImageView
-                android:layout_width="316dp"
-                android:layout_height="267dp" tools:srcCompat="@tools:sample/avatars[2]"
-                android:id="@+id/imageView3" app:layout_constraintStart_toStartOf="@+id/textView12"
-                app:layout_constraintEnd_toEndOf="@+id/textView12" android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/textView12"
-        />
-        <Button
-                style="@style/DefaultButton"
-                android:text="Scan Again"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button4" app:layout_constraintStart_toStartOf="@+id/imageView3"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        />
-        <Button
-                style="@style/DefaultButton"
-                android:text="Reset Scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/button5"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                app:layout_constraintEnd_toEndOf="@+id/imageView3"
-                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" android:layout_marginBottom="8dp"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

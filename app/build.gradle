@@ -57,6 +57,7 @@ dependencies {
     // Coroutines - Jobs bzw threads für DB Operationen
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
 
     // Testing
     testImplementation 'junit:junit:4.12'
@@ -69,4 +70,11 @@ dependencies {
 
     //Android-Debug-Database
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
+    implementation "com.squareup.moshi:moshi:$version_moshi"
+    implementation "com.squareup.moshi:moshi-kotlin:$version_moshi"
+
 }

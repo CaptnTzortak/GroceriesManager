@@ -10,11 +10,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.FragmentScannerBinding
-import kotlinx.android.synthetic.main.activity_main.*
 
 class ScannerFragment : Fragment() {
 
@@ -23,9 +23,11 @@ class ScannerFragment : Fragment() {
     private lateinit var scannerBinding: FragmentScannerBinding
     lateinit var application: Application
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        try{
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        try {
             (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.common_scanner)
 
             //Binding
@@ -35,19 +37,37 @@ class ScannerFragment : Fragment() {
             application = requireNotNull(this.activity).application
 
             //ViewModelFactory
-            //mit Parameter:
-            //scannerViewModelFactory = ScannerViewModelFactory(ScannerFragmentArgs.fromBundle(arguments!!).score)
-            //Ohne Parameter:
             scannerViewModelFactory = GroceriesManagerViewModelFactory(application)
             //ViewModel
             scannerViewModel = ViewModelProviders.of(this, scannerViewModelFactory).get(ScannerViewModel::class.java)
 
+            setObservers()
+
+            scannerBinding.lifecycleOwner = this
+            scannerBinding.viewModel = scannerViewModel
+
             return scannerBinding.root
 
-        } catch(e: Exception){
+        } catch (e: Exception) {
             Log.d("ScannerFragment", "Error ${e.localizedMessage}")
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scanner, container, false)
+    }
+
+    private fun setObservers() {
+        scannerViewModel.barcode.observe(this, Observer {
+            if (it != null) {
+                scannerViewModel.validateBarcode()
+            }
+        })
+
+        scannerViewModel.valid.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    scannerViewModel.getData()
+                }
+            }
+        })
     }
 }

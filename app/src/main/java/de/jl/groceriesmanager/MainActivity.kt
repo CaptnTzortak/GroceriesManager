@@ -1,6 +1,5 @@
 package de.jl.groceriesmanager
 
-import android.annotation.TargetApi
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -9,20 +8,17 @@ import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
-import android.app.PendingIntent
-import android.widget.Toast
 import java.util.*
 import android.app.AlarmManager
-import android.content.SharedPreferences
-import android.R.id.edit
-import android.content.SharedPreferences.Editor
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
 
         mainActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         val host: NavHostFragment =
@@ -49,39 +48,75 @@ class MainActivity : AppCompatActivity() {
             }
             Log.d("NavigationActivity", "Navigated to $dest")
         }
-        createNotificationChannel(
-            "de.jl.groceriesmanager.notifications.expirydates",
-            "GroceriesManager ExpiryDates",
-            "ExpiryDates-Notifications for inventory products"
-        )
+
+        //createNotificationChannel(
+        //    "de.jl.groceriesmanager.notifications.expirydates",
+        //    "GroceriesManager ExpiryDates",
+        //    "ExpiryDates-Notifications for inventory products"
+        //)
 
         //  setupExpiryDateNotifications()
         //  scheduleNotification(getNotification("5 second delay"), 5000)
+
+
+
 
         val sharedpreferences = getSharedPreferences("GroceriesManagerPreferences", Context.MODE_PRIVATE)
         val editor = sharedpreferences.edit()
 
         if (!sharedpreferences.getBoolean("alarm", false)) {
-            /* Retrieve a PendingIntent that will perform a broadcast */
-            val alarmIntent = Intent(this, NotificationPublisher::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0)
-            val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val interval = 8000L
+            setupNotificationAlarm()
 
-            /* Set the alarm to start at 10:30 AM */
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = System.currentTimeMillis()
-            calendar.set(Calendar.HOUR_OF_DAY, 20)
-            calendar.set(Calendar.MINUTE, 1)
+           ///* Retrieve a PendingIntent that will perform a broadcast */
+           //val alarmIntent = Intent(this, NotificationPublisher::class.java)
+           //val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0)
+           //val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+           //val interval = 8000L
 
-            /* Repeating on every 24 hours interval */
-            manager.setRepeating(
-                AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
-                (1000 * 60 * 60 * 24).toLong(), pendingIntent
-            )
+           ///* Set the alarm to start at 10:30 AM */
+           //val calendar = Calendar.getInstance()
+           //calendar.timeInMillis = System.currentTimeMillis()
+           //calendar.set(Calendar.HOUR_OF_DAY, 20)
+           //calendar.set(Calendar.MINUTE, 1)
+
+           ///* Repeating on every 24 hours interval */
+           //manager.setRepeating(
+           //    AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+           //    (1000 * 60 * 60 * 24).toLong(), pendingIntent
+           //)
             Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show()
             editor.putBoolean("alarm", true)
             editor.commit()
+        }
+    }
+
+    private fun setupNotificationAlarm() {
+        val intent = Intent(this, NotificationPublisher::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val firingCal = Calendar.getInstance()
+        val currentCal = Calendar.getInstance()
+
+        firingCal.set(Calendar. HOUR_OF_DAY,10) // At the hour you wanna fire
+        firingCal.set(Calendar.MINUTE, 30) // Particular minute
+        firingCal.set(Calendar.SECOND, 0) // particular second
+
+
+        var intendedTime = firingCal.timeInMillis
+        val currentTime = currentCal.timeInMillis
+
+        if(intendedTime >= currentTime){
+            // you can add buffer time too here to ignore some small differences in milliseconds
+            // set from today
+            alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
+        } else{
+            // set from next day
+            // you might consider using calendar.add() for adding one day to the current day
+            firingCal.add(Calendar.DAY_OF_MONTH, 1)
+            intendedTime = firingCal.timeInMillis
+
+            alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
         }
     }
 

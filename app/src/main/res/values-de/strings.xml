@@ -24,4 +24,6 @@
     <string name="modify_groceryList">Einkaufsliste bearbeiten</string>
     <string name="quantity">Anzahl</string>
     <string name="note">Notiz</string>
+    <string name="scan">Scannen</string>
+    <string name="barcode">Barcode</string>
 </resources>
