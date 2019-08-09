@@ -1,11 +1,12 @@
 package de.jl.groceriesmanager
 
 import android.app.Application
-import android.content.ClipDescription
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import de.jl.groceriesmanager.dialog.NewGroceryListDialogViewModel
-import de.jl.groceriesmanager.dialog.ProductDialogViewModel
+import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.dialog.barcode.BarcodeDialogViewModel
+import de.jl.groceriesmanager.dialog.grocery_list.NewGroceryListDialogViewModel
+import de.jl.groceriesmanager.dialog.product.ProductDialogViewModel
 import de.jl.groceriesmanager.grocery_list.GroceryListViewModel
 import de.jl.groceriesmanager.grocery_lists.GroceryListsViewModel
 import de.jl.groceriesmanager.inventory.InventoryViewModel
@@ -19,7 +20,8 @@ class GroceriesManagerViewModelFactory(
     private val expiryDateString: String? = null,
     private val glId: Long = 0L,
     private val passedNote: String? = null,
-    private val passedQuantity: Int? = null
+    private val passedQuantity: Int? = null,
+    private val passedBarcode: Barcode? = null
 
 ) : ViewModelProvider.Factory {
 
@@ -32,8 +34,18 @@ class GroceriesManagerViewModelFactory(
             modelClass.isAssignableFrom(InventoryViewModel::class.java) -> return InventoryViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListsViewModel::class.java) -> return GroceryListsViewModel(application) as T
             modelClass.isAssignableFrom(GroceryListViewModel::class.java) -> return GroceryListViewModel(application, glId) as T
-            modelClass.isAssignableFrom(ProductDialogViewModel::class.java) -> return ProductDialogViewModel(application, prodId, expiryDateString, passedNote, passedQuantity) as T
-            modelClass.isAssignableFrom(NewGroceryListDialogViewModel::class.java) -> return NewGroceryListDialogViewModel(application, glId) as T
+            modelClass.isAssignableFrom(ProductDialogViewModel::class.java) -> return ProductDialogViewModel(
+                application,
+                prodId,
+                expiryDateString,
+                passedNote,
+                passedQuantity
+            ) as T
+            modelClass.isAssignableFrom(NewGroceryListDialogViewModel::class.java) -> return NewGroceryListDialogViewModel(
+                application,
+                glId
+            ) as T
+            modelClass.isAssignableFrom(BarcodeDialogViewModel::class.java) -> return BarcodeDialogViewModel(application, passedBarcode) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

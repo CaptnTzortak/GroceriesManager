@@ -26,22 +26,22 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.vision.Frame
-import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
+import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.groceriesmanager.databinding.FragmentScannerBinding
+import de.jl.groceriesmanager.dialog.barcode.BarcodeDialogFragment
+import de.jl.groceriesmanager.dialog.product.ProductDialogFragment
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import com.google.android.gms.vision.barcode.Barcode as Barcode1
 
 class ScannerFragment : Fragment() {
 
     private val LOG_TAG = "ScannerFragment"
-
-
     private var detector: BarcodeDetector? = null
-
     private lateinit var scannerViewModel: ScannerViewModel
     private lateinit var scannerViewModelFactory: GroceriesManagerViewModelFactory
     private lateinit var scannerBinding: FragmentScannerBinding
@@ -80,7 +80,7 @@ class ScannerFragment : Fragment() {
                 openBarcodeScanner()
             }
             detector = BarcodeDetector.Builder(context)
-                .setBarcodeFormats(Barcode.EAN_13)
+                .setBarcodeFormats(Barcode1.EAN_13)
                 .build()
 
             return scannerBinding.root
@@ -125,6 +125,21 @@ class ScannerFragment : Fragment() {
                 scannerViewModel.setBarcode(it)
             }
         })
+
+        scannerViewModel.response.observe(this, Observer{ barcode ->
+            barcode?.let {
+                openBarcodeDialog(it)
+            }
+        })
+    }
+
+    private fun openBarcodeDialog(barcode: Barcode) {
+        val dialog =
+            BarcodeDialogFragment(barcode)
+        fragmentManager?.let {
+            dialog.setTargetFragment(this, 0)
+            dialog.show(it, "Barcode Dialog")
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -154,18 +169,18 @@ class ScannerFragment : Fragment() {
                         scannerViewModel.setScannedBarcode(code.displayValue)
                         val type = barcodes.valueAt(index).valueFormat
                         when (type) {
-                            Barcode.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
-                            Barcode.EMAIL -> Log.i(LOG_TAG, code.email.address)
-                            Barcode.ISBN -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode.PHONE -> Log.i(LOG_TAG, code.phone.number)
-                            Barcode.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode.SMS -> Log.i(LOG_TAG, code.sms.message)
-                            Barcode.TEXT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
-                            Barcode.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
-                            Barcode.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
-                            Barcode.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
-                            Barcode.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
+                            Barcode1.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
+                            Barcode1.EMAIL -> Log.i(LOG_TAG, code.email.address)
+                            Barcode1.ISBN -> Log.i(LOG_TAG, code.rawValue)
+                            Barcode1.PHONE -> Log.i(LOG_TAG, code.phone.number)
+                            Barcode1.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
+                            Barcode1.SMS -> Log.i(LOG_TAG, code.sms.message)
+                            Barcode1.TEXT -> Log.i(LOG_TAG, code.rawValue)
+                            Barcode1.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
+                            Barcode1.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
+                            Barcode1.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
+                            Barcode1.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
+                            Barcode1.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
                             else -> Log.i(LOG_TAG, code.rawValue)
                         }
                     }

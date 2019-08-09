@@ -1,7 +1,6 @@
 package de.jl.groceriesmanager.inventory
 
 import android.app.Application
-import android.app.Notification
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,7 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.dialog.ProductDialogFragment
+import de.jl.groceriesmanager.dialog.product.ProductDialogFragment
 
 
 class InventoryFragment : Fragment() {

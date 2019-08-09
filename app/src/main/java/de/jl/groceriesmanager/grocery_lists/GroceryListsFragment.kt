@@ -1,7 +1,6 @@
 package de.jl.groceriesmanager.grocery_lists
 
 import android.app.Application
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,7 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.FragmentGroceryListsBinding
-import de.jl.groceriesmanager.dialog.NewGroceryListDialogFragment
+import de.jl.groceriesmanager.dialog.grocery_list.NewGroceryListDialogFragment
 
 class GroceryListsFragment : Fragment() {
 

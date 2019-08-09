@@ -1,4 +1,4 @@
-package de.jl.groceriesmanager.dialog
+package de.jl.groceriesmanager.dialog.product
 
 import android.app.*
 import android.content.Context
@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import androidx.annotation.IntegerRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer

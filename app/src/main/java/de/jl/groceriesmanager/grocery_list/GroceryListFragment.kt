@@ -15,7 +15,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,13 +23,9 @@ import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.SwipeToSetDoneCallback
-import de.jl.groceriesmanager.database.groceryLists.GroceryList
 import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
-import de.jl.groceriesmanager.database.products.Product
-import de.jl.groceriesmanager.dialog.ProductDialogFragment
+import de.jl.groceriesmanager.dialog.product.ProductDialogFragment
 import de.jl.tools.openDatePicker
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_grocery_list.*
 
 class GroceryListFragment : Fragment() {
 
@@ -103,7 +98,8 @@ class GroceryListFragment : Fragment() {
     }
 
     private fun navigateToProductDialog(pair: Pair<Long, String>, quantity: Int = 1) {
-        val dialog = ProductDialogFragment(pair.first,null, pair.second, quantity)
+        val dialog =
+            ProductDialogFragment(pair.first, null, pair.second, quantity)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
             dialog.show(it, "Product Dialog")

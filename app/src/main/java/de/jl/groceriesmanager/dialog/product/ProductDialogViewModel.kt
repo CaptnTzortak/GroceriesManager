@@ -1,4 +1,4 @@
-package de.jl.groceriesmanager.dialog
+package de.jl.groceriesmanager.dialog.product
 
 import android.app.Application
 import android.util.Log
@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.Product
 import kotlinx.coroutines.*
-import kotlin.math.exp
 
 class ProductDialogViewModel(
     application: Application,

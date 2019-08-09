@@ -1,8 +1,7 @@
-package de.jl.groceriesmanager.dialog
+package de.jl.groceriesmanager.dialog.grocery_list
 
 import android.app.*
 import android.content.Context
-import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import kotlinx.android.synthetic.main.activity_main.*
-import android.app.Activity
 import de.jl.groceriesmanager.databinding.DialogNewGroceryListBinding
 
 class NewGroceryListDialogFragment(private val glId: Long = 0L) : DialogFragment() {

@@ -1,4 +1,4 @@
-package de.jl.groceriesmanager.dialog
+package de.jl.groceriesmanager.dialog.grocery_list
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

@@ -37,7 +37,7 @@
     </fragment>
 
     <fragment android:id="@+id/product_dialog_destination"
-              android:name="de.jl.groceriesmanager.dialog.ProductDialogFragment"
+              android:name="de.jl.groceriesmanager.dialog.product.ProductDialogFragment"
               android:label="ProductDialogFragment"
               tools:layout="@layout/dialog_product">
         <argument android:name="prodId" app:argType="long"/>
