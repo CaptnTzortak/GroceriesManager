@@ -8,6 +8,29 @@ import androidx.room.PrimaryKey
 data class Barcode(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Long = 0L
+    var id: Long = 0L,
 
+    @ColumnInfo(name = "barcodeDescription")
+    var barcodeDescription: String = "",
+
+    @ColumnInfo(name = "productName")
+    var productName: String = "",
+
+    @ColumnInfo(name = "brands")
+    var brands: String = "",
+
+    @ColumnInfo(name = "quantity")
+    var quantity: String = "",
+
+    @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
+    var image: ByteArray? = null,
+
+    @ColumnInfo(name = "barcodeImgUrl")
+    var barcodeImgUrl: String = "",
+
+    @ColumnInfo(name ="commonName")
+    var commonName: String = "",
+
+    @ColumnInfo(name ="categories")
+    var categories: String = ""
 )

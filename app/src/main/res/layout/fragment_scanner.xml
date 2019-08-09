@@ -32,7 +32,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-                app:barcodeText="@{viewModel.barcode}"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView12"
@@ -53,16 +53,79 @@
                 android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
                 android:focusable="true" android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/til_barcode"/>
-        <TextView
-                android:text="@{viewModel.response}"
+        <ScrollView
                 android:layout_width="0dp"
-                android:layout_height="0dp" android:id="@+id/jsonResponse"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/textView12" android:layout_marginBottom="8dp"/>
-
-
+                android:layout_height="0dp" android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="16dp" android:id="@+id/scrollView">
+            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+                                                               android:layout_height="wrap_content"
+                                                               android:id="@+id/api_constraintL">
+                <TextView
+                        app:barcodeDescription="@{viewModel.response}"
+                        android:hint="combined description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_barcode_description" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="@+id/api_constraintL"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginStart="8dp" android:textSize="30sp" android:textStyle="italic"/>
+                <View
+                        android:id="@+id/divider"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/primaryDarkColor"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_barcode_description"
+                        android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="@+id/api_constraintL"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL"/>
+                <TextView
+                        app:barcodeCommonName="@{viewModel.response}"
+                        android:hint="commonname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_common_name" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/divider"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL" android:layout_marginStart="8dp"/>
+                <TextView
+                        app:barcodeQuantity="@{viewModel.response}"
+                        android:hint="@string/quantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_quantity" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_common_name"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL" android:layout_marginStart="8dp"/>
+                <TextView
+                        app:barcodeBrands="@{viewModel.response}"
+                        android:hint="brands"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_brands" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_quantity"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL" android:layout_marginStart="8dp"/>
+                <TextView
+                        app:barcodeCategories="@{viewModel.response}"
+                        android:hint="categories"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:id="@+id/tv_categories"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL" android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/iv_productImage"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/tv_brands"/>
+                <ImageView
+                        app:barcodeImg="@{viewModel.response}"
+                        android:layout_width="0dp"
+                        android:scaleType="centerCrop"
+                        android:layout_height="350dp" app:srcCompat="@drawable/ic_plus"
+                        android:id="@+id/iv_productImage"
+                        app:layout_constraintEnd_toEndOf="@+id/api_constraintL"
+                        app:layout_constraintStart_toStartOf="@+id/api_constraintL"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

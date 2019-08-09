@@ -18,6 +18,20 @@
             </intent-filter>
         </activity>
         <receiver android:name=".NotificationPublisher"/>
+
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="de.jl.groceriesmanager.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/provider_paths" />
+        </provider>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
 </manifest>
