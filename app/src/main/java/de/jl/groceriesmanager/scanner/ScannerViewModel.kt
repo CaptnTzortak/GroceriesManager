@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.squareup.moshi.Moshi
 import de.jl.groceriesmanager.database.products.Barcode
-import de.jl.openfoodfacts.OpenFoodFactsApi
 import de.jl.openfoodfacts.OpenFoodFactsProperty
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -42,31 +41,6 @@ class ScannerViewModel : ViewModel() {
     init {
         barcode.value = ""
         Log.i("ScannerViewModel", "init")
-        getBarcodes()
-    }
-
-    private fun getBarcodes() {
-        uiScope.launch {
-            // Get the Deferred object for our Retrofit request
-            OpenFoodFactsApi.retrofitService.getProperties().enqueue(
-                object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        //     _response.value = response.body()
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        //     _response.value = "Failure: " + t.message
-                    }
-                })
-
-            var getProperties = OpenFoodFactsApi.retrofitService.getProperties()
-            //    // Await the completion of our Retrofit request
-            //    var listResult = getPropertiesDeferred.await()
-            //    _response.value = "Success: ${listResult.size} Mars properties retrieved"
-            //} catch (e: Exception) {
-            //    _response.value = "Failure: ${e.message}"
-            //}
-        }
     }
 
     private suspend fun getResult(): String {
