@@ -12,16 +12,20 @@
                 android:id="@+id/texture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+                android:layout_alignParentTop="true"/>
 
         <FrameLayout
                 android:id="@+id/control"
                 android:layout_width="match_parent"
-                android:layout_height="112dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:background="@color/primaryColor">
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/texture"
+                android:background="@color/primaryColor"
+                android:orientation="horizontal">
 
             <Button
                     style="@style/DefaultButton"
@@ -29,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/scan" />
+                    android:text="@string/scan"/>
         </FrameLayout>
 
     </RelativeLayout>

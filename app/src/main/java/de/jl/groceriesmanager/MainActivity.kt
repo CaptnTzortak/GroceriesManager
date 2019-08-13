@@ -14,26 +14,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import de.jl.groceriesmanager.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import android.app.AlarmManager
-
-
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainActivityBinding: de.jl.groceriesmanager.databinding.ActivityMainBinding
-    private var pendingIntent: PendingIntent? = null
-
+    //DataBinding
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
-
         mainActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         val host: NavHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 
@@ -59,31 +53,29 @@ class MainActivity : AppCompatActivity() {
         //  scheduleNotification(getNotification("5 second delay"), 5000)
 
 
-
-
         val sharedpreferences = getSharedPreferences("GroceriesManagerPreferences", Context.MODE_PRIVATE)
         val editor = sharedpreferences.edit()
 
         if (!sharedpreferences.getBoolean("alarm", false)) {
             setupNotificationAlarm()
 
-           ///* Retrieve a PendingIntent that will perform a broadcast */
-           //val alarmIntent = Intent(this, NotificationPublisher::class.java)
-           //val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0)
-           //val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-           //val interval = 8000L
+            ///* Retrieve a PendingIntent that will perform a broadcast */
+            //val alarmIntent = Intent(this, NotificationPublisher::class.java)
+            //val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0)
+            //val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            //val interval = 8000L
 
-           ///* Set the alarm to start at 10:30 AM */
-           //val calendar = Calendar.getInstance()
-           //calendar.timeInMillis = System.currentTimeMillis()
-           //calendar.set(Calendar.HOUR_OF_DAY, 20)
-           //calendar.set(Calendar.MINUTE, 1)
+            ///* Set the alarm to start at 10:30 AM */
+            //val calendar = Calendar.getInstance()
+            //calendar.timeInMillis = System.currentTimeMillis()
+            //calendar.set(Calendar.HOUR_OF_DAY, 20)
+            //calendar.set(Calendar.MINUTE, 1)
 
-           ///* Repeating on every 24 hours interval */
-           //manager.setRepeating(
-           //    AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
-           //    (1000 * 60 * 60 * 24).toLong(), pendingIntent
-           //)
+            ///* Repeating on every 24 hours interval */
+            //manager.setRepeating(
+            //    AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+            //    (1000 * 60 * 60 * 24).toLong(), pendingIntent
+            //)
             Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show()
             editor.putBoolean("alarm", true)
             editor.commit()
@@ -98,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         val firingCal = Calendar.getInstance()
         val currentCal = Calendar.getInstance()
 
-        firingCal.set(Calendar. HOUR_OF_DAY,10) // At the hour you wanna fire
+        firingCal.set(Calendar.HOUR_OF_DAY, 10) // At the hour you wanna fire
         firingCal.set(Calendar.MINUTE, 30) // Particular minute
         firingCal.set(Calendar.SECOND, 0) // particular second
 
@@ -106,11 +98,11 @@ class MainActivity : AppCompatActivity() {
         var intendedTime = firingCal.timeInMillis
         val currentTime = currentCal.timeInMillis
 
-        if(intendedTime >= currentTime){
+        if (intendedTime >= currentTime) {
             // you can add buffer time too here to ignore some small differences in milliseconds
             // set from today
             alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
-        } else{
+        } else {
             // set from next day
             // you might consider using calendar.add() for adding one day to the current day
             firingCal.add(Calendar.DAY_OF_MONTH, 1)

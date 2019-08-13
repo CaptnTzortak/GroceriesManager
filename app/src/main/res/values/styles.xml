@@ -25,7 +25,7 @@
         <item name="errorTextAppearance">@color/errorColor</item>
     </style>
     <style name="DefaultButton">
-        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryColor</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryDarkColor</item>
     </style>
     <style name="AppTheme.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="android:background">@color/primaryDarkColor</item>
