@@ -1,4 +1,4 @@
-package de.jl.groceriesmanager
+package de.jl.tools
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.GroceriesManagerRepository
 
 

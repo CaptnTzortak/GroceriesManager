@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.SwipeToSetDoneCallback
+import de.jl.tools.SwipeToSetDoneCallback
 import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.dialog.product.ProductDialogFragment
 import de.jl.tools.openDatePicker

@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <receiver android:name=".NotificationPublisher"/>
+        <receiver android:name="de.jl.tools.NotificationPublisher"/>
 
         <provider
                 android:name="androidx.core.content.FileProvider"

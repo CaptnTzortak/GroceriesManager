@@ -5,6 +5,9 @@ import android.content.Context
 import android.util.Log
 import java.util.*
 
+object CONST {
+    const val TAG = "Util"
+}
 
 fun openDatePicker(context: Context, validateDate: DatePickerDialog.OnDateSetListener) {
     try {
@@ -20,6 +23,6 @@ fun openDatePicker(context: Context, validateDate: DatePickerDialog.OnDateSetLis
 
         dpd.show()
     } catch (e: java.lang.Exception) {
-        Log.d("openDatePicker", e.localizedMessage)
+        Log.d(CONST.TAG, e.localizedMessage)
     }
 }

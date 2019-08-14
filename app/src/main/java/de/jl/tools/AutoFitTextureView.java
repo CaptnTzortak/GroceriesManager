@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.jl.groceriesmanager;
+package de.jl.tools;
 
 import android.content.Context;
 import android.util.AttributeSet;
