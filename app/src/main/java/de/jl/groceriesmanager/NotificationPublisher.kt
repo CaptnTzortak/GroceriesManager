@@ -32,22 +32,23 @@ class NotificationPublisher : BroadcastReceiver() {
                 //val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 //Repo:
                 val repo = GroceriesManagerRepository(context)
-                val expiredItems = repo.getAllInventoryEntrys()
-                expiredItems.value?.iterator()?.forEach {
+                val expiredItems = repo.inventorysWithExpiryDateCloserOne
+                var counter = 0
+                expiredItems?.iterator()?.forEach {
 
                     var builder = NotificationCompat.Builder(context, channelID)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Inventory item expires")
-                        .setContentText("Your inventory item ${it.product.description} is going to expire at ${it.expiryDateString}")
+                        .setContentTitle("${it.product.description} expiring")
+                        .setContentText("${it.product.description} expires at ${it.expiryDateString}")
                         .setStyle(
                             NotificationCompat.BigTextStyle()
-                                .bigText("Much longer text that cannot fit one line...")
+                                .bigText("${it.product.description} expires at ${it.expiryDateString}")
                         )
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
                     if (builder != null) {
-                        //Notification.Builder.recoverBuilder(context, builder.build()).createContentView()
-                        NotificationManagerCompat.from(context).notify(0, builder.build())
+                        NotificationManagerCompat.from(context).notify(counter, builder.build())
+                        counter++
                     }
                 }
             }

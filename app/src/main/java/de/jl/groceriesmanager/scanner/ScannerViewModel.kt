@@ -94,16 +94,33 @@ class ScannerViewModel : ViewModel() {
         try {
             if (oFFProperty != null && oFFProperty.status == 1) {
                 //JSON-Success
-                if (oFFProperty.product.product_name.isNotEmpty()) {
+                if (!oFFProperty.product.product_name.isNullOrEmpty()) {
                     val barcodeId = oFFProperty.product.id.toLong()
                     val productName = oFFProperty.product.product_name
-                    val brands = oFFProperty.product.brands
-                    val quantity = oFFProperty.product.quantity
+                    var brands = oFFProperty.product.brands
+                    var quantity = oFFProperty.product.quantity
                     val barcodeDescription = "$productName - $brands - $quantity"
-                    val barcodeImgUrl = oFFProperty.product.image_url
-                    val image = getBitmapByUrl(barcodeImgUrl)
-                    val commonName = oFFProperty.product.generic_name
-                    val categories = oFFProperty.product.categories
+                    var barcodeImgUrl = oFFProperty.product.image_url
+                    var image = barcodeImgUrl?.let { getBitmapByUrl(it) }
+                    var commonName = oFFProperty.product.generic_name
+                    var categories = oFFProperty.product.categories
+                    if(brands.isNullOrEmpty()){
+                        brands = ""
+                    }
+                    if(quantity.isNullOrEmpty()){
+                        quantity = ""
+                    }
+                    if(barcodeImgUrl.isNullOrEmpty()){
+                        barcodeImgUrl = ""
+                    }
+                    if(commonName.isNullOrEmpty()){
+                        commonName = ""
+                    }
+                    if(categories.isNullOrEmpty()){
+                        categories = ""
+                    }
+
+
 
                     return Barcode(
                         barcodeId,
@@ -125,8 +142,8 @@ class ScannerViewModel : ViewModel() {
         }
     }
 
-    private suspend fun getBitmapByUrl(passedUrl: String) : ByteArray? {
-        return withContext(Dispatchers.IO){
+    private suspend fun getBitmapByUrl(passedUrl: String): ByteArray? {
+        return withContext(Dispatchers.IO) {
             val url = URL(passedUrl)
             val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
             val stream = ByteArrayOutputStream()
@@ -145,7 +162,7 @@ class ScannerViewModel : ViewModel() {
 
     fun setScannedBarcode(displayValue: String?) {
         uiScope.launch {
-            if(displayValue != null && displayValue.isNotEmpty()){
+            if (displayValue != null && displayValue.isNotEmpty()) {
                 _scannedBarcode.value = displayValue
             }
         }
@@ -153,7 +170,7 @@ class ScannerViewModel : ViewModel() {
 
     fun setBarcode(it: String?) {
         uiScope.launch {
-            if(it != null){
+            if (it != null) {
                 barcode.value = it
             }
         }

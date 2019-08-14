@@ -60,7 +60,13 @@ class ProductDialogFragment(
         productDialogBinding.tietExpiryDateString.setOnClickListener {
             context?.let {
                 openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    val expiryDateString = """$dayOfMonth.${month + 1}.$year"""
+                    var rMonth = month +1
+                    val realMonth = if(rMonth < 10){
+                        "0$rMonth"
+                    } else{
+                        "$rMonth"
+                    }
+                    val expiryDateString = """$dayOfMonth.$realMonth.$year"""
                     productDialogViewModel.expiryDateString.value = expiryDateString
 
                 })

@@ -1,20 +1,19 @@
 package de.jl.groceriesmanager.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import de.jl.groceriesmanager.database.inventory.Inventory
 
 class GroceriesManagerRepository(context: Context) {
 
-
-    private val inventorysWithExpiryDateCloserOne : LiveData<List<Inventory>>
+    val inventorysWithExpiryDateCloserOne : List<Inventory>
 
     init{
         val db = GroceriesManagerDB.getInstance(context)
-        inventorysWithExpiryDateCloserOne = db.inventoryDao.getAllInventorys()
-    }
-
-    fun getAllInventoryEntrys() : LiveData<List<Inventory>>{
-        return inventorysWithExpiryDateCloserOne
+        inventorysWithExpiryDateCloserOne = db.inventoryDao.getInventoryEntrysExpireNextThreeDays()
+        inventorysWithExpiryDateCloserOne.iterator().forEach {
+            if (it.product.id == 0L){
+                it.product = db.productsDao.getProductById(it.prodId)
+            }
+        }
     }
 }

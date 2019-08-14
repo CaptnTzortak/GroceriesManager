@@ -181,7 +181,16 @@ class GroceryListFragment : Fragment() {
             122 -> {
                 context?.let {
                     openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                        val expiryDateString = """$dayOfMonth.${month + 1}.$year"""
+                        var rMonth = month +1
+                        if(rMonth == 13){
+                            rMonth = 1
+                        }
+                        val realMonth = if(rMonth < 10){
+                            "0$rMonth"
+                        } else{
+                            "$rMonth"
+                        }
+                        val expiryDateString = """$dayOfMonth.$realMonth.$year"""
                         groceryListViewModel.addProductToInventory(item.groupId.toLong(), expiryDateString)
 
                     })

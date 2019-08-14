@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         val sharedpreferences = getSharedPreferences("GroceriesManagerPreferences", Context.MODE_PRIVATE)
         val editor = sharedpreferences.edit()
 
-        if (!sharedpreferences.getBoolean("alarm", false)) {
+        if (!sharedpreferences.getBoolean("Alarm2", false)) {
             setupNotificationAlarm()
 
             ///* Retrieve a PendingIntent that will perform a broadcast */
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity() {
             //    AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
             //    (1000 * 60 * 60 * 24).toLong(), pendingIntent
             //)
-            Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show()
-            editor.putBoolean("alarm", true)
+            Toast.makeText(this, "Alarm2 Set", Toast.LENGTH_SHORT).show()
+            editor.putBoolean("Alarm2", true)
             editor.commit()
         }
     }
@@ -90,8 +90,8 @@ class MainActivity : AppCompatActivity() {
         val firingCal = Calendar.getInstance()
         val currentCal = Calendar.getInstance()
 
-        firingCal.set(Calendar.HOUR_OF_DAY, 10) // At the hour you wanna fire
-        firingCal.set(Calendar.MINUTE, 30) // Particular minute
+        firingCal.set(Calendar.HOUR_OF_DAY, 7) // At the hour you wanna fire
+        firingCal.set(Calendar.MINUTE, 20) // Particular minute
         firingCal.set(Calendar.SECOND, 0) // particular second
 
 
@@ -101,14 +101,14 @@ class MainActivity : AppCompatActivity() {
         if (intendedTime >= currentTime) {
             // you can add buffer time too here to ignore some small differences in milliseconds
             // set from today
-            alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
         } else {
             // set from next day
             // you might consider using calendar.add() for adding one day to the current day
             firingCal.add(Calendar.DAY_OF_MONTH, 1)
             intendedTime = firingCal.timeInMillis
 
-            alarmManager.setRepeating(AlarmManager.RTC, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
         }
     }
 
