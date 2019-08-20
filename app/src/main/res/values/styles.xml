@@ -24,6 +24,9 @@
     <style name="DefaultTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="errorTextAppearance">@color/errorColor</item>
     </style>
+    <style name="DefaultExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="errorTextAppearance">@color/errorColor</item>
+    </style>
     <style name="DefaultButton">
         <item name="android:backgroundTint" tools:targetApi="lollipop">@color/primaryDarkColor</item>
     </style>

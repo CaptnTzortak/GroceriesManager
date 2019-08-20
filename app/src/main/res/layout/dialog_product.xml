@@ -41,7 +41,7 @@
                                                                android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
+                        style="@style/DefaultExposedDropdownMenu"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -51,12 +51,18 @@
                         android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <AutoCompleteTextView
+                            android:text="@={viewModel.productDescription}"
+                            android:id="@+id/productDescriptionDropDown"
+                            android:layout_width="match_parent"
+                            android:hint="@string/product_description"
+                            android:layout_height="wrap_content"/>
+                    <!--com.google.android.material.textfield.TextInputEditText
                             android:text="@={viewModel.productDescription}"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/product_description"
-                            android:id="@+id/tiet_description"/>
+                            android:id="@+id/tiet_description"/-->
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

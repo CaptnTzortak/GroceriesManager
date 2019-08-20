@@ -18,7 +18,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
-import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -50,7 +49,7 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import com.google.android.gms.vision.barcode.Barcode as Barcode1
+import com.google.android.gms.vision.barcode.Barcode as Barcodel
 
 
 class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -414,9 +413,9 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             scannerBinding.viewModel = scannerViewModel
             scannerBinding.picture.setOnClickListener(this)
 
+            //EAN-8 (64) + EAN-13 (32)
             detector = BarcodeDetector.Builder(context)
-                .setBarcodeFormats(Barcode1.EAN_13)
-                .build()
+                .setBarcodeFormats(Barcodel.EAN_13 + Barcodel.EAN_8).build()
 
             return scannerBinding.root
 
@@ -496,18 +495,18 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
                         scannerViewModel.setScannedBarcode(code.displayValue)
                         val type = barcodes.valueAt(index).valueFormat
                         when (type) {
-                            Barcode1.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
-                            Barcode1.EMAIL -> Log.i(LOG_TAG, code.email.address)
-                            Barcode1.ISBN -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode1.PHONE -> Log.i(LOG_TAG, code.phone.number)
-                            Barcode1.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode1.SMS -> Log.i(LOG_TAG, code.sms.message)
-                            Barcode1.TEXT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcode1.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
-                            Barcode1.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
-                            Barcode1.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
-                            Barcode1.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
-                            Barcode1.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
+                            Barcodel.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
+                            Barcodel.EMAIL -> Log.i(LOG_TAG, code.email.address)
+                            Barcodel.ISBN -> Log.i(LOG_TAG, code.rawValue)
+                            Barcodel.PHONE -> Log.i(LOG_TAG, code.phone.number)
+                            Barcodel.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
+                            Barcodel.SMS -> Log.i(LOG_TAG, code.sms.message)
+                            Barcodel.TEXT -> Log.i(LOG_TAG, code.rawValue)
+                            Barcodel.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
+                            Barcodel.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
+                            Barcodel.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
+                            Barcodel.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
+                            Barcodel.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
                             else -> Log.i(LOG_TAG, code.rawValue)
                         }
                     }
@@ -915,18 +914,18 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
      */
     private fun takePicture() {
         lockFocus()
-       //val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-       //try {
-       //    imageFile = createImageFile()
-       //} catch (e: IOException) {
-       //    e.printStackTrace()
-       //}
+        //val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //try {
+        //    imageFile = createImageFile()
+        //} catch (e: IOException) {
+        //    e.printStackTrace()
+        //}
 
-       //intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+        //intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
 
-       //if (intent.resolveActivity(activity!!.packageManager) != null) {
-       //    startActivityForResult(intent, PHOTO_REQUEST)
-       //}
+        //if (intent.resolveActivity(activity!!.packageManager) != null) {
+        //    startActivityForResult(intent, PHOTO_REQUEST)
+        //}
 
     }
 

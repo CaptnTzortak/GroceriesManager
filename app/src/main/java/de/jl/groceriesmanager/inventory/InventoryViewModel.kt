@@ -33,18 +33,17 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
      * Live Data für das neue Produkt welches einem Inventar hinzugefügt wird.
      * z.B aus dem addProductFragment/View (Navigation Args)
      */
-    private val _newProductInventoryItem = MutableLiveData<Pair<Long, String>>()
-    val newProductInventoryItem: LiveData<Pair<Long, String>>
+    private val _newProductInventoryItem = MutableLiveData<Pair<Long, Pair<Long, String>>>()
+    val newProductInventoryItem: LiveData<Pair<Long, Pair<Long, String>>>
         get() = _newProductInventoryItem
 
     private val _removeInventoryItem = MutableLiveData<Long>()
     val removeInventoryItem: LiveData<Long>
         get() = _removeInventoryItem
 
-    private val _navigateToAddProduct = MutableLiveData<Pair<Long, String>>()
-    val navigateToAddProduct: LiveData<Pair<Long, String>>
+    private val _navigateToAddProduct = MutableLiveData<Pair<Long, Pair<Long,String>>>()
+    val navigateToAddProduct: LiveData<Pair<Long, Pair<Long,String>>>
         get() = _navigateToAddProduct
-
 
     /**
      * Wird vom Button AddInventoryiItem
@@ -52,7 +51,7 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
      */
     fun onAddInventoyItem() {
         uiScope.launch {
-            _navigateToAddProduct.value = Pair(0L, "")
+            _navigateToAddProduct.value = Pair(0L, Pair(0L, ""))
         }
     }
 
@@ -72,7 +71,7 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
         uiScope.launch {
             val invItem = getInventoryItemById(inventoryId)
             if (invItem?.prodId!! > 0L) {
-                _navigateToAddProduct.value = Pair(invItem.prodId, invItem.expiryDateString)
+                _navigateToAddProduct.value = Pair(inventoryId, Pair(invItem.prodId, invItem.expiryDateString))
             }
         }
     }
@@ -98,12 +97,12 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
      */
     fun addNewProductItem() {
         uiScope.launch {
-            val prodId = _newProductInventoryItem.value?.first
-            val expiryDateString = _newProductInventoryItem.value?.second
+            val invId = _newProductInventoryItem.value?.first ?: 0L
+            val prodId = _newProductInventoryItem.value?.second?.first
+            val expiryDateString = _newProductInventoryItem.value?.second?.second
+
             if (prodId != null) {
-                val invItem = getNewOrExistingInventoryItem(prodId)
-                invItem.prodId = prodId
-                invItem.expiryDateString = expiryDateString.toString()
+                val invItem = Inventory(invId, prodId, expiryDateString.toString())
                 if (invItem.id > 0L) {
                     update(invItem)
                 } else {
@@ -119,9 +118,9 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
      * ein neues Produkt hinzugefügt wird und dieses über die Navigation-Arguments
      * dem InventoryFragment übergeben werden.
      */
-    fun newProductInserted(prodIdWithExpiryDate: Pair<Long, String>) {
+    fun newProductInserted(invIdWithProdIdAndExpiryDate: Pair<Long, Pair<Long, String>>) {
         uiScope.launch {
-            _newProductInventoryItem.value = prodIdWithExpiryDate
+            _newProductInventoryItem.value = invIdWithProdIdAndExpiryDate
         }
     }
 

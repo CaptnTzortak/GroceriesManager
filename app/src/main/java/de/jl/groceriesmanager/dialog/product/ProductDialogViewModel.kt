@@ -23,6 +23,7 @@ class ProductDialogViewModel(
 
     private val prodsDao = GroceriesManagerDB.getInstance(application).productsDao
 
+
     private val _addedProduct = MutableLiveData<Long>()
     val addedProduct: LiveData<Long>
         get() = _addedProduct
@@ -30,6 +31,8 @@ class ProductDialogViewModel(
     private val _confirmProduct = MutableLiveData<Boolean>()
     val confirmProduct: LiveData<Boolean>
         get() = _confirmProduct
+
+    val existingProductDescriptions = prodsDao.getNamesForAllExistingProducts()
 
     var productDescription = MutableLiveData<String>()
     var expiryDateString = MutableLiveData<String>()
@@ -85,6 +88,17 @@ class ProductDialogViewModel(
         }
     }
 
+    private suspend fun tryGetExistingProdId(): Long{
+        return withContext(Dispatchers.IO){
+            var desc = ""
+            if(productDescription.value != null){
+                desc = productDescription.value.toString()
+            }
+            val prod = prodsDao.getProductByDescription(desc)
+            prod?.id ?: 0L
+        }
+    }
+
     private suspend fun getExistingProd(passedProdId: Long): Product {
         return withContext(Dispatchers.IO) {
             prodsDao.getProductById(passedProdId)
@@ -100,6 +114,7 @@ class ProductDialogViewModel(
 
     fun insertOrUpdateProduct() {
         uiScope.launch {
+            existingProdId = tryGetExistingProdId()
             if (existingProdId > 0L) {
                 val product = getExistingProd(existingProdId)
                 product.description = productDescription.value.toString()

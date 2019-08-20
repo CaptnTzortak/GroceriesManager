@@ -60,16 +60,20 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         barcodeDialogBinding.lifecycleOwner = this
         barcodeDialogBinding.viewModel = barcodeDialogViewModel
 
-        barcodeDialogBinding.referenceProductBtn.setOnClickListener{
-            barcodeDialogViewModel.referenceProductBtnClicked()
+        barcodeDialogBinding.referenceToProductBtn.setOnClickListener{
+            referenceToProductBtnClicked()
         }
-
         setObservers()
 
         val dialog = AlertDialog.Builder(activity as Context).setView(barcodeDialogBinding.root).create()
         dialog.window.setBackgroundDrawable(ColorDrawable(0))
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         return dialog
+    }
+
+    private fun referenceToProductBtnClicked() {
+        //TODO: Dialog mit drop down aller existierenden Produkte (Description)
+        //TODO: Nach auswahl muss Barcode in DB und Barcode_ID muss dem Produkt zugefügt werden
     }
 
     private fun setObservers() {

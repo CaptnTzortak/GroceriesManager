@@ -47,7 +47,7 @@ class ScannerViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             var result = ""
             try {
-                result = URL("https://world.openfoodfacts.org/api/v0/product/${barcode.value}.json").readText()
+                result = URL("https://world-de.openfoodfacts.org/api/v0/product/${barcode.value}.json").readText()
             } catch (e: Exception) {
                 Log.e("ScanerViewModel", e.localizedMessage)
             }
@@ -67,8 +67,8 @@ class ScannerViewModel : ViewModel() {
     fun validateBarcode() {
         uiScope.launch {
             var isValid = false
-            if (barcode.value?.length == 13) {
-                isValid = barcode.value!!.toLong() >= 1000000000000L
+            if (barcode.value?.length == 8 || barcode.value?.length == 13) {
+                isValid = true
             }
             _valid.value = isValid
         }
@@ -103,7 +103,6 @@ class ScannerViewModel : ViewModel() {
                     var barcodeImgUrl = oFFProperty.product.image_url
                     var image = barcodeImgUrl?.let { getBitmapByUrl(it) }
                     var commonName = oFFProperty.product.generic_name
-                    var categories = oFFProperty.product.categories
                     if(brands.isNullOrEmpty()){
                         brands = ""
                     }
@@ -116,12 +115,6 @@ class ScannerViewModel : ViewModel() {
                     if(commonName.isNullOrEmpty()){
                         commonName = ""
                     }
-                    if(categories.isNullOrEmpty()){
-                        categories = ""
-                    }
-
-
-
                     return Barcode(
                         barcodeId,
                         barcodeDescription,
@@ -130,8 +123,7 @@ class ScannerViewModel : ViewModel() {
                         quantity,
                         image,
                         barcodeImgUrl,
-                        commonName,
-                        categories
+                        commonName
                     )
                 }
             }

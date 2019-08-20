@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class ProductDialogFragment(
+    private val invId: Long = 0L,
     private val prodId: Long = 0L,
     private val expiryDateString: String? = null,
     private val note: String? = null,
@@ -90,6 +92,12 @@ class ProductDialogFragment(
     }
 
     private fun setObservers() {
+        productDialogViewModel.existingProductDescriptions.observe(this, Observer{
+            it?.let {
+                productDialogBinding.productDescriptionDropDown.setAdapter(ArrayAdapter(context,R.layout.dropdown_menu_popup_item,it))
+            }
+        })
+
         productDialogViewModel.productDescription.observe(this, Observer {
             it?.let {
                 productDialogViewModel.checkProductValid()
@@ -143,7 +151,14 @@ class ProductDialogFragment(
         bundle.putLong("ProdId", id)
         bundle.putString("ExpDate", expDate)
         bundle.putString("Note",finNote)
-        val q = quantityString ?: "1"
+        val q = if(quantityString == null || quantityString == "null"){
+            "1"
+        } else {
+            quantityString
+        }
+        if(invId > 0L){
+            bundle.putLong("InvId",invId)
+        }
         bundle.putInt("Quantity",Integer.parseInt(q))
         val intent = Intent().putExtras(bundle)
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)

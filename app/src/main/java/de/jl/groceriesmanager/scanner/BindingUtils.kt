@@ -9,7 +9,7 @@ import de.jl.groceriesmanager.database.products.Barcode
 @BindingAdapter("barcodeTitle")
 fun TextView.setBarcodeTitle(barcode: Barcode?) {
     text = if (barcode != null) {
-        barcode.commonName
+        barcode.barcodeDescription
     } else {
         "n/V"
     }
@@ -55,15 +55,6 @@ fun TextView.setBarcodeQuantity(barcode: Barcode?) {
 fun TextView.setBarcodeBrands(barcode: Barcode?) {
     text = if (barcode != null) {
         barcode.brands
-    } else {
-        "n/V"
-    }
-}
-
-@BindingAdapter("barcodeCategories")
-fun TextView.setBarcodeCategories(barcode: Barcode?) {
-    text = if (barcode != null) {
-        barcode.categories
     } else {
         "n/V"
     }

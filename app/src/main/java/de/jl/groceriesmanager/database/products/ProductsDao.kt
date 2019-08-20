@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.database.products
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -19,5 +20,11 @@ interface ProductsDao {
 
     @Update(onConflict = OnConflictStrategy.FAIL)
     fun update(product: Product)
+
+    @Query("SELECT DISTINCT description FROM Products")
+    fun getNamesForAllExistingProducts(): LiveData<List<String>>
+
+    @Query("SELECT * FROM Products WHERE description LIKE :description")
+    fun getProductByDescription(description: String): Product?
 
 }

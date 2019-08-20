@@ -99,7 +99,7 @@ class GroceryListFragment : Fragment() {
 
     private fun navigateToProductDialog(pair: Pair<Long, String>, quantity: Int = 1) {
         val dialog =
-            ProductDialogFragment(pair.first, null, pair.second, quantity)
+            ProductDialogFragment(0L, pair.first, null, pair.second, quantity)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
             dialog.show(it, "Product Dialog")

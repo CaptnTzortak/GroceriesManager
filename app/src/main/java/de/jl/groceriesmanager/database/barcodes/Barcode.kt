@@ -28,9 +28,6 @@ data class Barcode(
     @ColumnInfo(name = "barcodeImgUrl")
     var barcodeImgUrl: String = "",
 
-    @ColumnInfo(name ="commonName")
-    var commonName: String = "",
-
-    @ColumnInfo(name ="categories")
-    var categories: String = ""
+    @ColumnInfo(name = "commonName")
+    var commonName: String = ""
 )
