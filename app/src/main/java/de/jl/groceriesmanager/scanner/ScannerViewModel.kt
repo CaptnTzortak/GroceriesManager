@@ -8,9 +8,6 @@ import com.squareup.moshi.Moshi
 import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.openfoodfacts.OpenFoodFactsProperty
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.net.URL
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
@@ -36,10 +33,12 @@ class ScannerViewModel : ViewModel() {
         get() = _scannedBarcode
 
 
-    var barcode = MutableLiveData<String>()
+    var barcodeString = MutableLiveData<String>()
+
+    var apiBarcode = ""
 
     init {
-        barcode.value = ""
+        barcodeString.value = ""
         Log.i("ScannerViewModel", "init")
     }
 
@@ -47,7 +46,7 @@ class ScannerViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             var result = ""
             try {
-                result = URL("https://world-de.openfoodfacts.org/api/v0/product/${barcode.value}.json").readText()
+                result = URL("https://world-de.openfoodfacts.org/api/v0/product/$apiBarcode.json").readText()
             } catch (e: Exception) {
                 Log.e("ScanerViewModel", e.localizedMessage)
             }
@@ -64,11 +63,12 @@ class ScannerViewModel : ViewModel() {
         viewModelJob.cancel()
     }
 
-    fun validateBarcode() {
+    fun validateBarcode(barcode: String) {
         uiScope.launch {
             var isValid = false
-            if (barcode.value?.length == 8 || barcode.value?.length == 13) {
+            if (barcode.length == 8 || barcode.length == 13) {
                 isValid = true
+                apiBarcode = barcode
             }
             _valid.value = isValid
         }
@@ -99,25 +99,38 @@ class ScannerViewModel : ViewModel() {
                     val productName = oFFProperty.product.product_name
                     var brands = oFFProperty.product.brands
                     var quantity = oFFProperty.product.quantity
-                    val barcodeDescription = "$productName - $brands - $quantity"
                     var barcodeImgUrl = oFFProperty.product.image_url
                     var image = barcodeImgUrl?.let { getBitmapByUrl(it) }
                     var commonName = oFFProperty.product.generic_name
-                    if(brands.isNullOrEmpty()){
+
+
+                    if(brands.isNullOrEmpty() || brands == "null"){
                         brands = ""
                     }
-                    if(quantity.isNullOrEmpty()){
+                    if(quantity.isNullOrEmpty() || quantity == "null"){
                         quantity = ""
                     }
+
+                    var barcodeDesc = "$productName"
+                    if(!brands.isNullOrEmpty()){
+                        barcodeDesc += " - $brands"
+                    }
+                    if(!quantity.isNullOrEmpty()){
+                        barcodeDesc += " - $quantity"
+                    }
+
+
                     if(barcodeImgUrl.isNullOrEmpty()){
                         barcodeImgUrl = ""
                     }
                     if(commonName.isNullOrEmpty()){
                         commonName = ""
                     }
+
+
                     return Barcode(
                         barcodeId,
-                        barcodeDescription,
+                        barcodeDesc,
                         productName,
                         brands,
                         quantity,
@@ -163,7 +176,7 @@ class ScannerViewModel : ViewModel() {
     fun setBarcode(it: String?) {
         uiScope.launch {
             if (it != null) {
-                barcode.value = it
+                barcodeString.value = it
             }
         }
 

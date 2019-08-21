@@ -27,6 +27,9 @@ interface ProductsDao {
     @Query("SELECT DISTINCT description FROM Products")
     fun getNamesForAllExistingProducts(): LiveData<List<String>>
 
+    @Query("SELECT DISTINCT description FROM Products WHERE barcodeId = 0")
+    fun getNamesForAllExistingProductsWithoutBarcode(): LiveData<List<String>>
+
     @Query("SELECT * FROM Products WHERE description LIKE :description")
     fun getProductByDescription(description: String): Product?
 

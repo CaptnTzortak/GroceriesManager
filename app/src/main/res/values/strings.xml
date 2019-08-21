@@ -29,4 +29,14 @@
     <string name="channel_name" translatable="false">GroceriesManagerNotificationChannel</string>
     <string name="scan">Scan</string>
     <string name="barcode">Barcode</string>
+    <string name="hint_enter_barcode">Enter barcode</string>
+    <string name="btn_scan">Scan</string>
+    <string name="btn_add">Add</string>
+    <string name="text_no_existing_products">No existing products</string>
+    <string name="text_barcode_referenced_with_product">Barcode {0} referenced with product {1}</string>
+    <string name="title_reference_barcode">Reference barcode</string>
+    <string name="btn_assign_a_product">Assign a product</string>
+    <string name="btn_add_to_inventory">Add to inventory</string>
+    <string name="btn_add_to_gl">Add to grocery list</string>
+    <string name="text_no_existing_grocery_lists">No existing grocery lists</string>
 </resources>

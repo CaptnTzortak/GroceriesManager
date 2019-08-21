@@ -34,7 +34,7 @@ class BarcodeDialogViewModel(
     val barcode: LiveData<Barcode>
         get() = _barcode
 
-    var existingProductNames = prodDao.getNamesForAllExistingProducts()
+    var existingProductNamesWithoutBarcode = prodDao.getNamesForAllExistingProductsWithoutBarcode()
     var existingGroceryListNames = glDao.getNamesForAllExistingGroceryLists()
 
     init {

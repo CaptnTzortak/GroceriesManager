@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -26,7 +25,6 @@ import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.groceriesmanager.databinding.DialogBarcodeBinding
 import de.jl.tools.openDatePicker
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_barcode.*
 
 
 class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
@@ -35,7 +33,7 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     lateinit var barcodeDialogBinding: DialogBarcodeBinding
     lateinit var application: Application
     lateinit var barcodeDialogViewModel: BarcodeDialogViewModel
-    private var _existingProductNames: List<String> = emptyList()
+    private var _existingProductNamesWithoutBarcode: List<String> = emptyList()
     private var _existingGroceryListNames: List<String> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,11 +67,11 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
             referenceToProductBtnClicked()
         }
 
-        barcodeDialogBinding.addToInventoryBtn.setOnClickListener{
+        barcodeDialogBinding.addToInventoryBtn.setOnClickListener {
             addToInventoryBtnClicked()
         }
 
-        barcodeDialogBinding.addToGLBtn.setOnClickListener{
+        barcodeDialogBinding.addToGLBtn.setOnClickListener {
             addToGLBtnClicked()
         }
         setObservers()
@@ -85,15 +83,21 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     }
 
     private fun addToGLBtnClicked() {
-        val builder = context?.let { AlertDialog.Builder(it) }
-        if(builder != null){
-            builder.setTitle("Select Grocery List")
-            builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
-                Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
-                barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
+        if(_existingGroceryListNames.isNotEmpty()) {
+
+
+            val builder = context?.let { AlertDialog.Builder(it) }
+            if (builder != null) {
+                builder.setTitle("Select Grocery List")
+                builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
+                    Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
+                    barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
+                }
+                builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which -> })
+                builder.show()
             }
-            builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which ->   })
-            builder.show()
+        } else {
+            Toast.makeText(context, getString(R.string.text_no_existing_grocery_lists), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -117,22 +121,37 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     }
 
     private fun referenceToProductBtnClicked() {
-        val builder = context?.let { AlertDialog.Builder(it) }
-        if(builder != null){
-            builder.setTitle("List of Items")
-            builder.setItems(_existingProductNames.toTypedArray()) { dialog, which ->
-                Toast.makeText(context, _existingProductNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
-                barcodeDialogViewModel.referenceBarcodeWithProduct(_existingProductNames[which])
+        if (_existingProductNamesWithoutBarcode.isNotEmpty()) {
+            val builder = context?.let { AlertDialog.Builder(it) }
+            if (builder != null) {
+                builder.setTitle(getString(R.string.title_reference_barcode))
+                builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { dialog, which ->
+                    Toast.makeText(
+                        context,
+                        getString(R.string.text_barcode_referenced_with_product).replace("{0}", bCode.id.toString())
+                            .replace("{1}", _existingProductNamesWithoutBarcode[which]),
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                    barcodeDialogViewModel.referenceBarcodeWithProduct(_existingProductNamesWithoutBarcode[which])
+                }
+                builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which -> })
+
+                val dialog = builder.create()
+                val lv = dialog.listView
+                lv.divider = context?.resources!!.getDrawable(R.drawable.rv_devider)
+                lv.dividerHeight = 1
+                dialog.show()
             }
-            builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which ->   })
-            builder.show()
+        } else {
+            Toast.makeText(context, getString(R.string.text_no_existing_products), Toast.LENGTH_LONG).show()
         }
     }
 
     private fun setObservers() {
-        barcodeDialogViewModel.existingProductNames.observe(this, Observer {
+        barcodeDialogViewModel.existingProductNamesWithoutBarcode.observe(this, Observer {
             it?.let {
-                _existingProductNames = it
+                _existingProductNamesWithoutBarcode = it
             }
         })
 
@@ -148,7 +167,7 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         bundle.putLong("ProdId", id)
         bundle.putString("ExpDate", expDate)
         bundle.putString("Note", finNote)
-        val q = if(quantityString.isNullOrEmpty() || quantityString == "null"){
+        val q = if (quantityString.isNullOrEmpty() || quantityString == "null") {
             "1"
         } else {
             quantityString

@@ -26,4 +26,14 @@
     <string name="note">Notiz</string>
     <string name="scan">Scannen</string>
     <string name="barcode">Barcode</string>
+    <string name="hint_enter_barcode">Barcode eingeben</string>
+    <string name="btn_scan">Scannen</string>
+    <string name="btn_add">Hinzufügen</string>
+    <string name="text_no_existing_products">Keine Produkte vorhanden</string>
+    <string name="text_barcode_referenced_with_product">Barcode {0} wurde dem Produkt {1} zugewiesen</string>
+    <string name="title_reference_barcode">Barcode referenzieren</string>
+    <string name="btn_assign_a_product">Einem Produkt zuweisen</string>
+    <string name="btn_add_to_inventory">Zum Inventar hinzufügen</string>
+    <string name="btn_add_to_gl">Zur Einkaufsliste hinzufügen</string>
+    <string name="text_no_existing_grocery_lists">Keine Einkaufslisten vorhanden</string>
 </resources>

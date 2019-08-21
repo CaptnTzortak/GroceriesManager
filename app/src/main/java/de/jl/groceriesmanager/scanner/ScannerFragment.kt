@@ -427,9 +427,9 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
     }
 
     private fun setObservers() {
-        scannerViewModel.barcode.observe(this, Observer {
+        scannerViewModel.barcodeString.observe(this, Observer {
             if (it != null) {
-                scannerViewModel.validateBarcode()
+                scannerViewModel.validateBarcode(it)
             }
         })
 
@@ -445,7 +445,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             if (it == null) {
                 //TODO: Cleanup
             } else {
-                scannerViewModel.setBarcode(it)
+                scannerViewModel.validateBarcode(it)
             }
         })
 
@@ -461,10 +461,14 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         if (detector!!.isOperational && bitmap != null) {
             val frame = Frame.Builder().setBitmap(bitmap).build()
             val barcodes = detector!!.detect(frame)
-            for (index in 0 until barcodes.size()) {
-                val code = barcodes.valueAt(index)
-                showToast("Barcode found: ${code.displayValue}")
-                scannerViewModel.setScannedBarcode(code.displayValue)
+            if(barcodes == null || barcodes.size() == 0){
+                showToast("No Barcode found.")
+            } else {
+                for (index in 0 until barcodes.size()) {
+                    val code = barcodes.valueAt(index)
+                    Log.i(TAG, "Barcode found: ${code.displayValue}")
+                    scannerViewModel.setScannedBarcode(code.displayValue)
+                }
             }
         }
     }
@@ -903,8 +907,14 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             )
             matrix.postScale(scale, scale, centerX, centerY)
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
-        } else if (Surface.ROTATION_180 == rotation) {
-            matrix.postRotate(180f, centerX, centerY)
+       } else if (Surface.ROTATION_180 == rotation) {
+           matrix.postRotate(180f, centerX, centerY)
+       } else {
+            val scale = Math.max(
+                viewHeight.toFloat() / mPreviewSize!!.getHeight(),
+                viewWidth.toFloat() / mPreviewSize!!.getWidth()
+            )
+            matrix.postScale(scale, scale, centerX, centerY)
         }
         scannerBinding.texture.setTransform(matrix)
     }
@@ -1011,7 +1021,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
                         context?.let { mFile?.let { it1 -> FileProvider.getUriForFile(it, authorities, it1) } }
                     test()
 
-                    showToast("Saved: $mFile")
+                    Log.i(TAG, "Saved: $mFile")
                     Log.d(TAG, mFile.toString())
                     unlockFocus()
                 }

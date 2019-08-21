@@ -9,6 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".GroceryListsFragment">
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/groceryListsList"
                 android:layout_width="0dp"
@@ -20,15 +21,14 @@
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 style="@style/AppTheme.FloatingActionButton"
-                android:contentDescription="@string/add"
-                android:text="@string/add"
+                android:contentDescription="@string/btn_add"
+                android:text="@string/btn_add"
                 app:icon="@drawable/ic_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true" android:id="@+id/insertNewGroceryList"
                 android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginRight="8dp"
                 android:focusable="true"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

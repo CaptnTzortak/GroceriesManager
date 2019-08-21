@@ -10,7 +10,7 @@
     <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
     </style>
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-
+        <item name="android:fontFamily">@font/roboto</item>
     </style>
     <style name="AppTheme.Toolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:background">@color/primaryDarkColor</item>

@@ -4,4 +4,5 @@
           android:padding="16dp"
           android:ellipsize="end"
           android:maxLines="1"
-          android:textAppearance="?attr/textAppearanceSubtitle1"/>
+          android:background="@drawable/drop_down_back"
+/>
