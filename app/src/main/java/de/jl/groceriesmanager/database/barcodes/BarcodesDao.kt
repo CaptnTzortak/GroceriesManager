@@ -4,6 +4,10 @@ import androidx.room.*
 
 @Dao
 interface BarcodesDao {
+
+    @Query("SELECT COUNT(*) FROM Barcodes WHERE id = :id")
+    fun getCountById(id : Long): Long
+
     @Delete
     fun delete(barcode: Barcode)
 

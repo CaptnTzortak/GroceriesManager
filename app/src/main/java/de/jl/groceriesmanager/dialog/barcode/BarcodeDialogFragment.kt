@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -12,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -23,7 +26,7 @@ import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.groceriesmanager.databinding.DialogBarcodeBinding
 import de.jl.tools.openDatePicker
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.item_inventory.*
+import kotlinx.android.synthetic.main.dialog_barcode.*
 
 
 class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
@@ -32,6 +35,8 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     lateinit var barcodeDialogBinding: DialogBarcodeBinding
     lateinit var application: Application
     lateinit var barcodeDialogViewModel: BarcodeDialogViewModel
+    private var _existingProductNames: List<String> = emptyList()
+    private var _existingGroceryListNames: List<String> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_barcode, container)
@@ -60,8 +65,16 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         barcodeDialogBinding.lifecycleOwner = this
         barcodeDialogBinding.viewModel = barcodeDialogViewModel
 
-        barcodeDialogBinding.referenceToProductBtn.setOnClickListener{
+        barcodeDialogBinding.referenceToProductBtn.setOnClickListener {
             referenceToProductBtnClicked()
+        }
+
+        barcodeDialogBinding.addToInventoryBtn.setOnClickListener{
+            addToInventoryBtnClicked()
+        }
+
+        barcodeDialogBinding.addToGLBtn.setOnClickListener{
+            addToGLBtnClicked()
         }
         setObservers()
 
@@ -71,13 +84,63 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         return dialog
     }
 
+    private fun addToGLBtnClicked() {
+        val builder = context?.let { AlertDialog.Builder(it) }
+        if(builder != null){
+            builder.setTitle("Select Grocery List")
+            builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
+                Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
+                barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
+            }
+            builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which ->   })
+            builder.show()
+        }
+    }
+
+    private fun addToInventoryBtnClicked() {
+        context?.let {
+            openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                var rMonth = month + 1
+                if (rMonth == 13) {
+                    rMonth = 1
+                }
+                val realMonth = if (rMonth < 10) {
+                    "0$rMonth"
+                } else {
+                    "$rMonth"
+                }
+                val expiryDateString = """$dayOfMonth.$realMonth.$year"""
+                barcodeDialogViewModel.addBarcodeAsProductAndInventory(expiryDateString)
+                sendResult(0L, "", "", "")
+            })
+        }
+    }
+
     private fun referenceToProductBtnClicked() {
-        //TODO: Dialog mit drop down aller existierenden Produkte (Description)
-        //TODO: Nach auswahl muss Barcode in DB und Barcode_ID muss dem Produkt zugefügt werden
+        val builder = context?.let { AlertDialog.Builder(it) }
+        if(builder != null){
+            builder.setTitle("List of Items")
+            builder.setItems(_existingProductNames.toTypedArray()) { dialog, which ->
+                Toast.makeText(context, _existingProductNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
+                barcodeDialogViewModel.referenceBarcodeWithProduct(_existingProductNames[which])
+            }
+            builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which ->   })
+            builder.show()
+        }
     }
 
     private fun setObservers() {
+        barcodeDialogViewModel.existingProductNames.observe(this, Observer {
+            it?.let {
+                _existingProductNames = it
+            }
+        })
 
+        barcodeDialogViewModel.existingGroceryListNames.observe(this, Observer {
+            it?.let {
+                _existingGroceryListNames = it
+            }
+        })
     }
 
     private fun sendResult(id: Long, expDate: String, finNote: String, quantityString: String?) {
@@ -85,7 +148,11 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         bundle.putLong("ProdId", id)
         bundle.putString("ExpDate", expDate)
         bundle.putString("Note", finNote)
-        val q = quantityString ?: "1"
+        val q = if(quantityString.isNullOrEmpty() || quantityString == "null"){
+            "1"
+        } else {
+            quantityString
+        }
         bundle.putInt("Quantity", Integer.parseInt(q))
         val intent = Intent().putExtras(bundle)
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)

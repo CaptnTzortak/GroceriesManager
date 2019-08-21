@@ -4,179 +4,174 @@
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_dialog">
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+                                                           android:layout_height="match_parent"
+                                                           android:scrollbars="vertical"
+                                                           android:scrollbarAlwaysDrawVerticalTrack="true"
+                                                           android:orientation="vertical">
 
-        <TextView
-                app:barcodeTitle="@{viewModel.barcode}"
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/barcode"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"/>
-        <View
-                android:id="@+id/titleDivider"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:background="@color/primaryDarkColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
-        <ScrollView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:id="@+id/scrollView2"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toTopOf="@id/referenceToProductBtn"
-                app:layout_constraintTop_toBottomOf="@+id/titleDivider" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp">
-            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-                                                               android:layout_height="wrap_content"
-                                                               android:orientation="vertical">
+            <TextView
+                    app:barcodeTitle="@{viewModel.barcode}"
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/barcode"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"/>
+            <View
+                    android:id="@+id/titleDivider"
+                    android:layout_width="0dp"
+                    android:layout_height="7dp"
+                    android:background="@color/primaryDarkColor"
+                    app:layout_constraintTop_toBottomOf="@id/title" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toStartOf="parent"
+            />
+            <ImageView
+                    android:scaleType="fitCenter"
+                    app:barcodeImg="@{viewModel.barcode}"
+                    android:layout_width="0dp"
+                    android:layout_height="300dp"
+                    android:id="@+id/imageView"
+                    app:layout_constraintTop_toBottomOf="@id/titleDivider"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="8dp" android:layout_marginStart="8dp" android:layout_marginTop="4dp"/>
 
-                <ImageView
-                        android:scaleType="fitCenter"
-                        app:barcodeImg="@{viewModel.barcode}"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_width="0dp"
-                        android:layout_height="300dp" app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@android:color/background_dark"
-                        android:id="@+id/imageView" app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginStart="8dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/til_barcode"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/imageView"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                        app:barcodeId="@{viewModel.barcode}"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        app:layout_constraintTop_toBottomOf="@id/imageView"
-                        android:id="@+id/til_barcode" app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginTop="16dp">
+                        android:hint="@string/barcode"
+                        android:id="@+id/tiet_barcode"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            app:barcodeId="@{viewModel.barcode}"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/barcode"
-                            android:id="@+id/tiet_barcode"/>
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/til_productName" android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/til_barcode">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                        app:barcodeProductName="@{viewModel.barcode}"
+                        android:id="@+id/tiet_productName"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:drawablePadding="5dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:id="@+id/til_productName" android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/til_barcode"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
+                        android:hint="product name"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            app:barcodeProductName="@{viewModel.barcode}"
-                            android:id="@+id/tiet_productName"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="product name"/>
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/til_commonName"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/til_productName">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                        app:barcodeCommonName="@{viewModel.barcode}"
+                        android:id="@+id/tiet_commonName"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:drawablePadding="5dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/til_commonName"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/til_productName"
-                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp">
+                        android:hint="common name"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/til_quantity"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_commonName"
+            >
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            app:barcodeCommonName="@{viewModel.barcode}"
-                            android:id="@+id/tiet_commonName"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="common name"/>
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                        app:barcodeQuantity="@{viewModel.barcode}"
+                        android:id="@+id/tiet_quantity"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:drawablePadding="5dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/til_quantity"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/til_commonName"
-                        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp">
+                        android:hint="@string/quantity"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            app:barcodeQuantity="@{viewModel.barcode}"
-                            android:id="@+id/tiet_quantity"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/quantity"/>
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/DefaultTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/til_brands"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/til_quantity">
 
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                        app:barcodeBrands="@{viewModel.barcode}"
+                        android:id="@+id/tiet_brands"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:drawablePadding="5dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:id="@+id/til_brands"
-                        app:layout_constraintTop_toBottomOf="@+id/til_quantity" android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp">
+                        android:hint="brands"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                            app:barcodeBrands="@{viewModel.barcode}"
-                            android:id="@+id/tiet_brands"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="brands"/>
-                </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                    style="@style/DefaultButton"
+                    android:id="@+id/referenceToProductBtn"
+                    android:text="Produkt referenzieren"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_brands"
+                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
+            <Button
+                    style="@style/DefaultButton"
+                    android:id="@+id/addToInventoryBtn"
+                    android:text="Zum Inventar hinzufügen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/referenceToProductBtn"
+                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-        <Button
-                style="@style/DefaultButton"
-                android:id="@+id/referenceToProductBtn"
-                android:text="Produkt referenzieren"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp"/>
-        <Button
-                app:layout_constraintBottom_toBottomOf="parent"
-                style="@style/DefaultButton"
-                android:id="@+id/addToGLBtn"
-                android:text="zur Einkaufsliste"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Button
+                    style="@style/DefaultButton"
+                    android:id="@+id/addToGLBtn"
+                    android:text="Zur Einkaufsliste hinzufügen"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/addToInventoryBtn"
+                    android:layout_marginEnd="8dp" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

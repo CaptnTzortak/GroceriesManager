@@ -6,6 +6,12 @@ import androidx.room.*
 @Dao
 interface GroceryListsDao {
 
+    @Query("SELECT * FROM GroceryLists WHERE name LIKE :name")
+    fun getGroceryListByName(name: String): GroceryList
+
+    @Query("SELECT name FROM GroceryLists")
+    fun getNamesForAllExistingGroceryLists(): LiveData<List<String>>
+
     @Query("SELECT * FROM GroceryLists")
     fun getAllGroceryLists(): LiveData<List<GroceryList>>
 

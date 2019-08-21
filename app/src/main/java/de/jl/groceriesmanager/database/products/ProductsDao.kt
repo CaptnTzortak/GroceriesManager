@@ -6,6 +6,9 @@ import androidx.room.*
 @Dao
 interface ProductsDao {
 
+    @Query("SELECT * FROM Products WHERE barcodeId = :barcodeId")
+    fun getProductByBarcodeId(barcodeId: Long): Product?
+
     @Query("SELECT * FROM Products WHERE id = :id")
     fun getProductById(id: Long): Product
 

@@ -11,6 +11,7 @@ import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.database.inventory.Inventory
 import de.jl.groceriesmanager.database.inventory.InventoryDao
 import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.database.products.BarcodesDao
 import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.database.products.ProductsDao
 
@@ -19,6 +20,7 @@ abstract class GroceriesManagerDB : RoomDatabase() {
 
     abstract val inventoryDao : InventoryDao
     abstract val productsDao : ProductsDao
+    abstract val barcodesDao : BarcodesDao
     abstract val groceryListsDao : GroceryListsDao
     abstract val groceryListsProductsDao: GroceryListsProductsDao
 
