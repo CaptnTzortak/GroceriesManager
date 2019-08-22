@@ -32,6 +32,9 @@ class ScannerViewModel : ViewModel() {
     val scannedBarcode: LiveData<String>
         get() = _scannedBarcode
 
+    private val _showNoBarcodeResultToast = MutableLiveData<String>()
+    val showNoBarcodeResultToast: LiveData<String>
+        get() = _showNoBarcodeResultToast
 
     var barcodeString = MutableLiveData<String>()
 
@@ -85,9 +88,19 @@ class ScannerViewModel : ViewModel() {
             val result = getResult()
             val moshi = Moshi.Builder().build()
             val adapter = moshi.adapter(OpenFoodFactsProperty::class.java)
-            adapter.fromJson(result)
+            val x = adapter.fromJson(result)
+            if (x != null && x.status == 0) {
+                setNoBarcodeResult(x.code)
+            }
+            x
         }
         return parseOFFProductToProduct(oFFProperty)
+    }
+
+    private fun setNoBarcodeResult(bc: String) {
+        uiScope.launch {
+            _showNoBarcodeResultToast.value = bc
+        }
     }
 
     private suspend fun parseOFFProductToProduct(oFFProperty: OpenFoodFactsProperty?): Product? {

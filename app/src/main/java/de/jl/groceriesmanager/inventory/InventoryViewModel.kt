@@ -220,5 +220,11 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
             inventories.value
         }
     }
+
+    fun doneAddNewProductItem() {
+        uiScope.launch {
+            _newProductInventoryItem.value = null
+        }
+    }
 }
 

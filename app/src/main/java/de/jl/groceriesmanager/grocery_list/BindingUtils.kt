@@ -20,9 +20,3 @@ fun TextView.setGlItemNote(item: GroceryListsProducts?) {
     value += secVal
     text = value
 }
-
-
-@BindingAdapter("glItemQuantity")
-fun TextView.setGlItemQuantity(item: GroceryListsProducts?) {
-    text = "Quantity: ${item?.quantity}"
-}

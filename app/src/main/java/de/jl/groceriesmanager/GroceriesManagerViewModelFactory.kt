@@ -20,7 +20,6 @@ class GroceriesManagerViewModelFactory(
     private val expiryDateString: String? = null,
     private val glId: Long = 0L,
     private val passedNote: String? = null,
-    private val passedQuantity: Int? = null,
     private val passedProduct: Product? = null
 
 ) : ViewModelProvider.Factory {
@@ -38,8 +37,7 @@ class GroceriesManagerViewModelFactory(
                 application,
                 prodId,
                 expiryDateString,
-                passedNote,
-                passedQuantity
+                passedNote
             ) as T
             modelClass.isAssignableFrom(NewGroceryListDialogViewModel::class.java) -> return NewGroceryListDialogViewModel(
                 application,

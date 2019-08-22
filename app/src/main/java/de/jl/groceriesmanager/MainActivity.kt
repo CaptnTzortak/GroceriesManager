@@ -25,9 +25,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
 
     companion object {
+        const val CHANNEL_ID = "de.jl.groceriesmanager.notifications.expirydates"
         const val TAG = "MainActivity"
-        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 6
-        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 30
+        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 14
+        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 8
     }
 
 
@@ -54,11 +55,15 @@ class MainActivity : AppCompatActivity() {
             val sharedpreferences = getSharedPreferences("GroceriesManagerPreferences", Context.MODE_PRIVATE)
             val editor = sharedpreferences.edit()
 
-            if (!sharedpreferences.getBoolean("Alarm2", false)) {
+            if (!sharedpreferences.getBoolean("Alarm13", false)) {
                 setupNotificationAlarm()
-                Toast.makeText(this, "Alarm2 Set", Toast.LENGTH_SHORT).show()
-                editor.putBoolean("Alarm2", true)
+                Toast.makeText(this, "Alarm13 Set", Toast.LENGTH_SHORT).show()
+                editor.putBoolean("Alarm13", true)
                 editor.commit()
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(CHANNEL_ID, "GroceriesManager Notifications", "ExpiryDate Notification Channel")
             }
         } catch (e: Exception) {
             Log.e(TAG, e.localizedMessage)
@@ -95,16 +100,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createNotificationChannel(
-        id: String, name: String,
-        description: String
-    ) {
-
+    private fun createNotificationChannel(id: String, name: String,description: String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = name
-            val description = description
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(id, name, importance)
             channel.description = description

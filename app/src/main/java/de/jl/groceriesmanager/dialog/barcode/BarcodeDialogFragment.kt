@@ -84,8 +84,6 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
 
     private fun addToGLBtnClicked() {
         if (_existingGroceryListNames.isNotEmpty()) {
-
-
             val builder = context?.let { AlertDialog.Builder(it) }
             if (builder != null) {
                 builder.setTitle("Select Grocery List")

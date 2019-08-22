@@ -1,6 +1,7 @@
 package de.jl.tools
 
 import android.app.DatePickerDialog
+import android.content.ClipDescription
 import android.content.Context
 import android.util.Log
 import java.util.*
@@ -25,4 +26,12 @@ fun openDatePicker(context: Context, validateDate: DatePickerDialog.OnDateSetLis
     } catch (e: java.lang.Exception) {
         Log.d(CONST.TAG, e.localizedMessage)
     }
+}
+
+fun parseProductDescriptionToProdName(description: String): String {
+    val prodVals = description.split(" - ")
+    if(prodVals.isNotEmpty()){
+        return prodVals[0].trim()
+    }
+    return ""
 }

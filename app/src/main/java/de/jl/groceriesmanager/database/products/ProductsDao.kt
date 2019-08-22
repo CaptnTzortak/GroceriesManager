@@ -31,6 +31,6 @@ interface ProductsDao {
     fun getNamesForAllExistingProductsWithoutBarcode(): LiveData<List<Product>>
 
     @Query("SELECT * FROM Products WHERE name LIKE :name")
-    fun getProductByDescription(name: String): Product?
+    fun getProductByName(name: String): Product?
 
 }

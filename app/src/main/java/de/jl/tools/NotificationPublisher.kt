@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -48,10 +49,20 @@ class NotificationPublisher : BroadcastReceiver() {
                             )
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-                        if (builder != null) {
-                            NotificationManagerCompat.from(context).notify(counter, builder.build())
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            with(NotificationManagerCompat.from(context)) {
+                                // notificationId is a unique int for each notification that you must define
+                                notify(counter, builder.build())
+                            }
                             counter++
+                        } else {
+                            if (builder != null) {
+                                NotificationManagerCompat.from(context).notify(counter, builder.build())
+                                counter++
+                            }
                         }
+
+
                     }
                 }
             }

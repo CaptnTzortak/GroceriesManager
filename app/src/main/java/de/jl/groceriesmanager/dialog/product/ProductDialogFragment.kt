@@ -18,6 +18,7 @@ import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.databinding.DialogProductBinding
 import de.jl.tools.openDatePicker
+import de.jl.tools.parseProductDescriptionToProdName
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -25,16 +26,15 @@ class ProductDialogFragment(
     private val invId: Long = 0L,
     private val prodId: Long = 0L,
     private val expiryDateString: String? = null,
-    private val note: String? = null,
-    private val quantity: Int? = null
+    private val note: String? = null
 ) : DialogFragment() {
 
-    lateinit var productDialogBinding: DialogProductBinding
-    lateinit var application: Application
-    lateinit var productDialogViewModel: ProductDialogViewModel
+    private lateinit var productDialogBinding: DialogProductBinding
+    private lateinit var application: Application
+    private lateinit var productDialogViewModel: ProductDialogViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_product, container);
+        return inflater.inflate(R.layout.dialog_product, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,7 +52,7 @@ class ProductDialogFragment(
         application = requireNotNull(this.activity).application
 
         //ViewModelFactory
-        val viewModelFactory = GroceriesManagerViewModelFactory(application, prodId, expiryDateString, 0L, note, quantity)
+        val viewModelFactory = GroceriesManagerViewModelFactory(application, prodId, expiryDateString, 0L, note)
 
         //ViewModel
         productDialogViewModel = ViewModelProviders.of(this, viewModelFactory).get(ProductDialogViewModel::class.java)
@@ -62,10 +62,10 @@ class ProductDialogFragment(
         productDialogBinding.tietExpiryDateString.setOnClickListener {
             context?.let {
                 openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    var rMonth = month +1
-                    val realMonth = if(rMonth < 10){
+                    val rMonth = month + 1
+                    val realMonth = if (rMonth < 10) {
                         "0$rMonth"
-                    } else{
+                    } else {
                         "$rMonth"
                     }
                     val expiryDateString = """$dayOfMonth.$realMonth.$year"""
@@ -83,26 +83,49 @@ class ProductDialogFragment(
             onConfirmProductBtn()
         }
 
+        productDialogBinding.productNameAutoComplete.setOnItemClickListener { parent, _, position, _ ->
+            val productDesc = parent.getItemAtPosition(position).toString()
+            onProductNameAutoCompleteItemClick(productDesc)
+        }
+
         setObservers()
 
         val dialog = AlertDialog.Builder(activity as Context).setView(productDialogBinding.root).create()
-        dialog.window.setBackgroundDrawable(ColorDrawable(0))
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+        if (dialog != null && dialog.window != null) {
+            val rWindow = dialog.window
+            if (rWindow != null) {
+                rWindow.setBackgroundDrawable(ColorDrawable(0))
+                rWindow.requestFeature(Window.FEATURE_NO_TITLE)
+            }
+        }
         return dialog
     }
 
+    private fun onProductNameAutoCompleteItemClick(prodDescription: String) {
+        productDialogViewModel.checkIfProductAlreadyExists(parseProductDescriptionToProdName(prodDescription))
+    }
+
     private fun setObservers() {
-        productDialogViewModel.existingProductDescriptions.observe(this, Observer{
+        productDialogViewModel.existingProductDescriptions.observe(this, Observer {
             it?.let {
-                var prodDesctriptions = mutableListOf<String>()
+                val prodDesctriptions = mutableListOf<String>()
                 it.forEach { product ->
                     prodDesctriptions.add(product.getDescription())
                 }
-                productDialogBinding.productDescriptionDropDown.setAdapter(ArrayAdapter(context,R.layout.dropdown_menu_popup_item,prodDesctriptions))
+                context?.let { cont ->
+                    productDialogBinding.productNameAutoComplete.setAdapter(
+                        ArrayAdapter(
+                            cont,
+                            R.layout.dropdown_menu_popup_item,
+                            prodDesctriptions
+                        )
+                    )
+                }
+
             }
         })
 
-        productDialogViewModel.productDescription.observe(this, Observer {
+        productDialogViewModel.productNameString.observe(this, Observer {
             it?.let {
                 productDialogViewModel.checkProductValid()
             }
@@ -112,24 +135,20 @@ class ProductDialogFragment(
             if (it != null) {
                 productDialogBinding.tilExpiryDateString.visibility = View.VISIBLE
                 productDialogBinding.tilNote.visibility = View.GONE
-                productDialogBinding.tilQuantity.visibility = View.GONE
                 productDialogViewModel.checkProductValid()
             } else {
                 productDialogBinding.tilExpiryDateString.visibility = View.GONE
                 productDialogBinding.tilNote.visibility = View.VISIBLE
-                productDialogBinding.tilQuantity.visibility = View.VISIBLE
             }
         })
 
         productDialogViewModel.note.observe(this, Observer {
             if (it != null) {
                 productDialogBinding.tilNote.visibility = View.VISIBLE
-                productDialogBinding.tilQuantity.visibility = View.VISIBLE
                 productDialogBinding.tilExpiryDateString.visibility = View.GONE
                 productDialogViewModel.checkProductValid()
             } else {
                 productDialogBinding.tilExpiryDateString.visibility = View.VISIBLE
-                productDialogBinding.tilQuantity.visibility = View.GONE
                 productDialogBinding.tilNote.visibility = View.GONE
             }
         })
@@ -144,26 +163,24 @@ class ProductDialogFragment(
 
         productDialogViewModel.addedProduct.observe(this, Observer {
             it?.let {
-                sendResult(it, productDialogViewModel.expiryDateString.value.toString(), productDialogViewModel.note.value.toString(), productDialogViewModel.quantityString.value)
+                sendResult(
+                    it,
+                    productDialogViewModel.expiryDateString.value.toString(),
+                    productDialogViewModel.note.value.toString()
+                )
             }
         })
     }
 
 
-    private fun sendResult(id: Long, expDate: String, finNote: String, quantityString: String?) {
+    private fun sendResult(id: Long, expDate: String, finNote: String) {
         val bundle = Bundle()
         bundle.putLong("ProdId", id)
         bundle.putString("ExpDate", expDate)
-        bundle.putString("Note",finNote)
-        val q = if(quantityString == null || quantityString == "null"){
-            "1"
-        } else {
-            quantityString
+        bundle.putString("Note", finNote)
+        if (invId > 0L) {
+            bundle.putLong("InvId", invId)
         }
-        if(invId > 0L){
-            bundle.putLong("InvId",invId)
-        }
-        bundle.putInt("Quantity",Integer.parseInt(q))
         val intent = Intent().putExtras(bundle)
         targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
         dismiss()

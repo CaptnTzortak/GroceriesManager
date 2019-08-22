@@ -12,7 +12,7 @@ interface GroceryListsDao {
     @Query("SELECT name FROM GroceryLists")
     fun getNamesForAllExistingGroceryLists(): LiveData<List<String>>
 
-    @Query("SELECT * FROM GroceryLists")
+    @Query("SELECT * FROM GroceryLists ORDER BY name")
     fun getAllGroceryLists(): LiveData<List<GroceryList>>
 
     @Query("SELECT * FROM GroceryLists WHERE id = :id")

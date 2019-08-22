@@ -97,9 +97,9 @@ class GroceryListFragment : Fragment() {
         navigateToProductDialog(Pair(0L,""))
     }
 
-    private fun navigateToProductDialog(pair: Pair<Long, String>, quantity: Int = 1) {
+    private fun navigateToProductDialog(pair: Pair<Long, String>) {
         val dialog =
-            ProductDialogFragment(0L, pair.first, null, pair.second, quantity)
+            ProductDialogFragment(0L, pair.first, null, pair.second)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
             dialog.show(it, "Product Dialog")
@@ -113,8 +113,7 @@ class GroceryListFragment : Fragment() {
                 if (data.extras.containsKey("ProdId") && data.extras.containsKey("Note")) {
                     val prodId = data.extras.getLong("ProdId")
                     val note = data.extras.getString("Note")
-                    val quantity = data.extras.getInt("Quantity")
-                    groceryListViewModel.newProductInserted(GroceryListsProducts(0L,prodId, 0L, note, quantity))
+                    groceryListViewModel.newProductInserted(GroceryListsProducts(0L,prodId, 0L, note))
                 }
             }
         }
@@ -125,7 +124,7 @@ class GroceryListFragment : Fragment() {
             val productId = args.prodId
             var note = args.note
             if (productId > 0) {
-                groceryListViewModel.newProductInserted(GroceryListsProducts(0L,productId, 0L, note, 1))
+                groceryListViewModel.newProductInserted(GroceryListsProducts(0L,productId, 0L, note))
             }
 
         } catch (e: Exception) {
@@ -154,7 +153,7 @@ class GroceryListFragment : Fragment() {
 
         groceryListViewModel.addProduct.observe(this, Observer { it ->
             it?.let {
-                navigateToProductDialog(Pair(it.prodId, it.note), it.quantity)
+                navigateToProductDialog(Pair(it.prodId, it.note))
                 groceryListViewModel.doneNavigatingToAddProductGL()
             }
         })

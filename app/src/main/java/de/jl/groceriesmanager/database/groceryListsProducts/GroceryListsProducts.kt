@@ -24,9 +24,6 @@ data class GroceryListsProducts(
     @ColumnInfo(name = "note")
     var note: String = "",
 
-    @ColumnInfo(name = "quantity")
-    var quantity: Int = 1,
-
     @ColumnInfo(name = "bought")
     var bought: Boolean = false,
 

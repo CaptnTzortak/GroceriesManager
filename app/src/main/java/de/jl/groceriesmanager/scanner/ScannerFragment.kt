@@ -337,6 +337,8 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         activity?.runOnUiThread { Toast.makeText(activity, text, Toast.LENGTH_SHORT).show() }
     }
 
+
+
     /**
      * Given `choices` of `Size`s supported by a camera, choose the smallest one that
      * is at least as large as the respective texture view size, and that is at most as large as the
@@ -452,6 +454,14 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         scannerViewModel.response.observe(this, Observer { product ->
             product?.let {
                 openBarcodeDialog(it)
+            }
+        })
+
+        scannerViewModel.showNoBarcodeResultToast.observe(this, Observer {
+            it?.let {
+                if(it.isNotEmpty()){
+                    activity?.runOnUiThread { Toast.makeText(activity, "No data found for Barcode: $it", Toast.LENGTH_LONG).show() }
+                }
             }
         })
     }

@@ -50,16 +50,8 @@ class GroceryListsViewModel(application: Application) :
 
     fun deleteGroceryList(id: Long) {
         uiScope.launch {
-            val productIds = getAllProductIdsInGLProductsByGLId(id)
             removeGroceryListsProducts(id)
             removeGroceryList(id)
-            removeProducts(productIds)
-        }
-    }
-
-    private suspend fun getAllProductIdsInGLProductsByGLId(id: Long) : List<Long> {
-        return withContext(Dispatchers.IO){
-            glpDao.getAllProductIdsByGlId(id)
         }
     }
 
@@ -72,14 +64,6 @@ class GroceryListsViewModel(application: Application) :
     private suspend fun removeGroceryListsProducts(id: Long) {
         withContext(Dispatchers.IO){
             glpDao.deleteAllGroceryListsProductsByGlId(id)
-        }
-    }
-
-    private suspend fun removeProducts(ids: List<Long>){
-        withContext(Dispatchers.IO){
-            ids.iterator().forEach {
-                prodDao.deleteById(it)
-            }
         }
     }
 

@@ -109,23 +109,7 @@ class GroceryListViewModel(
      */
     fun deleteGroceryListsProducts(glProductsId: Long) {
         uiScope.launch {
-            val productIds = getAllProdIdsByGLProductsId(glProductsId)
             removeGroceryListsProductsEntryById(glProductsId)
-            removeProducts(productIds)
-        }
-    }
-
-    private suspend fun getAllProdIdsByGLProductsId(id: Long): List<Long> {
-        return withContext(Dispatchers.IO) {
-            glpDao.getAllProductIdsByGLProductsId(id)
-        }
-    }
-
-    private suspend fun removeProducts(ids: List<Long>) {
-        withContext(Dispatchers.IO) {
-            ids.iterator().forEach {
-                prodDao.deleteById(it)
-            }
         }
     }
 
@@ -176,13 +160,11 @@ class GroceryListViewModel(
         uiScope.launch {
             val prodId = _newProductGroceryListItem.value?.prodId
             val note = _newProductGroceryListItem.value?.note
-            val quantity = _newProductGroceryListItem.value?.quantity
-            if (prodId != null && note != null && quantity != null) {
+            if (prodId != null && note != null) {
                 var entry = getExistingGroceryListsProductsEntry(prodId)
                 entry.glId = glId
                 entry.prodId = prodId
                 entry.note = note
-                entry.quantity = quantity
                 if (entry.id > 0L) {
                     updateEntry(entry)
                 } else {

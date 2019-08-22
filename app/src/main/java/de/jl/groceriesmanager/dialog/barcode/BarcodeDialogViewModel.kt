@@ -10,6 +10,7 @@ import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.database.inventory.Inventory
 import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.groceriesmanager.database.products.Product
+import de.jl.tools.parseProductDescriptionToProdName
 import kotlinx.coroutines.*
 
 class BarcodeDialogViewModel(
@@ -43,32 +44,26 @@ class BarcodeDialogViewModel(
     }
 
     fun addBarcodeAsProductAndGroceryListEntry(groceryListName: String) {
-        uiScope.launch{
+        uiScope.launch {
             //1. Barcode erstellen und in DB
-            val bc = _product.value
-            if (bc != null) {
-                //TODO
-                //if (!barcodeAlreadyExists(bc.id)) {
-                //    insertBarcode(bc)
-                //}
-                ////2. Produkt erstellen, Barcode referenzieren und in DB
-                //val exProd = tryGetProductByBarcodeId(bc.id)
-                //val realProdId = if (exProd == null || exProd.id == 0L) {
-                //    //Es existiert noch kein Produkt
-                //    insertProduct(Product(0L, bc.id, bc.barcodeDescription))
-                //} else {
-                //    exProd.id
-                //}
-                ////3. GroceryList ermitteln und Eintrag erstellen
-                //val existingGl = getGroceryList(groceryListName)
-                //val glItemEntry = GroceryListsProducts(0L, realProdId, existingGl.id)
-                //insertGlItemEntry(glItemEntry)
+            val product = _product.value
+            if (product != null) {
+                //1. Existiert ein Produkt mit diesem Barcode?
+                val existingProduct = tryGetExistingProductByBarcode(product.barcodeId)
+
+                //Falls noch kein produkt in der Datenbank existiert muss ein neues hinzugefügt werden
+                val realProdId = existingProduct?.id ?: insertProduct(product)
+
+                //3. GroceryList ermitteln und Eintrag erstellen
+                val existingGl = getGroceryList(groceryListName)
+                val glItemEntry = GroceryListsProducts(0L, realProdId, existingGl.id)
+                insertGlItemEntry(glItemEntry)
             }
         }
     }
 
     private suspend fun getGroceryList(groceryListName: String): GroceryList {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             glDao.getGroceryListByName(groceryListName)
         }
     }
@@ -82,13 +77,14 @@ class BarcodeDialogViewModel(
 
     private suspend fun refBarcodeWithProd(prodName: String) {
         withContext(Dispatchers.IO) {
-            val prod = prodDao.getProductByDescription(prodName)
-            if (prod != null) {
-                //TODO:
-               //prod.barcode = _product.value!!
-               //prod.barcodeId = _product.value!!.id
-               //barcodesDao.insert(_product.value!!)
-               //prodDao.update(prod)
+            val prod = prodDao.getProductByName(parseProductDescriptionToProdName(prodName))
+            val barcodeProd = _product.value
+            if (prod != null && barcodeProd != null) {
+                prod.barcodeId = barcodeProd.barcodeId
+                prod.quantity = barcodeProd.quantity
+                prod.name = barcodeProd.name
+                prod.brand = barcodeProd.brand
+                prodDao.update(prod)
             }
         }
     }
@@ -111,8 +107,8 @@ class BarcodeDialogViewModel(
         }
     }
 
-    private suspend fun insertGlItemEntry(glEntry: GroceryListsProducts){
-        withContext(Dispatchers.IO){
+    private suspend fun insertGlItemEntry(glEntry: GroceryListsProducts) {
+        withContext(Dispatchers.IO) {
             glProductsDao.insert(glEntry)
         }
     }
@@ -131,18 +127,9 @@ class BarcodeDialogViewModel(
     }
 
     private suspend fun tryGetExistingProductByBarcode(barcode: Long): Product? {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             prodDao.getProductByBarcode(barcode)
         }
-    }
-
-    private suspend fun barcodeAlreadyExists(id: Long): Boolean {
-        //TODO
-        //return withContext(Dispatchers.IO) {
-        //    val bcCnt = barcodesDao.getCountById(id)
-        //    bcCnt > 0L
-        //}
-        return false
     }
 
     private suspend fun insertBarcode(bc: Barcode) {

@@ -43,25 +43,69 @@
                         style="@style/DefaultExposedDropdownMenu"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:id="@+id/til_description" app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/til_product_name"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
 
                     <AutoCompleteTextView
-                            android:text="@={viewModel.productDescription}"
-                            android:id="@+id/productDescriptionDropDown"
+                            android:text="@={viewModel.productNameString}"
+                            android:id="@+id/product_name_auto_complete"
                             android:layout_width="match_parent"
-                            android:hint="@string/product_description"
+                            android:hint="Product name"
                             android:layout_height="wrap_content"/>
-                    <!--com.google.android.material.textfield.TextInputEditText
-                            android:text="@={viewModel.productDescription}"
+
+                    <!--com.google.android.material.textfield.TextInputLayout
+                            style="@style/DefaultTextInputLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/til_product_name"
+                            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                                android:inputType="text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Product name"
+                                android:id="@+id/tiet_product_name"/-->
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/til_quantity"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_product_name"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.quantityString}"
+                            android:inputType="text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/product_description"
-                            android:id="@+id/tiet_description"/-->
+                            android:hint="Quantity"
+                            android:id="@+id/tiet_quantity"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/til_brand"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_quantity"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.brandString}"
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Brand"
+                            android:id="@+id/tiet_brand"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +116,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
                         android:id="@+id/til_expiryDateString" android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/til_description"
+                        app:layout_constraintTop_toBottomOf="@+id/til_brand"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
 
@@ -96,8 +140,9 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
                         android:id="@+id/til_note"
-                        app:layout_constraintEnd_toStartOf="@+id/til_quantity" android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp" android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/til_expiryDateString">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -108,27 +153,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/note"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                        style="@style/DefaultTextInputLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/til_quantity"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
-                        app:layout_constraintStart_toEndOf="@+id/til_note" android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp" android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toBottomOf="@+id/til_expiryDateString">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:text="@={viewModel.quantityString}"
-                            android:id="@+id/tiet_quantityx"
-                            android:inputType="numberSigned"
-                            android:drawablePadding="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/quantity"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -146,11 +170,9 @@
                         android:enabled="@{viewModel.confirmProductValid}"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginRight="8dp"
                         android:layout_marginStart="8dp"
                         app:layout_constraintTop_toBottomOf="@id/til_note"
                         app:layout_constraintStart_toStartOf="parent"
-                        android:layout_marginLeft="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,8 +13,7 @@ class ProductDialogViewModel(
     application: Application,
     passedProdId: Long,
     passedExpiryDateString: String?,
-    passedNote: String?,
-    passedQuantity: Int?
+    passedNote: String?
 ) : AndroidViewModel(application) {
     //job
     private var viewModelJob = Job()
@@ -34,10 +33,12 @@ class ProductDialogViewModel(
 
     val existingProductDescriptions = prodsDao.getNamesForAllExistingProducts()
 
-    var productDescription = MutableLiveData<String>()
+
+    var productNameString = MutableLiveData<String>()
     var expiryDateString = MutableLiveData<String>()
     var note = MutableLiveData<String>()
     var quantityString = MutableLiveData<String>()
+    var brandString = MutableLiveData<String>()
 
     var confirmProductValid = MutableLiveData<Boolean>()
 
@@ -47,7 +48,7 @@ class ProductDialogViewModel(
     private var existingQuantity: Int? = null
 
     init {
-        productDescription.value = ""
+        productNameString.value = ""
         if (passedProdId > 0L) {
             existingProdId = passedProdId
             //Produkt ist vorhanden. Haben wir nun ein Verfallsdatum? -> Inventar
@@ -57,9 +58,8 @@ class ProductDialogViewModel(
             } else if (passedExpiryDateString != null) {
                 //ExpiryDate anzeigen
                 existingExpiryDateString = passedExpiryDateString
-            } else if (passedNote != null && passedQuantity != null) {
+            } else if (passedNote != null) {
                 //Note anzeigen
-                existingQuantity = passedQuantity
                 existingNote = passedNote
             }
             setupEditProduct()
@@ -68,10 +68,8 @@ class ProductDialogViewModel(
             Log.d("ProductDialogViewModel", "ExpiryDate and Note filled")
         } else if (passedExpiryDateString != null) {
             expiryDateString.value = ""
-        } else if (passedNote != null && passedQuantity != null) {
+        } else if (passedNote != null) {
             note.value = ""
-            val x = 1
-            quantityString.value = x.toString()
         }
         checkProductValid()
     }
@@ -80,21 +78,23 @@ class ProductDialogViewModel(
         uiScope.launch {
             val existingProd = getExistingProd(existingProdId)
             if (existingProd != null) {
-                productDescription.value = existingProd.name
+                productNameString.value = existingProd.name
+                quantityString.value = existingProd.quantity
+                brandString.value = existingProd.brand
+
                 expiryDateString.value = existingExpiryDateString
                 note.value = existingNote
-                quantityString.value = existingQuantity.toString()
             }
         }
     }
 
-    private suspend fun tryGetExistingProdId(): Long{
-        return withContext(Dispatchers.IO){
-            var desc = ""
-            if(productDescription.value != null){
-                desc = productDescription.value.toString()
+    private suspend fun tryGetExistingProdId(): Long {
+        return withContext(Dispatchers.IO) {
+            var name = ""
+            if (productNameString.value != null) {
+                name = productNameString.value.toString()
             }
-            val prod = prodsDao.getProductByDescription(desc)
+            val prod = prodsDao.getProductByName(name)
             prod?.id ?: 0L
         }
     }
@@ -114,14 +114,24 @@ class ProductDialogViewModel(
 
     fun insertOrUpdateProduct() {
         uiScope.launch {
-            existingProdId = tryGetExistingProdId()
+            if (existingProdId == 0L) {
+                existingProdId = tryGetExistingProdId()
+            }
             if (existingProdId > 0L) {
                 val product = getExistingProd(existingProdId)
-                product.name = productDescription.value.toString()
+                product.name = productNameString.value.toString()
+                product.quantity = quantityString.value.toString()
+                product.brand = brandString.value.toString()
                 update(product)
                 _addedProduct.value = product.id
             } else {
-                val product = Product(0L, 0L, productDescription.value.toString())
+                val product = Product(
+                    0L,
+                    0L,
+                    productNameString.value.toString(),
+                    quantityString.value.toString(),
+                    brandString.value.toString()
+                )
                 _addedProduct.value = insert(product)
             }
         }
@@ -142,11 +152,34 @@ class ProductDialogViewModel(
     fun checkProductValid() {
         uiScope.launch {
             confirmProductValid.value =
-                productDescription.value?.length!! >= 3 && (!expiryDateString.value.isNullOrEmpty() || checkGLValidation())
+                productNameString.value?.length!! >= 3 && (!expiryDateString.value.isNullOrEmpty() || checkGLValidation())
         }
     }
 
     private fun checkGLValidation(): Boolean {
-        return !note.value.isNullOrEmpty() && Integer.parseInt(quantityString.value!!) > 0
+        return !note.value.isNullOrEmpty()
+    }
+
+    fun checkIfProductAlreadyExists(prodName: String) {
+        uiScope.launch {
+            if (prodName.isNotEmpty()) {
+                val existingProd = getProductByName(prodName)
+                if (existingProd != null && existingProd.id > 0L) {
+                    fillUiWithExistingProd(existingProd)
+                }
+            }
+        }
+    }
+
+    private fun fillUiWithExistingProd(existingProd: Product) {
+        productNameString.value = existingProd.name
+        quantityString.value = existingProd.quantity
+        brandString.value = existingProd.brand
+    }
+
+    private suspend fun getProductByName(prodName: String): Product? {
+        return withContext(Dispatchers.IO) {
+            prodsDao.getProductByName(prodName)
+        }
     }
 }
