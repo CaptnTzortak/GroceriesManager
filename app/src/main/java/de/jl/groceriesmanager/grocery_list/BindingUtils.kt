@@ -6,7 +6,7 @@ import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 
 @BindingAdapter("glItemDescription")
 fun TextView.setGlItemDescription(item: GroceryListsProducts?) {
-    text = item?.product?.description
+    text = item?.product?.getDescription()
 }
 
 @BindingAdapter("glItemNote")

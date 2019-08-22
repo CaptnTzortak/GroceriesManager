@@ -36,20 +36,22 @@ class NotificationPublisher : BroadcastReceiver() {
                 val expiredItems = repo.inventorysWithExpiryDateCloserOne
                 var counter = 0
                 expiredItems?.iterator()?.forEach {
+                    val prod = it.product
+                    if (prod != null) {
+                        var builder = NotificationCompat.Builder(context, channelID)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("${prod.name} expiring")
+                            .setContentText("${prod.name} expires at ${it.expiryDateString}")
+                            .setStyle(
+                                NotificationCompat.BigTextStyle()
+                                    .bigText("${prod.name} expires at ${it.expiryDateString}")
+                            )
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-                    var builder = NotificationCompat.Builder(context, channelID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("${it.product.description} expiring")
-                        .setContentText("${it.product.description} expires at ${it.expiryDateString}")
-                        .setStyle(
-                            NotificationCompat.BigTextStyle()
-                                .bigText("${it.product.description} expires at ${it.expiryDateString}")
-                        )
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-                    if (builder != null) {
-                        NotificationManagerCompat.from(context).notify(counter, builder.build())
-                        counter++
+                        if (builder != null) {
+                            NotificationManagerCompat.from(context).notify(counter, builder.build())
+                            counter++
+                        }
                     }
                 }
             }

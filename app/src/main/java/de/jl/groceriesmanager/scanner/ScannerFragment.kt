@@ -37,7 +37,7 @@ import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.databinding.FragmentScannerBinding
 import de.jl.groceriesmanager.dialog.barcode.BarcodeDialogFragment
 import de.jl.groceriesmanager.scanner.ScannerFragment.Companion.REQUEST_CAMERA_PERMISSION
@@ -449,8 +449,8 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             }
         })
 
-        scannerViewModel.response.observe(this, Observer { barcode ->
-            barcode?.let {
+        scannerViewModel.response.observe(this, Observer { product ->
+            product?.let {
                 openBarcodeDialog(it)
             }
         })
@@ -473,9 +473,9 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         }
     }
 
-    private fun openBarcodeDialog(barcode: Barcode) {
+    private fun openBarcodeDialog(product: Product) {
         val dialog =
-            BarcodeDialogFragment(barcode)
+            BarcodeDialogFragment(product)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
             dialog.show(it, "Barcode Dialog")

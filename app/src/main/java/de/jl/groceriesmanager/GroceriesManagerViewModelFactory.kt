@@ -3,7 +3,7 @@ package de.jl.groceriesmanager
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.dialog.barcode.BarcodeDialogViewModel
 import de.jl.groceriesmanager.dialog.grocery_list.NewGroceryListDialogViewModel
 import de.jl.groceriesmanager.dialog.product.ProductDialogViewModel
@@ -21,7 +21,7 @@ class GroceriesManagerViewModelFactory(
     private val glId: Long = 0L,
     private val passedNote: String? = null,
     private val passedQuantity: Int? = null,
-    private val passedBarcode: Barcode? = null
+    private val passedProduct: Product? = null
 
 ) : ViewModelProvider.Factory {
 
@@ -45,7 +45,7 @@ class GroceriesManagerViewModelFactory(
                 application,
                 glId
             ) as T
-            modelClass.isAssignableFrom(BarcodeDialogViewModel::class.java) -> return BarcodeDialogViewModel(application, passedBarcode) as T
+            modelClass.isAssignableFrom(BarcodeDialogViewModel::class.java) -> return BarcodeDialogViewModel(application, passedProduct) as T
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

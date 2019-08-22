@@ -6,8 +6,8 @@ import androidx.room.*
 @Dao
 interface ProductsDao {
 
-    @Query("SELECT * FROM Products WHERE barcodeId = :barcodeId")
-    fun getProductByBarcodeId(barcodeId: Long): Product?
+    @Query("SELECT * FROM Products WHERE barcodeId = :barcode")
+    fun getProductByBarcode(barcode: Long): Product?
 
     @Query("SELECT * FROM Products WHERE id = :id")
     fun getProductById(id: Long): Product
@@ -24,13 +24,13 @@ interface ProductsDao {
     @Update(onConflict = OnConflictStrategy.FAIL)
     fun update(product: Product)
 
-    @Query("SELECT DISTINCT description FROM Products")
-    fun getNamesForAllExistingProducts(): LiveData<List<String>>
+    @Query("SELECT DISTINCT * FROM Products")
+    fun getNamesForAllExistingProducts(): LiveData<List<Product>>
 
-    @Query("SELECT DISTINCT description FROM Products WHERE barcodeId = 0")
-    fun getNamesForAllExistingProductsWithoutBarcode(): LiveData<List<String>>
+    @Query("SELECT DISTINCT * FROM Products WHERE barcodeId = 0")
+    fun getNamesForAllExistingProductsWithoutBarcode(): LiveData<List<Product>>
 
-    @Query("SELECT * FROM Products WHERE description LIKE :description")
-    fun getProductByDescription(description: String): Product?
+    @Query("SELECT * FROM Products WHERE name LIKE :name")
+    fun getProductByDescription(name: String): Product?
 
 }

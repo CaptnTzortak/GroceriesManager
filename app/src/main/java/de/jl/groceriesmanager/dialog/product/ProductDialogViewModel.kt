@@ -80,7 +80,7 @@ class ProductDialogViewModel(
         uiScope.launch {
             val existingProd = getExistingProd(existingProdId)
             if (existingProd != null) {
-                productDescription.value = existingProd.description
+                productDescription.value = existingProd.name
                 expiryDateString.value = existingExpiryDateString
                 note.value = existingNote
                 quantityString.value = existingQuantity.toString()
@@ -117,11 +117,11 @@ class ProductDialogViewModel(
             existingProdId = tryGetExistingProdId()
             if (existingProdId > 0L) {
                 val product = getExistingProd(existingProdId)
-                product.description = productDescription.value.toString()
+                product.name = productDescription.value.toString()
                 update(product)
                 _addedProduct.value = product.id
             } else {
-                val product = Product(0L, null, productDescription.value.toString())
+                val product = Product(0L, 0L, productDescription.value.toString())
                 _addedProduct.value = insert(product)
             }
         }

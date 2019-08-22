@@ -21,15 +21,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.database.products.Product
 import de.jl.groceriesmanager.databinding.DialogBarcodeBinding
 import de.jl.tools.openDatePicker
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
+class BarcodeDialogFragment(product: Product) : DialogFragment() {
 
-    var bCode: Barcode = barcode
+    var prod = product
     lateinit var barcodeDialogBinding: DialogBarcodeBinding
     lateinit var application: Application
     lateinit var barcodeDialogViewModel: BarcodeDialogViewModel
@@ -55,7 +55,7 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
         application = requireNotNull(this.activity).application
 
         //ViewModelFactory
-        val viewModelFactory = GroceriesManagerViewModelFactory(application, passedBarcode = bCode)
+        val viewModelFactory = GroceriesManagerViewModelFactory(application, passedProduct = prod)
 
         //ViewModel
         barcodeDialogViewModel = ViewModelProviders.of(this, viewModelFactory).get(BarcodeDialogViewModel::class.java)
@@ -83,7 +83,7 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     }
 
     private fun addToGLBtnClicked() {
-        if(_existingGroceryListNames.isNotEmpty()) {
+        if (_existingGroceryListNames.isNotEmpty()) {
 
 
             val builder = context?.let { AlertDialog.Builder(it) }
@@ -128,7 +128,10 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
                 builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { dialog, which ->
                     Toast.makeText(
                         context,
-                        getString(R.string.text_barcode_referenced_with_product).replace("{0}", bCode.id.toString())
+                        getString(R.string.text_barcode_referenced_with_product).replace(
+                            "{0}",
+                            prod.barcodeId.toString()
+                        )
                             .replace("{1}", _existingProductNamesWithoutBarcode[which]),
                         Toast.LENGTH_LONG
                     )
@@ -151,7 +154,11 @@ class BarcodeDialogFragment(barcode: Barcode) : DialogFragment() {
     private fun setObservers() {
         barcodeDialogViewModel.existingProductNamesWithoutBarcode.observe(this, Observer {
             it?.let {
-                _existingProductNamesWithoutBarcode = it
+                val prodDesctriptions = mutableListOf<String>()
+                it.forEach { product ->
+                    prodDesctriptions.add(product.getDescription())
+                }
+                _existingProductNamesWithoutBarcode = prodDesctriptions
             }
         })
 

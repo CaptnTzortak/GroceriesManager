@@ -61,7 +61,7 @@ class AddProductViewModel(application: Application, prodId : Long, expiryDate: S
     private fun fillProduct(id: Long, expiryDate: String){
         uiScope.launch {
             val existingProd = getProductById(id)
-           description.value = existingProd?.description
+           description.value = existingProd?.name
            expiryDateString.value = expiryDate
         }
     }
@@ -75,20 +75,20 @@ class AddProductViewModel(application: Application, prodId : Long, expiryDate: S
     /**
      * Executes when the CONFIRM button is clicked.
      */
-    fun onConfirmItem() {
-        uiScope.launch {
-            var prodId = existingProdId
-            val newProd = Product(existingProdId)
-            newProd.description = description.value.toString()
-            val expiryDate = expiryDateString.value.toString()
-            if(prodId != null && prodId > 0L){
-                update(newProd)
-            } else {
-                prodId = insert(newProd)
-            }
-            _productIdWithExpiryDate.value = Pair(prodId, expiryDate)
-        }
-    }
+    //fun onConfirmItem() {
+    //    uiScope.launch {
+    //        var prodId = existingProdId
+    //        val newProd = Product(existingProdId)
+    //        newProd.description = description.value.toString()
+    //        val expiryDate = expiryDateString.value.toString()
+    //        if(prodId != null && prodId > 0L){
+    //            update(newProd)
+    //        } else {
+    //            prodId = insert(newProd)
+    //        }
+    //        _productIdWithExpiryDate.value = Pair(prodId, expiryDate)
+    //    }
+    //}
 
     fun validateProduct() {
         uiScope.launch {

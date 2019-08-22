@@ -94,7 +94,11 @@ class ProductDialogFragment(
     private fun setObservers() {
         productDialogViewModel.existingProductDescriptions.observe(this, Observer{
             it?.let {
-                productDialogBinding.productDescriptionDropDown.setAdapter(ArrayAdapter(context,R.layout.dropdown_menu_popup_item,it))
+                var prodDesctriptions = mutableListOf<String>()
+                it.forEach { product ->
+                    prodDesctriptions.add(product.getDescription())
+                }
+                productDialogBinding.productDescriptionDropDown.setAdapter(ArrayAdapter(context,R.layout.dropdown_menu_popup_item,prodDesctriptions))
             }
         })
 

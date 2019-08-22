@@ -6,10 +6,10 @@ import de.jl.groceriesmanager.database.inventory.Inventory
 
 @BindingAdapter("itemBarcode")
 fun TextView.setItemBarcode(item: Inventory) {
-    val barcode = if (item.product.barcodeId == null) {
-        item.product.id
+    val barcode = if (item.product!!.barcodeId > 0L) {
+        item.product!!.barcodeId
     } else {
-        item.product.barcodeId
+        item.product!!.id
     }
     text = "Barcode: $barcode"
 }
@@ -17,12 +17,13 @@ fun TextView.setItemBarcode(item: Inventory) {
 @BindingAdapter("itemDescription")
 fun TextView.setItemDescription(item: Inventory) {
     val product = item.product
-    text = if (product.description.isNullOrEmpty()) {
+    text = if (product == null || product.getDescription().isEmpty()) {
         "No Description"
     } else {
-        product.description
+        product.getDescription()
     }
 }
+
 
 @BindingAdapter("productExpiryDate")
 fun TextView.setProductExpiryDate(item: Inventory) {

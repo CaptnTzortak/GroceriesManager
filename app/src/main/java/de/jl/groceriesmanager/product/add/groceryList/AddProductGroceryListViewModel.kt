@@ -59,7 +59,7 @@ class AddProductGroceryListViewModel(application: Application, private val prodI
     private fun fillProduct(id: Long, passedNote: String) {
         uiScope.launch {
             val existingProd = getProductById(id)
-            description.value = existingProd.description
+            description.value = existingProd.name
             note.value = passedNote
         }
     }
@@ -71,21 +71,21 @@ class AddProductGroceryListViewModel(application: Application, private val prodI
     }
 
     /**
-     * Executes when the CONFIRM button is clicked.
-     */
-    fun addProductClicked() {
-        uiScope.launch {
-            var prodId = existingProdId
-            val newProd = Product(existingProdId)
-            newProd.description = description.value.toString()
-            if (existingProdId > 0) {
-                update(newProd)
-            } else {
-                prodId = insert(newProd)
-            }
-            _product.value = prodId
-        }
-    }
+    // * Executes when the CONFIRM button is clicked.
+    // */
+    //fun addProductClicked() {
+    //    uiScope.launch {
+    //        var prodId = existingProdId
+    //        val newProd = Product(existingProdId)
+    //        newProd.description = description.value.toString()
+    //        if (existingProdId > 0) {
+    //            update(newProd)
+    //        } else {
+    //            prodId = insert(newProd)
+    //        }
+    //        _product.value = prodId
+    //    }
+    //}
 
     private suspend fun insert(newProd: Product): Long {
         return withContext(Dispatchers.IO) {

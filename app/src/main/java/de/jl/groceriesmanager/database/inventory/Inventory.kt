@@ -17,5 +17,5 @@ data class Inventory(
    var expiryDateString: String = "",
 
    @Ignore
-   var product: Product = Product()
+   var product: Product? = null
 )

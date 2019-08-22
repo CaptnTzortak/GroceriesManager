@@ -11,7 +11,7 @@ class GroceriesManagerRepository(context: Context) {
         val db = GroceriesManagerDB.getInstance(context)
         inventorysWithExpiryDateCloserOne = db.inventoryDao.getInventoryEntrysExpireNextThreeDays()
         inventorysWithExpiryDateCloserOne.iterator().forEach {
-            if (it.product.id == 0L){
+            if (it.product!!.id == 0L){
                 it.product = db.productsDao.getProductById(it.prodId)
             }
         }

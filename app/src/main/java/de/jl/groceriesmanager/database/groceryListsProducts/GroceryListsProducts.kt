@@ -31,7 +31,7 @@ data class GroceryListsProducts(
     var bought: Boolean = false,
 
     @Ignore
-    var product: Product = Product(),
+    var product: Product? = null,
 
     @Ignore
     var groceryList: GroceryList = GroceryList()

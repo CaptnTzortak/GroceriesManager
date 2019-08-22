@@ -1,17 +1,17 @@
 package de.jl.groceriesmanager.scanner
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.squareup.moshi.Moshi
-import de.jl.groceriesmanager.database.products.Barcode
+import de.jl.groceriesmanager.database.products.Product
 import de.jl.openfoodfacts.OpenFoodFactsProperty
 import kotlinx.coroutines.*
-import java.net.URL
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
+import java.net.URL
 
 
 class ScannerViewModel : ViewModel() {
@@ -19,8 +19,8 @@ class ScannerViewModel : ViewModel() {
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    private val _response = MutableLiveData<Barcode>()
-    val response: LiveData<Barcode>
+    private val _response = MutableLiveData<Product>()
+    val response: LiveData<Product>
         get() = _response
 
     private val _valid = MutableLiveData<Boolean>()
@@ -76,21 +76,21 @@ class ScannerViewModel : ViewModel() {
 
     fun getData() {
         uiScope.launch {
-            _response.value = getBarcodeByOpenFoodFactsJSON()
+            _response.value = getProductByOpenFoodFactsJSON()
         }
     }
 
-    private suspend fun getBarcodeByOpenFoodFactsJSON(): Barcode? {
+    private suspend fun getProductByOpenFoodFactsJSON(): Product? {
         val oFFProperty = withContext(Dispatchers.IO) {
             val result = getResult()
             val moshi = Moshi.Builder().build()
-            val adapter = moshi.adapter<OpenFoodFactsProperty>(OpenFoodFactsProperty::class.java)
+            val adapter = moshi.adapter(OpenFoodFactsProperty::class.java)
             adapter.fromJson(result)
         }
-        return parseOFFProductToBarcode(oFFProperty)
+        return parseOFFProductToProduct(oFFProperty)
     }
 
-    private suspend fun parseOFFProductToBarcode(oFFProperty: OpenFoodFactsProperty?): Barcode? {
+    private suspend fun parseOFFProductToProduct(oFFProperty: OpenFoodFactsProperty?): Product? {
         try {
             if (oFFProperty != null && oFFProperty.status == 1) {
                 //JSON-Success
@@ -99,45 +99,15 @@ class ScannerViewModel : ViewModel() {
                     val productName = oFFProperty.product.product_name
                     var brands = oFFProperty.product.brands
                     var quantity = oFFProperty.product.quantity
-                    var barcodeImgUrl = oFFProperty.product.image_url
-                    var image = barcodeImgUrl?.let { getBitmapByUrl(it) }
-                    var commonName = oFFProperty.product.generic_name
+                    var image = oFFProperty.product.image_url?.let { getBitmapByUrl(it) }
 
-
-                    if(brands.isNullOrEmpty() || brands == "null"){
+                    if (brands.isNullOrEmpty() || brands == "null") {
                         brands = ""
                     }
-                    if(quantity.isNullOrEmpty() || quantity == "null"){
+                    if (quantity.isNullOrEmpty() || quantity == "null") {
                         quantity = ""
                     }
-
-                    var barcodeDesc = "$productName"
-                    if(!brands.isNullOrEmpty()){
-                        barcodeDesc += " - $brands"
-                    }
-                    if(!quantity.isNullOrEmpty()){
-                        barcodeDesc += " - $quantity"
-                    }
-
-
-                    if(barcodeImgUrl.isNullOrEmpty()){
-                        barcodeImgUrl = ""
-                    }
-                    if(commonName.isNullOrEmpty()){
-                        commonName = ""
-                    }
-
-
-                    return Barcode(
-                        barcodeId,
-                        barcodeDesc,
-                        productName,
-                        brands,
-                        quantity,
-                        image,
-                        barcodeImgUrl,
-                        commonName
-                    )
+                    return Product(0L, barcodeId, productName, quantity, brands, image)
                 }
             }
             return null
