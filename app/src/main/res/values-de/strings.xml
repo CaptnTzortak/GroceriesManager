@@ -36,4 +36,6 @@
     <string name="btn_add_to_inventory">Zum Inventar hinzufügen</string>
     <string name="btn_add_to_gl">Zur Einkaufsliste hinzufügen</string>
     <string name="text_no_existing_grocery_lists">Keine Einkaufslisten vorhanden</string>
+    <string name="product_expires">{0} verfällt</string>
+    <string name="text_product_expires">{0} verfällt am {1}</string>
 </resources>

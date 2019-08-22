@@ -39,4 +39,6 @@
     <string name="btn_add_to_inventory">Add to inventory</string>
     <string name="btn_add_to_gl">Add to grocery list</string>
     <string name="text_no_existing_grocery_lists">No existing grocery lists</string>
+    <string name="product_expires">{0} expires</string>
+    <string name="text_product_expires">{0} expires at {1}</string>
 </resources>

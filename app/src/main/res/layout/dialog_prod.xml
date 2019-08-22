@@ -1,0 +1,183 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewModel" type="de.jl.groceriesmanager.dialog.product.ProductDialogViewModel"/>
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dialog">
+
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_product"
+                android:textSize="26sp"
+                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp"/>
+        <View
+                android:id="@+id/titleDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/primaryDarkColor"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
+        <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" android:id="@+id/scrollView"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/titleDivider" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginRight="8dp" android:layout_marginEnd="8dp"
+        >
+            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+                                                               android:layout_height="wrap_content"
+                                                               android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:id="@+id/til_product_name"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                <AutoCompleteTextView
+                        android:text="@={viewModel.productNameString}"
+                        android:id="@+id/product_name_auto_complete"
+                        android:layout_width="match_parent"
+                        android:hint="Product name"
+                        android:layout_height="wrap_content"/>
+
+                <!--com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/til_product_name"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Product name"
+                            android:id="@+id/tiet_product_name"/-->
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/til_quantity"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_product_name"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.quantityString}"
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Quantity"
+                            android:id="@+id/tiet_quantity"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/til_brand"
+                        android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@id/til_quantity"
+                        app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.brandString}"
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Brand"
+                            android:id="@+id/tiet_brand"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:id="@+id/til_expiryDateString" android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/til_brand"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginEnd="8dp" android:layout_marginRight="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.expiryDateString}"
+                            android:id="@+id/tiet_expiryDateString"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:drawablePadding="5dp"
+                            android:drawableLeft="@drawable/ic_calendar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/expiry_date"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        style="@style/DefaultTextInputLayout"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:id="@+id/til_note"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp" android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/til_expiryDateString">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:text="@={viewModel.note}"
+                            android:id="@+id/tiet_note"
+                            android:inputType="text"
+                            android:drawablePadding="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/note"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                        style="@style/AppTheme.FloatingActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:contentDescription="@string/add"
+                        android:text="@string/add"
+                        app:icon="@drawable/ic_add"
+                        app:layout_anchorGravity="bottom|right|end"
+                        android:clickable="true"
+                        android:id="@+id/confirmProductBtn"
+                        android:focusable="true"
+                        android:enabled="@{viewModel.confirmProductValid}"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintTop_toBottomOf="@id/til_note"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

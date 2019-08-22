@@ -1,13 +1,15 @@
 package de.jl.groceriesmanager
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
@@ -18,31 +20,35 @@ import de.jl.tools.NotificationPublisher
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-
 class MainActivity : AppCompatActivity() {
 
     //DataBinding
     private lateinit var mainActivityBinding: ActivityMainBinding
 
     companion object {
-        const val CHANNEL_ID = "de.jl.groceriesmanager.notifications.expirydates"
+        private const val NOTIFICATION_CHANNEL_BASE_ID = "de.jl.groceriesmanager.notifications"
+        const val EXPIRY_DATES_NOTIFICATION_CHANNEL_ID = "$NOTIFICATION_CHANNEL_BASE_ID.expirydates"
+
+        const val SHARED_PREFERENCES_ID = "Groceries_Manager_Preferences"
+
+
         const val TAG = "MainActivity"
-        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 14
-        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 8
+        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 15
+        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 57
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
             super.onCreate(savedInstanceState)
+
+            //Databinding
             mainActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+            //Navigation
             val host: NavHostFragment =
                 supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
-
             val navController = host.navController
-            setupBottomNavMenu(navController)
-            setSupportActionBar(toolbar)
             navController.addOnDestinationChangedListener { _, destination, _ ->
                 val dest: String = try {
                     resources.getResourceName(destination.id)
@@ -51,19 +57,26 @@ class MainActivity : AppCompatActivity() {
                 }
                 Log.d("NavigationActivity", "Navigated to $dest")
             }
+            setupBottomNavMenu(navController)
 
-            val sharedpreferences = getSharedPreferences("GroceriesManagerPreferences", Context.MODE_PRIVATE)
-            val editor = sharedpreferences.edit()
+            //Toolbar
+            setSupportActionBar(toolbar)
 
-            if (!sharedpreferences.getBoolean("Alarm13", false)) {
+            val preferences = getSharedPreferences(SHARED_PREFERENCES_ID, Context.MODE_PRIVATE)
+            if(!preferences.getBoolean("ExpiryDateNotificationAlarm", false)){
                 setupNotificationAlarm()
-                Toast.makeText(this, "Alarm13 Set", Toast.LENGTH_SHORT).show()
-                editor.putBoolean("Alarm13", true)
+                Log.i(TAG,"ExpiryDateNotificationAlarm Set")
+                val editor = preferences.edit()
+                editor.putBoolean("ExpiryDateNotificationAlarm", true)
                 editor.commit()
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel(CHANNEL_ID, "GroceriesManager Notifications", "ExpiryDate Notification Channel")
+                createNotificationChannel(
+                    EXPIRY_DATES_NOTIFICATION_CHANNEL_ID,
+                    "GroceriesManager Notifications",
+                    "Notificationchannel for expired groceries"
+                )
             }
         } catch (e: Exception) {
             Log.e(TAG, e.localizedMessage)
@@ -82,7 +95,6 @@ class MainActivity : AppCompatActivity() {
         firingCal.set(Calendar.MINUTE, EXPIRY_DATE_NOTIFICATION_AT_MINUTE) // Particular minute
         firingCal.set(Calendar.SECOND, 0) // particular second
 
-
         var intendedTime = firingCal.timeInMillis
         val currentTime = currentCal.timeInMillis
 
@@ -100,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createNotificationChannel(id: String, name: String,description: String) {
+    private fun createNotificationChannel(id: String, name: String, description: String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
