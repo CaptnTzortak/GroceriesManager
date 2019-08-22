@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
 
         const val TAG = "MainActivity"
-        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 15
-        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 57
+        const val EXPIRY_DATE_NOTIFICATION_AT_HOUR = 16
+        const val EXPIRY_DATE_NOTIFICATION_AT_MINUTE = 30
     }
 
 
