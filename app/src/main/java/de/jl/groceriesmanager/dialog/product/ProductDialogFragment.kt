@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -76,7 +77,8 @@ class ProductDialogFragment(
         }
         if (prodId > 0L) {
             productDialogBinding.title.text = getString(R.string.modify_product)
-            productDialogBinding.confirmProductBtn.text = getString(R.string.save)
+            productDialogBinding.confirmProductBtn.text = getString(R.string.btn_save)
+            productDialogBinding.confirmProductBtn.icon = ContextCompat.getDrawable(this.context!!,R.drawable.ic_save)
         }
 
         productDialogBinding.confirmProductBtn.setOnClickListener {

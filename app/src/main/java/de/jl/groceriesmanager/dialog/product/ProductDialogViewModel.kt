@@ -46,11 +46,10 @@ class ProductDialogViewModel(
 
     init {
         productNameString.value = ""
-        expiryDateString.value = ""
-        note.value =""
+        //expiryDateString.value = ""
+        //note.value =""
         quantityString.value =""
         brandString.value =""
-
         if (passedProdId > 0L) {
             existingProdId = passedProdId
             //Produkt ist vorhanden. Haben wir nun ein Verfallsdatum? -> Inventar

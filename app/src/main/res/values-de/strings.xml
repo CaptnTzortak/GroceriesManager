@@ -9,7 +9,6 @@
     <string name="common_barcode_id">Strichcode/ID</string>
     <string name="common_expiry_date">Verfallsdatum</string>
     <string name="common_original_description">Originalbeschreibung</string>
-    <string name="common_quantity">Menge</string>
     <string name="common_brand">Marke</string>
     <string name="btn_confirm">Bestätigen</string>
     <string name="create_product">Produkt erstellen</string>
@@ -22,7 +21,7 @@
     <string name="save">Speichern</string>
     <string name="modify_product">Produkt bearbeiten</string>
     <string name="modify_groceryList">Einkaufsliste bearbeiten</string>
-    <string name="quantity">Anzahl</string>
+    <string name="quantity">Menge</string>
     <string name="note">Notiz</string>
     <string name="scan">Scannen</string>
     <string name="barcode">Barcode</string>
@@ -38,4 +37,7 @@
     <string name="text_no_existing_grocery_lists">Keine Einkaufslisten vorhanden</string>
     <string name="product_expires">{0} verfällt</string>
     <string name="text_product_expires">{0} verfällt am {1}</string>
+    <string name="product_name">Produktname</string>
+    <string name="brand">Marke</string>
+    <string name="btn_save">Speichern</string>
 </resources>

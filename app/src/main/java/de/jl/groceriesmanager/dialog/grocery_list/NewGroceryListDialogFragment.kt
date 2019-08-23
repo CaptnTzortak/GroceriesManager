@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -58,9 +59,8 @@ class NewGroceryListDialogFragment(private val glId: Long = 0L) : DialogFragment
         }
 
         if (glId > 0L) {
-            //TODO: Save-Icon downloaden und hier statt dem "+" setzen
-            //TODO: Obriges auch im Add/Edit ProductDialogFragment
-            newGroceryListDialogBinding.confirmGroceryListBtn.text = getString(R.string.save)
+            newGroceryListDialogBinding.confirmGroceryListBtn.text = getString(R.string.btn_save)
+            newGroceryListDialogBinding.confirmGroceryListBtn.icon = ContextCompat.getDrawable(this.context!!,R.drawable.ic_save)
             newGroceryListDialogBinding.title.text = getString(R.string.modify_groceryList)
         }
 

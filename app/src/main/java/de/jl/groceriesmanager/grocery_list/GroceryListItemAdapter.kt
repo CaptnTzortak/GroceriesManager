@@ -26,8 +26,8 @@ class GroceryListItemAdapter(val clickListener: GroceryListItemListener) :
             view.strokeColor = Color.RED
             view.strokeWidth = 5
         } else{
-            view.strokeColor = Color.TRANSPARENT
-            view.strokeWidth = 0
+            view.strokeColor = Color.GREEN
+            view.strokeWidth = 2
         }
         holder.bind(item, clickListener, view)
 

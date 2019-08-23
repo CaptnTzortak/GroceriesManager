@@ -43,7 +43,7 @@ class NotificationPublisher : BroadcastReceiver() {
             val prod = invItem.product
             if (prod != null) {
                 val builder = NotificationCompat.Builder(context, MainActivity.EXPIRY_DATES_NOTIFICATION_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_stat_name)
+                    .setSmallIcon(R.drawable.ic_notification_logo)
                     .setContentTitle(
                         context.getString(R.string.product_expires).replace("{0}", prod.name)
                     )

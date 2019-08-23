@@ -10,7 +10,6 @@
     <string name="common_barcode_id">Barcode/ID</string>
     <string name="common_expiry_date">Expiry Date</string>
     <string name="common_original_description">Original description</string>
-    <string name="common_quantity">Quantity</string>
     <string name="common_brand">Brand</string>
     <string name="btn_confirm">Confirm</string>
     <string name="common_plus" translatable="false">+</string>
@@ -41,4 +40,7 @@
     <string name="text_no_existing_grocery_lists">No existing grocery lists</string>
     <string name="product_expires">{0} expires</string>
     <string name="text_product_expires">{0} expires at {1}</string>
+    <string name="product_name">Product name</string>
+    <string name="brand">Brand</string>
+    <string name="btn_save">Save</string>
 </resources>
