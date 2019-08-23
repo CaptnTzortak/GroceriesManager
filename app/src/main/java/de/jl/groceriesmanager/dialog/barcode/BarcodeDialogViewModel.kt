@@ -33,6 +33,10 @@ class BarcodeDialogViewModel(
     val quantityString = MutableLiveData<String>()
     val brandString = MutableLiveData<String>()
 
+    private val _barcodeAlreadyReferenced = MutableLiveData<Int>()
+    val barcodeAlreadyReferenced: LiveData<Int>
+        get() = _barcodeAlreadyReferenced
+
     private val _product = MutableLiveData<Product>()
     val product: LiveData<Product>
         get() = _product

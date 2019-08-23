@@ -40,4 +40,5 @@
     <string name="product_name">Produktname</string>
     <string name="brand">Marke</string>
     <string name="btn_save">Speichern</string>
+    <string name="text_barcode_already_referenced">Barcode wurde bereits referenziert</string>
 </resources>

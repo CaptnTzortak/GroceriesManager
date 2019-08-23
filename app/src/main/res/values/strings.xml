@@ -43,4 +43,5 @@
     <string name="product_name">Product name</string>
     <string name="brand">Brand</string>
     <string name="btn_save">Save</string>
+    <string name="text_barcode_already_referenced">Barcode already referenced</string>
 </resources>

@@ -40,6 +40,7 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
     lateinit var application: Application
     lateinit var barcodeDialogViewModel: BarcodeDialogViewModel
     private var _existingProductNamesWithoutBarcode: List<String> = emptyList()
+    private var _barcodeAlreadyReferenced: Int = 0
     private var _existingGroceryListNames: List<String> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -152,7 +153,9 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
 
     private fun referenceToProductBtnClicked() {
         try {
-            if (_existingProductNamesWithoutBarcode.isNotEmpty()) {
+            if(_barcodeAlreadyReferenced == 0){
+                Toast.makeText(context, getString(R.string.text_barcode_already_referenced), Toast.LENGTH_LONG).show()
+            } else if (_existingProductNamesWithoutBarcode.isNotEmpty()) {
                 val builder = context?.let { AlertDialog.Builder(it) }
                 if (builder != null) {
                     builder.setTitle(getString(R.string.title_reference_barcode))
@@ -196,6 +199,12 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
                         prodDesctriptions.add(product.getDescription())
                     }
                     _existingProductNamesWithoutBarcode = prodDesctriptions
+                }
+            })
+
+            barcodeDialogViewModel.barcodeAlreadyReferenced.observe(this, Observer {
+                it?.let{
+                    _barcodeAlreadyReferenced = it
                 }
             })
 
