@@ -490,66 +490,6 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         }
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PHOTO_REQUEST && resultCode == Activity.RESULT_OK) {
-            val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-            mediaScanIntent.data = imageUri
-            launchMediaScanIntent(mediaScanIntent)
-            try {
-                val bitmap = context?.let { decodeBitmapUri(it, imageUri) }
-                if (detector!!.isOperational && bitmap != null) {
-                    val frame = Frame.Builder().setBitmap(bitmap).build()
-                    val barcodes = detector!!.detect(frame)
-                    for (index in 0 until barcodes.size()) {
-                        val code = barcodes.valueAt(index)
-                        scannerViewModel.validateBarcode(code.displayValue)
-                        val type = barcodes.valueAt(index).valueFormat
-                        when (type) {
-                            GoogleBarcode.CONTACT_INFO -> Log.i(TAG, code.contactInfo.title)
-                            GoogleBarcode.EMAIL -> Log.i(TAG, code.email.address)
-                            GoogleBarcode.ISBN -> Log.i(TAG, code.rawValue)
-                            GoogleBarcode.PHONE -> Log.i(TAG, code.phone.number)
-                            GoogleBarcode.PRODUCT -> Log.i(TAG, code.rawValue)
-                            GoogleBarcode.SMS -> Log.i(TAG, code.sms.message)
-                            GoogleBarcode.TEXT -> Log.i(TAG, code.rawValue)
-                            GoogleBarcode.URL -> Log.i(TAG, "url: " + code.url.url)
-                            GoogleBarcode.WIFI -> Log.i(TAG, code.wifi.ssid)
-                            GoogleBarcode.GEO -> Log.i(TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
-                            GoogleBarcode.CALENDAR_EVENT -> Log.i(TAG, code.calendarEvent.description)
-                            GoogleBarcode.DRIVER_LICENSE -> Log.i(TAG, code.driverLicense.licenseNumber)
-                            else -> Log.i(TAG, code.rawValue)
-                        }
-                    }
-                } else {
-                }
-            } catch (e: Exception) {
-                Toast.makeText(context, "Failed to load Image", Toast.LENGTH_SHORT)
-                    .show()
-                Log.e(TAG, e.toString())
-            }
-
-        }
-    }
-
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val storageDir = File(Environment.getExternalStorageDirectory(), "picture.jpg")
-        if (!storageDir.exists()) {
-            storageDir.parentFile.mkdirs()
-            storageDir.createNewFile()
-        }
-        currImagePath = storageDir.absolutePath
-        return storageDir
-    }
-
-
-    private fun launchMediaScanIntent(mediaScanIntent: Intent) {
-        activity?.sendBroadcast(mediaScanIntent)
-    }
-
     @Throws(FileNotFoundException::class)
     private fun decodeBitmapUri(ctx: Context, uri: Uri?): Bitmap? {
         if (uri == null) return null

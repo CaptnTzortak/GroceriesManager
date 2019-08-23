@@ -71,14 +71,12 @@
                     app:layout_constraintTop_toBottomOf="@id/til_barcode">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        app:barcodeProductName="@{viewModel.product}"
+                        android:text="@={viewModel.productNameString}"
                         android:id="@+id/tiet_productName"
-                        android:inputType="none"
-                        android:focusable="false"
                         android:drawablePadding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="product name"/>
+                        android:hint="@string/product_name"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -93,10 +91,8 @@
             >
 
                 <com.google.android.material.textfield.TextInputEditText
-                        app:barcodeQuantity="@{viewModel.product}"
+                        android:text="@={viewModel.quantityString}"
                         android:id="@+id/tiet_quantity"
-                        android:inputType="none"
-                        android:focusable="false"
                         android:drawablePadding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -114,14 +110,12 @@
                     app:layout_constraintTop_toBottomOf="@id/til_quantity">
 
                 <com.google.android.material.textfield.TextInputEditText
-                        app:barcodeBrands="@{viewModel.product}"
+                        android:text="@={viewModel.brandString}"
                         android:id="@+id/tiet_brands"
-                        android:inputType="none"
-                        android:focusable="false"
                         android:drawablePadding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="brands"/>
+                        android:hint="@string/brand"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button

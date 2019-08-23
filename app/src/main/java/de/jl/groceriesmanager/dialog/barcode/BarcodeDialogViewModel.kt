@@ -29,6 +29,10 @@ class BarcodeDialogViewModel(
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 
+    val productNameString = MutableLiveData<String>()
+    val quantityString = MutableLiveData<String>()
+    val brandString = MutableLiveData<String>()
+
     private val _product = MutableLiveData<Product>()
     val product: LiveData<Product>
         get() = _product
@@ -39,12 +43,31 @@ class BarcodeDialogViewModel(
     init {
         if (passedProduct != null) {
             _product.value = passedProduct
+            fillUiByProduct()
         }
     }
+
+    private fun fillUiByProduct() {
+        if(_product.value != null){
+            productNameString.value = _product.value!!.name
+            quantityString.value = _product.value!!.quantity
+            brandString.value = _product.value!!.brand
+        }
+    }
+
+    private fun fillProductByUI(){
+        if(_product.value != null){
+            _product.value!!.name = productNameString.value?.toString() ?: _product.value!!.name
+            _product.value!!.quantity = quantityString.value?.toString() ?: _product.value!!.quantity
+            _product.value!!.brand = brandString.value?.toString() ?: _product.value!!.brand
+        }
+    }
+
 
     fun addBarcodeAsProductAndGroceryListEntry(groceryListName: String) {
         uiScope.launch {
             //1. Barcode erstellen und in DB
+            fillProductByUI()
             val product = _product.value
             if (product != null) {
                 //1. Existiert ein Produkt mit diesem Barcode?
@@ -69,6 +92,7 @@ class BarcodeDialogViewModel(
 
     fun referenceBarcodeWithProduct(prodName: String) {
         uiScope.launch {
+            fillProductByUI()
             refBarcodeWithProd(prodName)
         }
 
@@ -91,6 +115,7 @@ class BarcodeDialogViewModel(
     fun addBarcodeAsProductAndInventory(expiryDateString: String) {
         uiScope.launch {
             //1. Barcode erstellen und in DB
+            fillProductByUI()
             val product = _product.value
             if (product != null) {
                 //1. Existiert ein Produkt mit diesem Barcode?
