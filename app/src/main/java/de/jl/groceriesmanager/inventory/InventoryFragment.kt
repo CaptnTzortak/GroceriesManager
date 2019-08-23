@@ -56,7 +56,7 @@ class InventoryFragment : Fragment() {
             inventoryBinding.inventoryItemList.adapter = adapter
 
             val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-            itemDecorator.setDrawable(ContextCompat.getDrawable(this!!.context!!, R.drawable.rv_devider)!!)
+            itemDecorator.setDrawable(ContextCompat.getDrawable(this.context!!, R.drawable.rv_devider)!!)
 
             inventoryBinding.inventoryItemList.addItemDecoration(itemDecorator)
             inventoryBinding.inventoryItemList.layoutManager = GridLayoutManager(activity, 1)
@@ -122,7 +122,7 @@ class InventoryFragment : Fragment() {
         })
     }
 
-    private fun navigateToProductDialog(pair: Pair<Long, Pair<Long,String>>) {
+    private fun navigateToProductDialog(pair: Pair<Long, Pair<Long, String>>) {
         val dialog = ProductDialogFragment(pair.first, pair.second.first, pair.second.second)
         fragmentManager?.let {
             dialog.setTargetFragment(this, 0)
@@ -145,15 +145,18 @@ class InventoryFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
             if (data != null) {
-                if (data.extras.containsKey("ProdId") && data.extras.containsKey("ExpDate")) {
-                    val invId: Long = if(data.extras.containsKey("InvId")){
-                        data.extras.getLong("InvId")
-                    } else {
-                        0L
+                val values = data.extras
+                if (values != null) {
+                    if (values.containsKey("ProdId") && values.containsKey("ExpDate")) {
+                        val invId: Long = if (values.containsKey("InvId")) {
+                            values.getLong("InvId")
+                        } else {
+                            0L
+                        }
+                        val prodId = values.getLong("ProdId")
+                        val expDate = values.getString("ExpDate")
+                        inventoryViewModel.newProductInserted(Pair(invId, Pair(prodId, expDate)))
                     }
-                    val prodId = data.extras.getLong("ProdId")
-                    val expDate = data.extras.getString("ExpDate")
-                    inventoryViewModel.newProductInserted(Pair(invId, Pair(prodId, expDate)))
                 }
             }
         }

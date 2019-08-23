@@ -188,24 +188,6 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    /**
-     * DB-Thread/Abschnitt zum ermitteln eines
-     * neuen oder schon bestehenden InventoryItem abh.
-     * der ProduktId
-     */
-    private suspend fun getNewOrExistingInventoryItem(prodId: Long): Inventory {
-        return withContext(Dispatchers.IO) {
-            var invItem = Inventory()
-            if (prodId > 0) {
-                invItem = invDao.getInventoryByProdId(prodId)
-            }
-            if (invItem == null) {
-                invItem = Inventory()
-            }
-            invItem
-        }
-    }
-
     fun fillInventoryProducts() {
         uiScope.launch {
             fillInventoryWithProducts()

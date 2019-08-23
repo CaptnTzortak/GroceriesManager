@@ -57,7 +57,7 @@ class GroceryListsFragment : Fragment() {
             groceryListsBinding.groceryListsList.adapter = adapter
 
             val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-            itemDecorator.setDrawable(ContextCompat.getDrawable(this!!.context!!, R.drawable.rv_devider)!!)
+            itemDecorator.setDrawable(ContextCompat.getDrawable(this.context!!, R.drawable.rv_devider)!!)
             groceryListsBinding.groceryListsList.addItemDecoration(itemDecorator)
             groceryListsBinding.groceryListsList.layoutManager = GridLayoutManager(activity, 1)
             groceryListsBinding.insertNewGroceryList.setOnClickListener { openAddGroceryListDialog() }

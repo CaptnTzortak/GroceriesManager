@@ -1,6 +1,8 @@
 package de.jl.groceriesmanager.dialog.grocery_list
 
-import android.app.*
+import android.app.AlertDialog
+import android.app.Application
+import android.app.Dialog
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -14,8 +16,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import kotlinx.android.synthetic.main.activity_main.*
 import de.jl.groceriesmanager.databinding.DialogNewGroceryListBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 class NewGroceryListDialogFragment(private val glId: Long = 0L) : DialogFragment() {
 
@@ -55,7 +57,7 @@ class NewGroceryListDialogFragment(private val glId: Long = 0L) : DialogFragment
             onConfirmGroceryListBtn()
         }
 
-        if(glId > 0L){
+        if (glId > 0L) {
             //TODO: Save-Icon downloaden und hier statt dem "+" setzen
             //TODO: Obriges auch im Add/Edit ProductDialogFragment
             newGroceryListDialogBinding.confirmGroceryListBtn.text = getString(R.string.save)
@@ -65,7 +67,7 @@ class NewGroceryListDialogFragment(private val glId: Long = 0L) : DialogFragment
         setObservers()
 
         val dialog = AlertDialog.Builder(activity as Context).setView(newGroceryListDialogBinding.root).create()
-        dialog.window.setBackgroundDrawable(ColorDrawable(0))
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
         dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         return dialog
     }

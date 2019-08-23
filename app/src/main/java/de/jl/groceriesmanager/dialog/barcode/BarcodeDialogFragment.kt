@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -91,9 +92,9 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
                 addToGLBtnClicked()
             }
             setObservers()
-
+            retainInstance = true
             val dialog = AlertDialog.Builder(activity as Context).setView(barcodeDialogBinding.root).create()
-            dialog.window.setBackgroundDrawable(ColorDrawable(0))
+            dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
             dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
             return dialog
         } catch (e: Exception) {
@@ -108,14 +109,14 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
                 val builder = context?.let { AlertDialog.Builder(it) }
                 if (builder != null) {
                     builder.setTitle("Select Grocery List")
-                    builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
+                    builder.setItems(_existingGroceryListNames.toTypedArray()) { _, which ->
                         Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT)
                             .show()
                         barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
                     }
                     builder.setNegativeButton(
                         android.R.string.cancel,
-                        DialogInterface.OnClickListener { dialog, which -> })
+                        DialogInterface.OnClickListener { _, _ -> })
                     builder.show()
                 }
             } else {
@@ -155,7 +156,7 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
                 val builder = context?.let { AlertDialog.Builder(it) }
                 if (builder != null) {
                     builder.setTitle(getString(R.string.title_reference_barcode))
-                    builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { dialog, which ->
+                    builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { _, which ->
                         Toast.makeText(
                             context,
                             getString(R.string.text_barcode_referenced_with_product).replace(
@@ -170,11 +171,11 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
                     }
                     builder.setNegativeButton(
                         android.R.string.cancel,
-                        DialogInterface.OnClickListener { dialog, which -> })
+                        DialogInterface.OnClickListener { _, _ -> })
 
                     val dialog = builder.create()
                     val lv = dialog.listView
-                    lv.divider = context?.resources!!.getDrawable(R.drawable.rv_devider)
+                    lv.divider = ContextCompat.getDrawable(this.context!!, R.drawable.rv_devider)
                     lv.dividerHeight = 1
                     dialog.show()
                 }

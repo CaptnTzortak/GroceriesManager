@@ -27,9 +27,9 @@ interface InventoryDao {
     @Delete
     fun delete(inventory: Inventory)
 
-    @Insert(onConflict = OnConflictStrategy.FAIL)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(inventory: Inventory): Long
 
-    @Update(onConflict = OnConflictStrategy.FAIL)
+    @Update(onConflict = OnConflictStrategy.ABORT)
     fun update(inventory: Inventory)
 }

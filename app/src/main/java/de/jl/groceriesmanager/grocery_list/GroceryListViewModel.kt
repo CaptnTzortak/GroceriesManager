@@ -189,9 +189,6 @@ class GroceryListViewModel(
     private suspend fun getExistingGroceryListsProductsEntry(prodId: Long): GroceryListsProducts {
         return withContext(Dispatchers.IO) {
             var glp = glpDao.getGroceryListsProductsEntryById(prodId)
-            if (glp == null) {
-                glp = GroceryListsProducts()
-            }
             glp
         }
     }

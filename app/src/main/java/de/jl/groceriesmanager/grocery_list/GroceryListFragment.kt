@@ -22,9 +22,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import de.jl.groceriesmanager.GroceriesManagerViewModelFactory
 import de.jl.groceriesmanager.R
-import de.jl.tools.SwipeToSetDoneCallback
 import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.dialog.product.ProductDialogFragment
+import de.jl.tools.SwipeToSetDoneCallback
 import de.jl.tools.openDatePicker
 
 class GroceryListFragment : Fragment() {
@@ -94,7 +94,7 @@ class GroceryListFragment : Fragment() {
     }
 
     private fun onInsertNewProductClicked() {
-        navigateToProductDialog(Pair(0L,""))
+        navigateToProductDialog(Pair(0L, ""))
     }
 
     private fun navigateToProductDialog(pair: Pair<Long, String>) {
@@ -110,11 +110,16 @@ class GroceryListFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 0) {
             if (data != null) {
-                if (data.extras.containsKey("ProdId") && data.extras.containsKey("Note")) {
-                    val prodId = data.extras.getLong("ProdId")
-                    val note = data.extras.getString("Note")
-                    groceryListViewModel.newProductInserted(GroceryListsProducts(0L,prodId, 0L, note))
+                val values = data.extras
+                if (values != null) {
+                    if (values.containsKey("ProdId") && values.containsKey("Note")) {
+                        val prodId = values.getLong("ProdId")
+                        var note = values.getString("Note")
+                        if(note == null) note = ""
+                        groceryListViewModel.newProductInserted(GroceryListsProducts(0L, prodId, 0L, note))
+                    }
                 }
+
             }
         }
     }
@@ -124,7 +129,7 @@ class GroceryListFragment : Fragment() {
             val productId = args.prodId
             var note = args.note
             if (productId > 0) {
-                groceryListViewModel.newProductInserted(GroceryListsProducts(0L,productId, 0L, note))
+                groceryListViewModel.newProductInserted(GroceryListsProducts(0L, productId, 0L, note))
             }
 
         } catch (e: Exception) {
@@ -164,7 +169,7 @@ class GroceryListFragment : Fragment() {
             }
         })
 
-        groceryListViewModel.glName.observe(this, Observer{ glName ->
+        groceryListViewModel.glName.observe(this, Observer { glName ->
             glName?.let {
                 (activity as AppCompatActivity).supportActionBar?.title = it
 
@@ -180,13 +185,13 @@ class GroceryListFragment : Fragment() {
             122 -> {
                 context?.let {
                     openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                        var rMonth = month +1
-                        if(rMonth == 13){
+                        var rMonth = month + 1
+                        if (rMonth == 13) {
                             rMonth = 1
                         }
-                        val realMonth = if(rMonth < 10){
+                        val realMonth = if (rMonth < 10) {
                             "0$rMonth"
-                        } else{
+                        } else {
                             "$rMonth"
                         }
                         val expiryDateString = """$dayOfMonth.$realMonth.$year"""

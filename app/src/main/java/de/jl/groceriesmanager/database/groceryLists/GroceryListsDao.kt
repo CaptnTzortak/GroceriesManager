@@ -24,9 +24,9 @@ interface GroceryListsDao {
     @Delete
     fun delete(groceryList: GroceryList)
 
-    @Insert(onConflict = OnConflictStrategy.FAIL)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(groceryList: GroceryList): Long
 
-    @Update(onConflict = OnConflictStrategy.FAIL)
+    @Update(onConflict = OnConflictStrategy.ABORT)
     fun update(groceryList: GroceryList)
 }

@@ -18,10 +18,10 @@ interface ProductsDao {
     @Delete
     fun delete(product: Product)
 
-    @Insert(onConflict = OnConflictStrategy.FAIL)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(product: Product): Long
 
-    @Update(onConflict = OnConflictStrategy.FAIL)
+    @Update(onConflict = OnConflictStrategy.ABORT)
     fun update(product: Product)
 
     @Query("SELECT DISTINCT * FROM Products")

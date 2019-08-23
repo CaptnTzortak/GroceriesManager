@@ -49,7 +49,8 @@ import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import com.google.android.gms.vision.barcode.Barcode as Barcodel
+import kotlin.math.min
+import com.google.android.gms.vision.barcode.Barcode as GoogleBarcode
 
 
 class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -417,7 +418,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
 
             //EAN-8 (64) + EAN-13 (32)
             detector = BarcodeDetector.Builder(context)
-                .setBarcodeFormats(Barcodel.EAN_13 + Barcodel.EAN_8).build()
+                .setBarcodeFormats(GoogleBarcode.EAN_13 + GoogleBarcode.EAN_8).build()
 
             return scannerBinding.root
 
@@ -509,18 +510,18 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
                         scannerViewModel.setScannedBarcode(code.displayValue)
                         val type = barcodes.valueAt(index).valueFormat
                         when (type) {
-                            Barcodel.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
-                            Barcodel.EMAIL -> Log.i(LOG_TAG, code.email.address)
-                            Barcodel.ISBN -> Log.i(LOG_TAG, code.rawValue)
-                            Barcodel.PHONE -> Log.i(LOG_TAG, code.phone.number)
-                            Barcodel.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcodel.SMS -> Log.i(LOG_TAG, code.sms.message)
-                            Barcodel.TEXT -> Log.i(LOG_TAG, code.rawValue)
-                            Barcodel.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
-                            Barcodel.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
-                            Barcodel.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
-                            Barcodel.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
-                            Barcodel.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
+                            GoogleBarcode.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
+                            GoogleBarcode.EMAIL -> Log.i(LOG_TAG, code.email.address)
+                            GoogleBarcode.ISBN -> Log.i(LOG_TAG, code.rawValue)
+                            GoogleBarcode.PHONE -> Log.i(LOG_TAG, code.phone.number)
+                            GoogleBarcode.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
+                            GoogleBarcode.SMS -> Log.i(LOG_TAG, code.sms.message)
+                            GoogleBarcode.TEXT -> Log.i(LOG_TAG, code.rawValue)
+                            GoogleBarcode.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
+                            GoogleBarcode.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
+                            GoogleBarcode.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
+                            GoogleBarcode.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
+                            GoogleBarcode.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
                             else -> Log.i(LOG_TAG, code.rawValue)
                         }
                     }
@@ -557,6 +558,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
 
     @Throws(FileNotFoundException::class)
     private fun decodeBitmapUri(ctx: Context, uri: Uri?): Bitmap? {
+        if(uri == null) return null
 
         val targetW = 600
         val targetH = 600
@@ -567,7 +569,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         val photoW = bmOptions.outWidth
         val photoH = bmOptions.outHeight
 
-        val scaleFactor = Math.min(photoW / targetW, photoH / targetH)
+        val scaleFactor = min(photoW / targetW, photoH / targetH)
 
         bmOptions.inJustDecodeBounds = false
         bmOptions.inSampleSize = scaleFactor

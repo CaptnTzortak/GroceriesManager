@@ -42,9 +42,7 @@ class NewGroceryListDialogViewModel(application: Application, passedGlId: Long =
     private fun setupEditGroceryList() {
         uiScope.launch {
             val existingGl = getExistingGl(existingGlId)
-            if(existingGl != null){
-                groceryListName.value = existingGl.name
-            }
+            groceryListName.value = existingGl.name
         }
     }
 
