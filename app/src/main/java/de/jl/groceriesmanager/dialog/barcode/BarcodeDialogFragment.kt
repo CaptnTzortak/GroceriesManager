@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class BarcodeDialogFragment(product: Product) : DialogFragment() {
 
+    companion object {
+        const val TAG = "BarcodeDialogFragment"
+    }
+
     var prod = product
     lateinit var barcodeDialogBinding: DialogBarcodeBinding
     lateinit var application: Application
@@ -37,150 +42,190 @@ class BarcodeDialogFragment(product: Product) : DialogFragment() {
     private var _existingGroceryListNames: List<String> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_barcode, container)
+        try {
+            return inflater.inflate(R.layout.dialog_barcode, container)
+        } catch (e: Exception) {
+            Log.e("$TAG - onCreateView", e.localizedMessage)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        dialog?.window?.attributes?.windowAnimations = R.style.AppTheme_DialogAnimation
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(0))
+        try {
+            super.onViewCreated(view, savedInstanceState)
+            dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog?.window?.attributes?.windowAnimations = R.style.AppTheme_DialogAnimation
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(0))
+        } catch (e: Exception) {
+            Log.e("$TAG - onViewCreated", e.localizedMessage)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        barcodeDialogBinding =
-            DataBindingUtil.inflate(activity?.layoutInflater!!, R.layout.dialog_barcode, container, false)
+        try {
+            barcodeDialogBinding =
+                DataBindingUtil.inflate(activity?.layoutInflater!!, R.layout.dialog_barcode, container, false)
 
-        //Application
-        application = requireNotNull(this.activity).application
+            //Application
+            application = requireNotNull(this.activity).application
 
-        //ViewModelFactory
-        val viewModelFactory = GroceriesManagerViewModelFactory(application, passedProduct = prod)
+            //ViewModelFactory
+            val viewModelFactory = GroceriesManagerViewModelFactory(application, passedProduct = prod)
 
-        //ViewModel
-        barcodeDialogViewModel = ViewModelProviders.of(this, viewModelFactory).get(BarcodeDialogViewModel::class.java)
+            //ViewModel
+            barcodeDialogViewModel =
+                ViewModelProviders.of(this, viewModelFactory).get(BarcodeDialogViewModel::class.java)
 
-        barcodeDialogBinding.lifecycleOwner = this
-        barcodeDialogBinding.viewModel = barcodeDialogViewModel
+            barcodeDialogBinding.lifecycleOwner = this
+            barcodeDialogBinding.viewModel = barcodeDialogViewModel
 
-        barcodeDialogBinding.referenceToProductBtn.setOnClickListener {
-            referenceToProductBtnClicked()
+            barcodeDialogBinding.referenceToProductBtn.setOnClickListener {
+                referenceToProductBtnClicked()
+            }
+
+            barcodeDialogBinding.addToInventoryBtn.setOnClickListener {
+                addToInventoryBtnClicked()
+            }
+
+            barcodeDialogBinding.addToGLBtn.setOnClickListener {
+                addToGLBtnClicked()
+            }
+            setObservers()
+
+            val dialog = AlertDialog.Builder(activity as Context).setView(barcodeDialogBinding.root).create()
+            dialog.window.setBackgroundDrawable(ColorDrawable(0))
+            dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+            return dialog
+        } catch (e: Exception) {
+            Log.e("$TAG - onCreateDialog", e.localizedMessage)
         }
-
-        barcodeDialogBinding.addToInventoryBtn.setOnClickListener {
-            addToInventoryBtnClicked()
-        }
-
-        barcodeDialogBinding.addToGLBtn.setOnClickListener {
-            addToGLBtnClicked()
-        }
-        setObservers()
-
-        val dialog = AlertDialog.Builder(activity as Context).setView(barcodeDialogBinding.root).create()
-        dialog.window.setBackgroundDrawable(ColorDrawable(0))
-        dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
-        return dialog
+        return super.onCreateDialog(savedInstanceState)
     }
 
     private fun addToGLBtnClicked() {
-        if (_existingGroceryListNames.isNotEmpty()) {
-            val builder = context?.let { AlertDialog.Builder(it) }
-            if (builder != null) {
-                builder.setTitle("Select Grocery List")
-                builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
-                    Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT).show()
-                    barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
+        try {
+            if (_existingGroceryListNames.isNotEmpty()) {
+                val builder = context?.let { AlertDialog.Builder(it) }
+                if (builder != null) {
+                    builder.setTitle("Select Grocery List")
+                    builder.setItems(_existingGroceryListNames.toTypedArray()) { dialog, which ->
+                        Toast.makeText(context, _existingGroceryListNames[which] + " is clicked", Toast.LENGTH_SHORT)
+                            .show()
+                        barcodeDialogViewModel.addBarcodeAsProductAndGroceryListEntry(_existingGroceryListNames[which])
+                    }
+                    builder.setNegativeButton(
+                        android.R.string.cancel,
+                        DialogInterface.OnClickListener { dialog, which -> })
+                    builder.show()
                 }
-                builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which -> })
-                builder.show()
+            } else {
+                Toast.makeText(context, getString(R.string.text_no_existing_grocery_lists), Toast.LENGTH_LONG).show()
             }
-        } else {
-            Toast.makeText(context, getString(R.string.text_no_existing_grocery_lists), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Log.e("$TAG - addToGLBtnClicked", e.localizedMessage)
         }
     }
 
     private fun addToInventoryBtnClicked() {
-        context?.let {
-            openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                var rMonth = month + 1
-                if (rMonth == 13) {
-                    rMonth = 1
-                }
-                val realMonth = if (rMonth < 10) {
-                    "0$rMonth"
-                } else {
-                    "$rMonth"
-                }
-                val expiryDateString = """$dayOfMonth.$realMonth.$year"""
-                barcodeDialogViewModel.addBarcodeAsProductAndInventory(expiryDateString)
-                sendResult(0L, "", "", "")
-            })
+        try {
+            context?.let {
+                openDatePicker(it, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    var rMonth = month + 1
+                    if (rMonth == 13) {
+                        rMonth = 1
+                    }
+                    val realMonth = if (rMonth < 10) {
+                        "0$rMonth"
+                    } else {
+                        "$rMonth"
+                    }
+                    val expiryDateString = """$dayOfMonth.$realMonth.$year"""
+                    barcodeDialogViewModel.addBarcodeAsProductAndInventory(expiryDateString)
+                    sendResult(0L, "", "", "")
+                })
+            }
+        } catch (e: Exception) {
+            Log.e("$TAG - addToInventoryBtnClicked", e.localizedMessage)
         }
     }
 
     private fun referenceToProductBtnClicked() {
-        if (_existingProductNamesWithoutBarcode.isNotEmpty()) {
-            val builder = context?.let { AlertDialog.Builder(it) }
-            if (builder != null) {
-                builder.setTitle(getString(R.string.title_reference_barcode))
-                builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { dialog, which ->
-                    Toast.makeText(
-                        context,
-                        getString(R.string.text_barcode_referenced_with_product).replace(
-                            "{0}",
-                            prod.barcodeId.toString()
+        try {
+            if (_existingProductNamesWithoutBarcode.isNotEmpty()) {
+                val builder = context?.let { AlertDialog.Builder(it) }
+                if (builder != null) {
+                    builder.setTitle(getString(R.string.title_reference_barcode))
+                    builder.setItems(_existingProductNamesWithoutBarcode.toTypedArray()) { dialog, which ->
+                        Toast.makeText(
+                            context,
+                            getString(R.string.text_barcode_referenced_with_product).replace(
+                                "{0}",
+                                prod.barcodeId.toString()
+                            )
+                                .replace("{1}", _existingProductNamesWithoutBarcode[which]),
+                            Toast.LENGTH_LONG
                         )
-                            .replace("{1}", _existingProductNamesWithoutBarcode[which]),
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                    barcodeDialogViewModel.referenceBarcodeWithProduct(_existingProductNamesWithoutBarcode[which])
-                }
-                builder.setNegativeButton(android.R.string.cancel, DialogInterface.OnClickListener { dialog, which -> })
+                            .show()
+                        barcodeDialogViewModel.referenceBarcodeWithProduct(_existingProductNamesWithoutBarcode[which])
+                    }
+                    builder.setNegativeButton(
+                        android.R.string.cancel,
+                        DialogInterface.OnClickListener { dialog, which -> })
 
-                val dialog = builder.create()
-                val lv = dialog.listView
-                lv.divider = context?.resources!!.getDrawable(R.drawable.rv_devider)
-                lv.dividerHeight = 1
-                dialog.show()
+                    val dialog = builder.create()
+                    val lv = dialog.listView
+                    lv.divider = context?.resources!!.getDrawable(R.drawable.rv_devider)
+                    lv.dividerHeight = 1
+                    dialog.show()
+                }
+            } else {
+                Toast.makeText(context, getString(R.string.text_no_existing_products), Toast.LENGTH_LONG).show()
             }
-        } else {
-            Toast.makeText(context, getString(R.string.text_no_existing_products), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Log.e("$TAG - referenceToProductBtnClicked", e.localizedMessage)
         }
     }
 
     private fun setObservers() {
-        barcodeDialogViewModel.existingProductNamesWithoutBarcode.observe(this, Observer {
-            it?.let {
-                val prodDesctriptions = mutableListOf<String>()
-                it.forEach { product ->
-                    prodDesctriptions.add(product.getDescription())
+        try {
+            barcodeDialogViewModel.existingProductNamesWithoutBarcode.observe(this, Observer {
+                it?.let {
+                    val prodDesctriptions = mutableListOf<String>()
+                    it.forEach { product ->
+                        prodDesctriptions.add(product.getDescription())
+                    }
+                    _existingProductNamesWithoutBarcode = prodDesctriptions
                 }
-                _existingProductNamesWithoutBarcode = prodDesctriptions
-            }
-        })
+            })
 
-        barcodeDialogViewModel.existingGroceryListNames.observe(this, Observer {
-            it?.let {
-                _existingGroceryListNames = it
-            }
-        })
+            barcodeDialogViewModel.existingGroceryListNames.observe(this, Observer {
+                it?.let {
+                    _existingGroceryListNames = it
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("$TAG - setObservers", e.localizedMessage)
+        }
     }
 
     private fun sendResult(id: Long, expDate: String, finNote: String, quantityString: String?) {
-        val bundle = Bundle()
-        bundle.putLong("ProdId", id)
-        bundle.putString("ExpDate", expDate)
-        bundle.putString("Note", finNote)
-        val q = if (quantityString.isNullOrEmpty() || quantityString == "null") {
-            "1"
-        } else {
-            quantityString
+        try {
+            val bundle = Bundle()
+            bundle.putLong("ProdId", id)
+            bundle.putString("ExpDate", expDate)
+            bundle.putString("Note", finNote)
+            val q = if (quantityString.isNullOrEmpty() || quantityString == "null") {
+                "1"
+            } else {
+                quantityString
+            }
+            bundle.putInt("Quantity", Integer.parseInt(q))
+            val intent = Intent().putExtras(bundle)
+            targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
+            dismiss()
+        } catch (e: Exception) {
+            Log.e("$TAG - sendResult", e.localizedMessage)
         }
-        bundle.putInt("Quantity", Integer.parseInt(q))
-        val intent = Intent().putExtras(bundle)
-        targetFragment!!.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
-        dismiss()
     }
 
 }

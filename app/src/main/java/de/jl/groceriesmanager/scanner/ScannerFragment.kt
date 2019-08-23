@@ -919,13 +919,13 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
        } else if (Surface.ROTATION_180 == rotation) {
            matrix.postRotate(180f, centerX, centerY)
-       } else {
-            val scale = Math.max(
-                viewHeight.toFloat() / mPreviewSize!!.getHeight(),
-                viewWidth.toFloat() / mPreviewSize!!.getWidth()
-            )
-            matrix.postScale(scale, scale, centerX, centerY)
-        }
+       }// else {
+        //    val scale = Math.max(
+        //        viewHeight.toFloat() / mPreviewSize!!.getHeight(),
+        //        viewWidth.toFloat() / mPreviewSize!!.getWidth()
+        //    )
+        //    matrix.postScale(scale, scale, centerX, centerY)
+        //}
         scannerBinding.texture.setTransform(matrix)
     }
 

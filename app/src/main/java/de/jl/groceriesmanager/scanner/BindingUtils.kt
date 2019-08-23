@@ -1,10 +1,13 @@
 package de.jl.groceriesmanager.scanner
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import de.jl.groceriesmanager.R
 import de.jl.groceriesmanager.database.products.Product
+
 
 @BindingAdapter("barcodeTitle")
 fun TextView.setBarcodeTitle(product: Product?) {
@@ -33,8 +36,10 @@ fun TextView.setBarcodeBrands(barcode: Product?) {
 
 @BindingAdapter("barcodeImg")
 fun ImageView.setBarcodeImg(barcode: Product?) {
-    if(barcode!=null) {
-        val bitmap = BitmapFactory.decodeByteArray(barcode.image, 0, barcode.image!!.size)
-        setImageBitmap(bitmap)
+    val bitmap: Bitmap = if(barcode?.image != null) {
+        BitmapFactory.decodeByteArray(barcode.image, 0, barcode.image!!.size)
+    } else {
+        BitmapFactory.decodeResource(resources, R.drawable.no_image_found)
     }
+    setImageBitmap(bitmap)
 }

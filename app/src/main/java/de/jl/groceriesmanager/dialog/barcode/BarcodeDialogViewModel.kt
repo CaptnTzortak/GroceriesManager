@@ -8,7 +8,6 @@ import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.groceryLists.GroceryList
 import de.jl.groceriesmanager.database.groceryListsProducts.GroceryListsProducts
 import de.jl.groceriesmanager.database.inventory.Inventory
-import de.jl.groceriesmanager.database.products.Barcode
 import de.jl.groceriesmanager.database.products.Product
 import de.jl.tools.parseProductDescriptionToProdName
 import kotlinx.coroutines.*
@@ -129,12 +128,6 @@ class BarcodeDialogViewModel(
     private suspend fun tryGetExistingProductByBarcode(barcode: Long): Product? {
         return withContext(Dispatchers.IO) {
             prodDao.getProductByBarcode(barcode)
-        }
-    }
-
-    private suspend fun insertBarcode(bc: Barcode) {
-        withContext(Dispatchers.IO) {
-            //barcodesDao.insert(bc)
         }
     }
 }

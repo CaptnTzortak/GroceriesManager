@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 val dest: String = try {
                     resources.getResourceName(destination.id)
                 } catch (e: Resources.NotFoundException) {
-                    Integer.toString(destination.id)
+                    destination.id.toString()
                 }
                 Log.d("NavigationActivity", "Navigated to $dest")
             }
@@ -63,12 +63,12 @@ class MainActivity : AppCompatActivity() {
             setSupportActionBar(toolbar)
 
             val preferences = getSharedPreferences(SHARED_PREFERENCES_ID, Context.MODE_PRIVATE)
-            if(!preferences.getBoolean("ExpiryDateNotificationAlarm", false)){
+            if (!preferences.getBoolean("ExpiryDateNotificationAlarm", false)) {
                 setupNotificationAlarm()
-                Log.i(TAG,"ExpiryDateNotificationAlarm Set")
+                Log.i(TAG, "ExpiryDateNotificationAlarm Set")
                 val editor = preferences.edit()
                 editor.putBoolean("ExpiryDateNotificationAlarm", true)
-                editor.commit()
+                editor.apply()
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -79,54 +79,78 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.localizedMessage)
+            Log.e("$TAG - onCreate", e.localizedMessage)
         }
     }
 
     private fun setupNotificationAlarm() {
-        val intent = Intent(this, NotificationPublisher::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        try {
 
-        val firingCal = Calendar.getInstance()
-        val currentCal = Calendar.getInstance()
 
-        firingCal.set(Calendar.HOUR_OF_DAY, EXPIRY_DATE_NOTIFICATION_AT_HOUR) // At the hour you wanna fire
-        firingCal.set(Calendar.MINUTE, EXPIRY_DATE_NOTIFICATION_AT_MINUTE) // Particular minute
-        firingCal.set(Calendar.SECOND, 0) // particular second
+            val intent = Intent(this, NotificationPublisher::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        var intendedTime = firingCal.timeInMillis
-        val currentTime = currentCal.timeInMillis
+            val firingCal = Calendar.getInstance()
+            val currentCal = Calendar.getInstance()
 
-        if (intendedTime >= currentTime) {
-            // you can add buffer time too here to ignore some small differences in milliseconds
-            // set from today
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
-        } else {
-            // set from next day
-            // you might consider using calendar.add() for adding one day to the current day
-            firingCal.add(Calendar.DAY_OF_MONTH, 1)
-            intendedTime = firingCal.timeInMillis
+            firingCal.set(Calendar.HOUR_OF_DAY, EXPIRY_DATE_NOTIFICATION_AT_HOUR) // At the hour you wanna fire
+            firingCal.set(Calendar.MINUTE, EXPIRY_DATE_NOTIFICATION_AT_MINUTE) // Particular minute
+            firingCal.set(Calendar.SECOND, 0) // particular second
 
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, pendingIntent)
+            var intendedTime = firingCal.timeInMillis
+            val currentTime = currentCal.timeInMillis
+
+            if (intendedTime >= currentTime) {
+                // you can add buffer time too here to ignore some small differences in milliseconds
+                // set from today
+                alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    intendedTime,
+                    AlarmManager.INTERVAL_DAY,
+                    pendingIntent
+                )
+            } else {
+                // set from next day
+                // you might consider using calendar.add() for adding one day to the current day
+                firingCal.add(Calendar.DAY_OF_MONTH, 1)
+                intendedTime = firingCal.timeInMillis
+
+                alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    intendedTime,
+                    AlarmManager.INTERVAL_DAY,
+                    pendingIntent
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("$TAG - setupNotificationAlarm", e.localizedMessage)
         }
     }
 
     private fun createNotificationChannel(id: String, name: String, description: String) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(id, name, importance)
-            channel.description = description
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+        try {
+            // Create the NotificationChannel, but only on API 26+ because
+            // the NotificationChannel class is new and not in the support library
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val importance = NotificationManager.IMPORTANCE_DEFAULT
+                val channel = NotificationChannel(id, name, importance)
+                channel.description = description
+                // Register the channel with the system; you can't change the importance
+                // or other notification behaviors after this
+                val notificationManager = getSystemService(NotificationManager::class.java)
+                notificationManager.createNotificationChannel(channel)
+            }
+        } catch (e: Exception) {
+            Log.e("$TAG - createNotificationChannel", e.localizedMessage)
         }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        mainActivityBinding.bottomNavView.setupWithNavController(navController)
+        try {
+            mainActivityBinding.bottomNavView.setupWithNavController(navController)
+        } catch (e: Exception) {
+            Log.e("$TAG - setupBottomNavMenu", e.localizedMessage)
+        }
     }
 }
