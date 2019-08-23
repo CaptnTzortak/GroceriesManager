@@ -28,7 +28,7 @@ interface GroceryListsProductsDao {
     fun deleteProductsByGLIdAndProdId(glId:Long, prodId:Long)
 
     @Query("SELECT * FROM GroceryListsProducts WHERE prodId = :prodId")
-    fun getGroceryListsProductsEntryById(prodId: Long): GroceryListsProducts
+    fun getGroceryListsProductsEntryById(prodId: Long): GroceryListsProducts?
 
     @Query("UPDATE GroceryListsProducts SET bought=:bought WHERE id = :id")
     fun setBoughtForGLPById(id: Long, bought: Boolean)

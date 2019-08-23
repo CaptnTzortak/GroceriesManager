@@ -179,9 +179,7 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     private suspend fun remove(inventoryId: Long) {
         withContext(Dispatchers.IO) {
             try {
-                val prodId = invDao.getProdIdByInvId(inventoryId)
                 invDao.deleteById(inventoryId)
-                prodDao.deleteById(prodId)
             } catch (e: Exception) {
                 Log.d("InventoryViewModel", e.localizedMessage)
             }

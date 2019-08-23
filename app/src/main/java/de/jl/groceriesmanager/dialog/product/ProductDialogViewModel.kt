@@ -22,7 +22,6 @@ class ProductDialogViewModel(
 
     private val prodsDao = GroceriesManagerDB.getInstance(application).productsDao
 
-
     private val _addedProduct = MutableLiveData<Long>()
     val addedProduct: LiveData<Long>
         get() = _addedProduct
@@ -32,7 +31,6 @@ class ProductDialogViewModel(
         get() = _confirmProduct
 
     val existingProductDescriptions = prodsDao.getNamesForAllExistingProducts()
-
 
     var productNameString = MutableLiveData<String>()
     var expiryDateString = MutableLiveData<String>()
@@ -45,10 +43,14 @@ class ProductDialogViewModel(
     private var existingProdId: Long = 0L
     private var existingExpiryDateString: String? = null
     private var existingNote: String? = null
-    private var existingQuantity: Int? = null
 
     init {
         productNameString.value = ""
+        expiryDateString.value = ""
+        note.value =""
+        quantityString.value =""
+        brandString.value =""
+
         if (passedProdId > 0L) {
             existingProdId = passedProdId
             //Produkt ist vorhanden. Haben wir nun ein Verfallsdatum? -> Inventar

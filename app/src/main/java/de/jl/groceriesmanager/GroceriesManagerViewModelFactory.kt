@@ -27,7 +27,7 @@ class GroceriesManagerViewModelFactory(
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         when {
-            modelClass.isAssignableFrom(ScannerViewModel::class.java) -> return ScannerViewModel() as T
+            modelClass.isAssignableFrom(ScannerViewModel::class.java) -> return ScannerViewModel(application) as T
             modelClass.isAssignableFrom(AddProductViewModel::class.java) -> return AddProductViewModel(application, prodId, expiryDateString) as T
             modelClass.isAssignableFrom(AddProductGroceryListViewModel::class.java) -> return AddProductGroceryListViewModel(application, prodId, passedNote, glId) as T
             modelClass.isAssignableFrom(InventoryViewModel::class.java) -> return InventoryViewModel(application) as T

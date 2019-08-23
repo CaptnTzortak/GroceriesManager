@@ -73,10 +73,44 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
     companion object {
         val ORIENTATIONS = SparseIntArray()
         const val FRAGMENT_DIALOG = "dialog"
-        const val LOG_TAG = "ScannerFragment"
         const val REQUEST_CAMERA_PERMISSION = 1
         const val PHOTO_REQUEST = 10
-        const val REQUEST_WRITE_PERMISSION = 20
+        const val TAG = "ScannerFragment"
+
+        /**
+         * Camera state: Showing camera preview.
+         */
+        const val STATE_PREVIEW = 0
+
+        /**
+         * Camera state: Waiting for the focus to be locked.
+         */
+        const val STATE_WAITING_LOCK = 1
+
+        /**
+         * Camera state: Waiting for the exposure to be precapture state.
+         */
+        const val STATE_WAITING_PRECAPTURE = 2
+
+        /**
+         * Camera state: Waiting for the exposure state to be something other than precapture.
+         */
+        const val STATE_WAITING_NON_PRECAPTURE = 3
+
+        /**
+         * Camera state: Picture was taken.
+         */
+        const val STATE_PICTURE_TAKEN = 4
+
+        /**
+         * Max preview width that is guaranteed by Camera2 API
+         */
+        const val MAX_PREVIEW_WIDTH = 1920
+
+        /**
+         * Max preview height that is guaranteed by Camera2 API
+         */
+        const val MAX_PREVIEW_HEIGHT = 1080
     }
 
     init {
@@ -85,46 +119,6 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
         ORIENTATIONS.append(Surface.ROTATION_180, 270)
         ORIENTATIONS.append(Surface.ROTATION_270, 180)
     }
-
-    /**
-     * Tag for the [Log].
-     */
-    private val TAG = "ScannerFragment"
-
-    /**
-     * Camera state: Showing camera preview.
-     */
-    private val STATE_PREVIEW = 0
-
-    /**
-     * Camera state: Waiting for the focus to be locked.
-     */
-    private val STATE_WAITING_LOCK = 1
-
-    /**
-     * Camera state: Waiting for the exposure to be precapture state.
-     */
-    private val STATE_WAITING_PRECAPTURE = 2
-
-    /**
-     * Camera state: Waiting for the exposure state to be something other than precapture.
-     */
-    private val STATE_WAITING_NON_PRECAPTURE = 3
-
-    /**
-     * Camera state: Picture was taken.
-     */
-    private val STATE_PICTURE_TAKEN = 4
-
-    /**
-     * Max preview width that is guaranteed by Camera2 API
-     */
-    private val MAX_PREVIEW_WIDTH = 1920
-
-    /**
-     * Max preview height that is guaranteed by Camera2 API
-     */
-    private val MAX_PREVIEW_HEIGHT = 1080
 
 
     /**
@@ -339,7 +333,6 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
     }
 
 
-
     /**
      * Given `choices` of `Size`s supported by a camera, choose the smallest one that
      * is at least as large as the respective texture view size, and that is at most as large as the
@@ -430,55 +423,59 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
     }
 
     private fun setObservers() {
-        scannerViewModel.barcodeString.observe(this, Observer {
-            if (it != null) {
-                scannerViewModel.validateBarcode(it)
+        //Observer für Barcode-Input-Fed:
+        scannerViewModel.uiBarcodeString.observe(this, Observer {
+            it?.let { barcodeString ->
+                scannerViewModel.validateBarcode(barcodeString)
             }
         })
 
+        //Observer prüft ob eingegebener Barcode Valide ist (EAN 8 / EAN 13)
         scannerViewModel.valid.observe(this, Observer {
             it?.let {
                 if (it) {
                     scannerViewModel.getData()
+                    scannerViewModel.resetValid()
                 }
             }
         })
 
-        scannerViewModel.scannedBarcode.observe(this, Observer {
-            if (it == null) {
-                //TODO: Cleanup
-            } else {
-                scannerViewModel.validateBarcode(it)
-            }
-        })
-
+        //Obserfer prüft das Ergebnis nach dem Parsen des JSON
         scannerViewModel.response.observe(this, Observer { product ->
             product?.let {
                 openBarcodeDialog(it)
+                scannerViewModel.resetResponse()
             }
         })
 
         scannerViewModel.showNoBarcodeResultToast.observe(this, Observer {
             it?.let {
-                if(it.isNotEmpty()){
-                    activity?.runOnUiThread { Toast.makeText(activity, "No data found for Barcode: $it", Toast.LENGTH_LONG).show() }
+                if (it.isNotEmpty()) {
+                    activity?.runOnUiThread {
+                        Toast.makeText(
+                            activity,
+                            "No data found for Barcode: $it",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    scannerViewModel.doneShowNoBarcodeResultToast()
                 }
             }
         })
     }
 
-    fun test() {
+    fun checkImageForBarcode() {
         val bitmap = context?.let { decodeBitmapUri(it, imageUri) }
         if (detector!!.isOperational && bitmap != null) {
             val frame = Frame.Builder().setBitmap(bitmap).build()
             val barcodes = detector!!.detect(frame)
-            if(barcodes == null || barcodes.size() == 0){
+            if (barcodes == null || barcodes.size() == 0) {
                 showToast("No Barcode found.")
             } else {
                 for (index in 0 until barcodes.size()) {
                     val code = barcodes.valueAt(index)
                     Log.i(TAG, "Barcode found: ${code.displayValue}")
-                    scannerViewModel.setScannedBarcode(code.displayValue)
+                    scannerViewModel.validateBarcode(code.displayValue)
                 }
             }
         }
@@ -507,33 +504,30 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
                     val barcodes = detector!!.detect(frame)
                     for (index in 0 until barcodes.size()) {
                         val code = barcodes.valueAt(index)
-                        scannerViewModel.setScannedBarcode(code.displayValue)
+                        scannerViewModel.validateBarcode(code.displayValue)
                         val type = barcodes.valueAt(index).valueFormat
                         when (type) {
-                            GoogleBarcode.CONTACT_INFO -> Log.i(LOG_TAG, code.contactInfo.title)
-                            GoogleBarcode.EMAIL -> Log.i(LOG_TAG, code.email.address)
-                            GoogleBarcode.ISBN -> Log.i(LOG_TAG, code.rawValue)
-                            GoogleBarcode.PHONE -> Log.i(LOG_TAG, code.phone.number)
-                            GoogleBarcode.PRODUCT -> Log.i(LOG_TAG, code.rawValue)
-                            GoogleBarcode.SMS -> Log.i(LOG_TAG, code.sms.message)
-                            GoogleBarcode.TEXT -> Log.i(LOG_TAG, code.rawValue)
-                            GoogleBarcode.URL -> Log.i(LOG_TAG, "url: " + code.url.url)
-                            GoogleBarcode.WIFI -> Log.i(LOG_TAG, code.wifi.ssid)
-                            GoogleBarcode.GEO -> Log.i(LOG_TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
-                            GoogleBarcode.CALENDAR_EVENT -> Log.i(LOG_TAG, code.calendarEvent.description)
-                            GoogleBarcode.DRIVER_LICENSE -> Log.i(LOG_TAG, code.driverLicense.licenseNumber)
-                            else -> Log.i(LOG_TAG, code.rawValue)
+                            GoogleBarcode.CONTACT_INFO -> Log.i(TAG, code.contactInfo.title)
+                            GoogleBarcode.EMAIL -> Log.i(TAG, code.email.address)
+                            GoogleBarcode.ISBN -> Log.i(TAG, code.rawValue)
+                            GoogleBarcode.PHONE -> Log.i(TAG, code.phone.number)
+                            GoogleBarcode.PRODUCT -> Log.i(TAG, code.rawValue)
+                            GoogleBarcode.SMS -> Log.i(TAG, code.sms.message)
+                            GoogleBarcode.TEXT -> Log.i(TAG, code.rawValue)
+                            GoogleBarcode.URL -> Log.i(TAG, "url: " + code.url.url)
+                            GoogleBarcode.WIFI -> Log.i(TAG, code.wifi.ssid)
+                            GoogleBarcode.GEO -> Log.i(TAG, code.geoPoint.lat.toString() + ":" + code.geoPoint.lng)
+                            GoogleBarcode.CALENDAR_EVENT -> Log.i(TAG, code.calendarEvent.description)
+                            GoogleBarcode.DRIVER_LICENSE -> Log.i(TAG, code.driverLicense.licenseNumber)
+                            else -> Log.i(TAG, code.rawValue)
                         }
-                    }
-                    if (barcodes.size() == 0) {
-                        scannerViewModel.scanFailed()
                     }
                 } else {
                 }
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to load Image", Toast.LENGTH_SHORT)
                     .show()
-                Log.e(LOG_TAG, e.toString())
+                Log.e(TAG, e.toString())
             }
 
         }
@@ -558,7 +552,7 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
 
     @Throws(FileNotFoundException::class)
     private fun decodeBitmapUri(ctx: Context, uri: Uri?): Bitmap? {
-        if(uri == null) return null
+        if (uri == null) return null
 
         val targetW = 600
         val targetH = 600
@@ -919,9 +913,9 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
             )
             matrix.postScale(scale, scale, centerX, centerY)
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
-       } else if (Surface.ROTATION_180 == rotation) {
-           matrix.postRotate(180f, centerX, centerY)
-       }// else {
+        } else if (Surface.ROTATION_180 == rotation) {
+            matrix.postRotate(180f, centerX, centerY)
+        }// else {
         //    val scale = Math.max(
         //        viewHeight.toFloat() / mPreviewSize!!.getHeight(),
         //        viewWidth.toFloat() / mPreviewSize!!.getWidth()
@@ -936,19 +930,6 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
      */
     private fun takePicture() {
         lockFocus()
-        //val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        //try {
-        //    imageFile = createImageFile()
-        //} catch (e: IOException) {
-        //    e.printStackTrace()
-        //}
-
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-
-        //if (intent.resolveActivity(activity!!.packageManager) != null) {
-        //    startActivityForResult(intent, PHOTO_REQUEST)
-        //}
-
     }
 
     /**
@@ -1031,7 +1012,8 @@ class ScannerFragment : Fragment(), View.OnClickListener, ActivityCompat.OnReque
                     var authorities: String = context!!.packageName + ".fileprovider"
                     imageUri =
                         context?.let { mFile?.let { it1 -> FileProvider.getUriForFile(it, authorities, it1) } }
-                    test()
+
+                    checkImageForBarcode()
 
                     Log.i(TAG, "Saved: $mFile")
                     Log.d(TAG, mFile.toString())

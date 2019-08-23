@@ -1,5 +1,6 @@
 package de.jl.groceriesmanager.scanner
 
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -7,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.squareup.moshi.Moshi
+import de.jl.groceriesmanager.database.GroceriesManagerDB
 import de.jl.groceriesmanager.database.products.Product
 import de.jl.openfoodfacts.OpenFoodFactsProperty
 import kotlinx.coroutines.*
@@ -14,10 +16,13 @@ import java.io.ByteArrayOutputStream
 import java.net.URL
 
 
-class ScannerViewModel : ViewModel() {
+class ScannerViewModel(application: Application) : ViewModel() {
 
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+
+    private val prodsDao = GroceriesManagerDB.getInstance(application).productsDao
+
 
     private val _response = MutableLiveData<Product>()
     val response: LiveData<Product>
@@ -28,20 +33,20 @@ class ScannerViewModel : ViewModel() {
         get() = _valid
 
 
-    private val _scannedBarcode = MutableLiveData<String>()
-    val scannedBarcode: LiveData<String>
-        get() = _scannedBarcode
+   // private val _scannedBarcode = MutableLiveData<String>()
+   // val scannedBarcode: LiveData<String>
+   //     get() = _scannedBarcode
 
     private val _showNoBarcodeResultToast = MutableLiveData<String>()
     val showNoBarcodeResultToast: LiveData<String>
         get() = _showNoBarcodeResultToast
 
-    var barcodeString = MutableLiveData<String>()
-
     var apiBarcode = ""
 
+    var uiBarcodeString = MutableLiveData<String>()
+
     init {
-        barcodeString.value = ""
+        uiBarcodeString.value = ""
         Log.i("ScannerViewModel", "init")
     }
 
@@ -79,7 +84,21 @@ class ScannerViewModel : ViewModel() {
 
     fun getData() {
         uiScope.launch {
-            _response.value = getProductByOpenFoodFactsJSON()
+            _response.value = getProductFromDBorJSON()
+        }
+    }
+
+    private suspend fun getProductFromDBorJSON() : Product? {
+        var product = getProductByBarcodeId()
+        if(product == null){
+            product = getProductByOpenFoodFactsJSON()
+        }
+        return product
+    }
+
+    private suspend fun getProductByBarcodeId(): Product? {
+        return withContext(Dispatchers.IO){
+            prodsDao.getProductByBarcode(apiBarcode.toLong())
         }
     }
 
@@ -142,26 +161,21 @@ class ScannerViewModel : ViewModel() {
 
     }
 
-    fun scanFailed() {
+    fun resetValid() {
         uiScope.launch {
-            _scannedBarcode.value = null
+            _valid.value = false
         }
     }
 
-    fun setScannedBarcode(displayValue: String?) {
+    fun resetResponse() {
         uiScope.launch {
-            if (displayValue != null && displayValue.isNotEmpty()) {
-                _scannedBarcode.value = displayValue
-            }
+            _response.value = null
         }
     }
 
-    fun setBarcode(it: String?) {
+    fun doneShowNoBarcodeResultToast() {
         uiScope.launch {
-            if (it != null) {
-                barcodeString.value = it
-            }
+            _showNoBarcodeResultToast.value = null
         }
-
     }
 }

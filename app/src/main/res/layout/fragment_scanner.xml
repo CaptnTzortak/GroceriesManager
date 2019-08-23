@@ -29,7 +29,7 @@
                 android:layout_above="@id/picture">
 
             <com.google.android.material.textfield.TextInputEditText
-                    android:text="@={viewModel.barcodeString}"
+                    android:text="@={viewModel.uiBarcodeString}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_enter_barcode"

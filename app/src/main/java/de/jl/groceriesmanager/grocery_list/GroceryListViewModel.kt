@@ -186,10 +186,15 @@ class GroceryListViewModel(
         }
     }
 
+    /**
+     * Diese Funktion versucht anhand der übergebenen Id einen GroceryListsProducts-Eintrag als Objekt in
+     * der Datenbank zu finden. Sollte in der Tabelle kein Eintrag mit der selben Id existieren,
+     * so returniert diese Funktion ein neues Objekt.
+     */
     private suspend fun getExistingGroceryListsProductsEntry(prodId: Long): GroceryListsProducts {
         return withContext(Dispatchers.IO) {
-            var glp = glpDao.getGroceryListsProductsEntryById(prodId)
-            glp
+            val realGlp = glpDao.getGroceryListsProductsEntryById(prodId) ?: GroceryListsProducts()
+            realGlp
         }
     }
     //endregion
